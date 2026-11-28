@@ -227,8 +227,9 @@ stack typed in. This is its own pull request, after the one for d5.
   Serif, each with Latin Extended, Cyrillic, Greek and Vietnamese; Figtree and
   Bricolage stay. Every stack ends in Noto Sans (or Noto Serif) and the Noto
   of Arabic, Hebrew, Bengali, Tamil, Thai, Georgian, Armenian, Chinese
-  (simplified and traditional), Japanese and Korean: 585 files, 23 MB, all
-  OFL, made again by `bun tools/fonts.ts`.
+  (simplified and traditional), Japanese and Korean, each drawing only its
+  own script: 547 files, 22 MB, all OFL, made again by `bun tools/fonts.ts`.
+  The device's stacks end in the other scripts' Noto only.
 - **A site carries only the files its letters need.** The published
   stylesheet declares, of the families its stacks name, the faces that draw a
   character of its pages (or of the words the served site answers with): for
