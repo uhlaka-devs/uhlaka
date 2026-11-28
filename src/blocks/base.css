@@ -205,6 +205,28 @@ summary.faq-question{cursor:pointer}
 .plan-action{margin:auto 0 0}
 .b-pricing{--b-width:var(--t-width-wide)}
 .group{display:grid;gap:var(--b-gap)}
+/* ADR 0085 d4: what a block's style sets for itself is not passed down to the blocks inside it. */
+.b{--b-overlay:initial;--b-shade:initial;--b-gradient:initial;--b-gradient-dir:initial;--b-bg:initial;--b-align-y:initial}
+/* A band as tall as half the screen or all of it: its content in the middle, unless the style says otherwise. */
+.b>.b-in{width:100%}
+/* A group's columns: one under another on a phone, side by side from the menu's width; four become two in between. */
+.cols{align-items:var(--b-align-y,stretch)}
+.cols>.b{padding-block:0}
+.b-group:where(:has(>.b-in>.cols)){--b-width:var(--t-width-wide)}
+@media (min-width:48.01rem){
+.cols-1-1{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cols-1-2{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.cols-2-1{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.cols-1-1-1{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols-1-1-1-1{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hide-wide{display:none!important}
+}
+@media (min-width:48.01rem) and (max-width:64rem){.cols-1-1-1-1{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:48rem){.cols.reverse{display:flex;flex-direction:column-reverse}.hide-phone{display:none!important}}
+/* A picture behind a group, covering the whole band, with a colour over it; the text in the page's background colour. */
+.b-group:where(:has(>.b-in>.has-bg)){position:relative;isolation:isolate;color:var(--t-color-background);--t-color-link:currentColor}
+.group-bg{position:absolute;inset:0;z-index:-2;width:100%;height:100%;max-width:none;object-fit:cover}
+.group-shade{position:absolute;inset:0;z-index:-1;background-color:var(--b-overlay,var(--t-color-text));opacity:var(--b-shade,.5)}
 
 /* Where a page is, from home (ADR 0050 d4). */
 .crumbs{padding-block:var(--t-space-sm) 0;font-size:var(--t-size-sm);color:var(--t-color-muted)}

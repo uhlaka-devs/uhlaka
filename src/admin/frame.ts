@@ -59,6 +59,9 @@ style.textContent = `
 [data-edit]:empty::before{content:attr(data-placeholder);opacity:.45}
 .cms-empty{display:grid;place-items:center;min-height:6rem;border:2px dashed #b9b3ff;border-radius:8px;color:#6d5dfc;font:500 14px/1.4 system-ui,sans-serif}
 .cms-empty::after{content:attr(data-label)}
+/* A block hidden on this screen (ADR 0085 d4) is only faded here, so it can still be chosen. */
+@media (max-width:48rem){.cms-hide-phone{opacity:.35}}
+@media (min-width:48.01rem){.cms-hide-wide{opacity:.35}}
 .cms-bar{position:absolute;top:0;inset-inline-end:0;z-index:10;display:flex;background:#6d5dfc;color:#fff;border-radius:0 0 0 6px;font:600 12px/1 system-ui,sans-serif;text-align:start}
 .cms-bar span{display:flex;align-items:center;padding:0 10px}
 .cms-bar button{width:28px;height:28px;padding:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer}

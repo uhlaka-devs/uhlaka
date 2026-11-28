@@ -1789,7 +1789,31 @@
         "content": {
           "type": "object",
           "additionalProperties": false,
-          "properties": {}
+          "properties": {
+            "columns": {
+              "enum": [
+                "",
+                "1-1",
+                "1-2",
+                "2-1",
+                "1-1-1",
+                "1-1-1-1"
+              ]
+            },
+            "reverse": {
+              "type": "boolean"
+            },
+            "image": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/image"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
         },
         "variant": {
           "type": "string",

@@ -7,10 +7,13 @@
  */
 import {
   ALIGNMENTS,
+  BAND_PROPS,
   type BlockStyle,
   FONT_STACKS,
   isFree,
   isFreeValue,
+  isOwnValue,
+  STYLE_CHOICES,
   STYLE_PROPS,
   type StyleProp,
   type Theme,
@@ -23,16 +26,19 @@ let {
   theme,
   onstyle,
   defaultLabel = t.style.theme,
-}: { style: BlockStyle | undefined; theme: Theme; onstyle: (style: BlockStyle) => void; defaultLabel?: string } = $props();
+  props = (Object.keys(STYLE_PROPS) as StyleProp[]).filter((prop) => !BAND_PROPS.includes(prop)),
+}: { style: BlockStyle | undefined; theme: Theme; onstyle: (style: BlockStyle) => void; defaultLabel?: string; /** The properties offered: a header's, or a block's (ADR 0085 d4). */ props?: StyleProp[] } = $props();
 
-const styleProps = Object.keys(STYLE_PROPS) as StyleProp[];
+const styleProps = $derived(props);
 /** Properties whose custom input is open but does not hold a valid value yet. */
 let drafts = $state<Partial<Record<StyleProp, string>>>({});
 
 const kindOf = (prop: StyleProp) => STYLE_PROPS[prop].kind;
-const tokens = (prop: StyleProp): string[] => (kindOf(prop) === 'align' ? [] : Object.keys(theme.tokens[kindOf(prop) as TokenGroup]));
+const tokens = (prop: StyleProp): string[] => (kindOf(prop) === 'align' || kindOf(prop) === 'choice' ? [] : Object.keys(theme.tokens[kindOf(prop) as TokenGroup]));
 const choices = (prop: StyleProp): readonly string[] | null =>
-  kindOf(prop) === 'align' ? ALIGNMENTS : kindOf(prop) === 'font' ? Object.keys(FONT_STACKS) : null;
+  kindOf(prop) === 'align' ? ALIGNMENTS : kindOf(prop) === 'font' ? Object.keys(FONT_STACKS) : kindOf(prop) === 'choice' ? Object.keys(STYLE_CHOICES[prop] ?? {}) : null;
+const choiceLabel = (prop: StyleProp, choice: string): string =>
+  kindOf(prop) === 'align' ? (t.style.align[choice] ?? choice) : kindOf(prop) === 'choice' ? (t.style.choices[prop]?.[choice] ?? choice) : choice;
 
 function mode(prop: StyleProp): string {
   if (prop in drafts) return '$custom';
@@ -74,13 +80,13 @@ const customValue = (prop: StyleProp): string => {
 
 {#each styleProps as prop (prop)}
   <label class="field">
-    <span>{t.style.props[prop]}{#if style?.[prop] && isFree(style[prop])}<em class="own" title={t.style.custom}>●</em>{/if}</span>
+    <span>{t.style.props[prop]}{#if isOwnValue(prop, style?.[prop])}<em class="own" title={t.style.custom}>●</em>{/if}</span>
     <select value={mode(prop)} onchange={(e) => choose(prop, e.currentTarget.value)} data-style={prop}>
       <option value="">{defaultLabel}</option>
       {#each tokens(prop) as token}<option value={`token:${token}`}>{token}</option>{/each}
       {#if choices(prop)}
         {#each choices(prop) ?? [] as choice}
-          <option value={`value:${choice}`}>{kindOf(prop) === 'align' ? t.style.align[choice] : choice} {kindOf(prop) === 'font' ? `(${t.style.custom})` : ''}</option>
+          <option value={`value:${choice}`}>{choiceLabel(prop, choice)} {kindOf(prop) === 'font' ? `(${t.style.custom})` : ''}</option>
         {/each}
       {:else}
         <option value="$custom">{t.style.custom}…</option>

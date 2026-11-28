@@ -329,6 +329,40 @@ const assert = (condition, message) => {
     await page.keyboard.press('ControlOrMeta+z');
     assert((await order()) === 'contact hero group(text,image)', 'one undo takes one drag back');
 
+    // Columns, height and where a block is hidden (ADR 0085 d4): the group's own panel.
+    const groupOf = async () => (await stored()).find((b) => b.type === 'group');
+    await canvas.locator('.b-group').click({ position: { x: 6, y: 6 } });
+    await page.locator('[data-group-columns]').waitFor();
+    await page.locator('[data-columns="1-1"]').check({ force: true });
+    await canvas.locator('.group.cols-1-1').waitFor();
+    assert((await order()) === 'contact hero group(text,image)', 'two halves: the two blocks of the group become its two columns, nothing added');
+    await page.locator('[data-columns="1-1-1"]').check({ force: true });
+    await canvas.locator('.group.cols-1-1-1 > .b-group .cms-empty').waitFor();
+    assert((await order()) === 'contact hero group(text,image,group)', `three columns: an empty box is added for the third, to drop blocks into: ${await order()}`);
+    await page.locator('[data-group-more] > summary').click();
+    await page.locator('[data-group-reverse]').check();
+    await page.locator('[data-group-style="height"]').selectOption('value:screen');
+    await page.locator('[data-group-style="gradient"]').selectOption('token:primary');
+    await page.locator('[data-group-style="gradientDirection"]').selectOption('value:across');
+    await page.locator('[data-group-style="hideOn"]').selectOption('value:wide');
+    await canvas.locator('.b-group.cms-hide-wide .group.reverse').waitFor();
+    if (shots) await page.screenshot({ path: join(shots, 'editor-columns.png') });
+    const columned = await groupOf();
+    assert(
+      columned.content.reverse === true && columned.style.height.value === 'screen' && columned.style.gradient.token === 'primary' && columned.style.hideOn.value === 'wide',
+      'the phone\'s order is the content; the height, the gradient and where it is hidden are the style',
+    );
+    const faded = await canvas.locator('.b-group.cms-hide-wide').evaluate((el) => getComputedStyle(el).opacity);
+    assert(faded === '0.35', `a block hidden on a wide screen is only faded in the editor (${faded})`);
+    await page.locator('[data-group-style="hideOn"]').selectOption('');
+    await page.locator('[data-columns="none"]').check({ force: true });
+    await canvas.locator('.b-group > .b-in > .group:not(.cols)').waitFor();
+    assert((await order()) === 'contact hero group(text,image,group)', 'one under another again: nothing is taken away');
+    await page.locator('aside.left h2').first().click();
+    for (let i = 0; i < 9; i += 1) await page.keyboard.press('ControlOrMeta+z');
+    await page.waitForFunction(() => !document.querySelector('iframe').contentDocument.querySelector('.b-group .b-group'));
+    assert((await order()) === 'contact hero group(text,image)' && !(await groupOf()).style, 'and undo takes all of it back');
+
     // Edit where you click (ADR 0082 d3): the footer opens the footer; change it, then give the header a logo.
     await canvas.locator('.site-footer').click();
     await page.locator('[data-design="footer"]').waitFor();

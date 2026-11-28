@@ -12,7 +12,7 @@ import { type Issue, isObject } from './util.ts';
 export type StyleValue = { token: string } | { value: string };
 
 /** What a property holds; also the theme's token groups (all but `align`). */
-export type StyleKind = 'color' | 'space' | 'radius' | 'font' | 'size' | 'width' | 'align';
+export type StyleKind = 'color' | 'space' | 'radius' | 'font' | 'size' | 'width' | 'align' | 'choice';
 
 export const TOKEN_GROUPS = ['color', 'space', 'radius', 'font', 'size', 'width'] as const;
 export type TokenGroup = (typeof TOKEN_GROUPS)[number];
@@ -33,12 +33,49 @@ export const STYLE_PROPS = {
   /** The colours of the buttons inside the block (ADR 0068 d2). */
   buttonBackground: { kind: 'color', css: '--b-button-bg' },
   buttonColor: { kind: 'color', css: '--b-button-fg' },
+  /** A section's look (ADR 0085 d4): the colour over its picture and how strong it is. */
+  overlay: { kind: 'color', css: '--b-overlay' },
+  overlayStrength: { kind: 'choice', css: '--b-shade' },
+  /** A gradient from the block's background to this colour, in one of a few directions. */
+  gradient: { kind: 'color', css: '--b-gradient' },
+  gradientDirection: { kind: 'choice', css: '--b-gradient-dir' },
+  height: { kind: 'choice', css: 'min-height' },
+  alignY: { kind: 'choice', css: '--b-align-y' },
+  /** Drawn as a class of the block (`hide-phone`, `hide-wide`), not as a declaration. */
+  hideOn: { kind: 'choice', css: '' },
 } as const satisfies Record<string, { kind: StyleKind; css: string }>;
 
 export type StyleProp = keyof typeof STYLE_PROPS;
 export type BlockStyle = Partial<Record<StyleProp, StyleValue>>;
 
 export const isStyleProp = (v: string): v is StyleProp => Object.hasOwn(STYLE_PROPS, v);
+
+/**
+ * The names a `choice` property takes, each with the CSS it writes (ADR 0085
+ * d4). A closed list: a choice is a name, so it follows no token and is never
+ * counted as a value of one's own.
+ */
+export const STYLE_CHOICES: Partial<Record<StyleProp, Record<string, string>>> = {
+  overlayStrength: { light: '.3', medium: '.5', deep: '.7' },
+  gradientDirection: { down: '180deg', right: '90deg', across: '135deg' },
+  height: { half: '50svh', screen: '100svh' },
+  alignY: { start: 'start', center: 'center', end: 'end' },
+  hideOn: { phone: '', wide: '' },
+};
+
+/** The properties of a band (ADR 0085 d4): offered for a block, not for the header, the menu or the footer. */
+export const BAND_PROPS: readonly StyleProp[] = ['overlay', 'overlayStrength', 'gradient', 'gradientDirection', 'height', 'alignY', 'hideOn'];
+/** Only a group has a picture behind it, so only a group has a colour over it. */
+export const PICTURE_PROPS: readonly StyleProp[] = ['overlay', 'overlayStrength'];
+/** The properties a block of this type offers: in the block's own style (`own`), or in a theme's default for the type. */
+export const stylePropsFor = (type: string, own: boolean): StyleProp[] =>
+  (Object.keys(STYLE_PROPS) as StyleProp[]).filter((prop) => (type === 'group' || !PICTURE_PROPS.includes(prop)) && (own || prop !== 'hideOn'));
+
+/** The CSS of a choice, or null when the name is not one of the property's. */
+export const choiceCss = (prop: StyleProp, name: unknown): string | null => {
+  const list = STYLE_CHOICES[prop];
+  return list && typeof name === 'string' && Object.hasOwn(list, name) ? (list[name] as string) : null;
+};
 
 /**
  * Typefaces a site may use. Most are stacks the browser already has; the
@@ -101,9 +138,11 @@ const LENGTH = /^(0|\d{1,4}(\.\d{1,4})?(rem|em|px|%|vw|vh|ch))$/;
 export const isTokenName = (v: unknown): v is string => typeof v === 'string' && TOKEN_NAME.test(v);
 
 /** Whether `value` is a literal this kind accepts. The one gate to a stylesheet. */
-export function isFreeValue(kind: StyleKind, value: unknown): value is string {
+export function isFreeValue(kind: StyleKind, value: unknown, prop?: StyleProp): value is string {
   if (typeof value !== 'string') return false;
   switch (kind) {
+    case 'choice':
+      return !!prop && choiceCss(prop, value) !== null;
     case 'color':
       return COLOR.test(value);
     case 'space':
@@ -119,7 +158,8 @@ export function isFreeValue(kind: StyleKind, value: unknown): value is string {
 }
 
 /** The CSS text of a checked free value. */
-export function freeValueCss(kind: StyleKind, value: string): string {
+export function freeValueCss(kind: StyleKind, value: string, prop?: StyleProp): string {
+  if (kind === 'choice') return (prop && choiceCss(prop, value)) || '';
   return kind === 'font' ? FONT_STACKS[value as keyof typeof FONT_STACKS] : value;
 }
 
@@ -147,10 +187,10 @@ export function normalizeStyle(input: unknown, path = 'style'): { style: BlockSt
     if (!isObject(raw)) {
       issues.push({ path: at, message: 'a style value is { token } or { value }' });
     } else if ('token' in raw) {
-      if (kind === 'align') issues.push({ path: at, message: 'alignment has no tokens' });
+      if (kind === 'align' || kind === 'choice') issues.push({ path: at, message: 'this property has no tokens' });
       else if (isTokenName(raw.token)) style[prop] = { token: raw.token };
       else issues.push({ path: at, message: 'not a token name' });
-    } else if (isFreeValue(kind, raw.value)) {
+    } else if (isFreeValue(kind, raw.value, prop)) {
       style[prop] = { value: raw.value };
     } else {
       issues.push({ path: at, message: `not a ${kind} value` });
@@ -160,3 +200,10 @@ export function normalizeStyle(input: unknown, path = 'style'): { style: BlockSt
 }
 
 export const isFree = (v: StyleValue): v is { value: string } => 'value' in v;
+
+/**
+ * A value the author typed or picked that will not follow the theme: a free
+ * value, but not a choice from a closed list (a height, where it is hidden),
+ * which means the same under every theme and is kept by "Reset to theme".
+ */
+export const isOwnValue = (prop: string, v: StyleValue | undefined): boolean => !!v && isFree(v) && !(isStyleProp(prop) && STYLE_PROPS[prop].kind === 'choice');
