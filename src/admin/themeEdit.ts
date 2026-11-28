@@ -34,3 +34,6 @@ export const readyMade = (theme: Theme, ready: Theme[]): Theme | null => ready.f
 /** The parts of Design, as the page shows them (ADR 0082 d2). */
 export const DESIGN_PARTS = ['style', 'header', 'text', 'footer'] as const;
 export type DesignPart = (typeof DESIGN_PARTS)[number];
+
+/** Every face the site may draw with, Uhlaka's and its own, as `@font-face` rules (ADR 0085 d6): for the admin's samples. */
+export const FACES_CSS = '/admin/fonts.css';

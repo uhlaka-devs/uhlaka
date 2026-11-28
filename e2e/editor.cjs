@@ -197,6 +197,51 @@ const assert = (condition, message) => {
     await page.waitForFunction(() => getComputedStyle(document.querySelector('iframe').contentDocument.querySelector('h1')).textTransform === 'none');
     assert(true, 'and back as it was, each name of before kept as an absence');
 
+    // Typefaces (ADR 0085 d6): Uhlaka's own, a Google family the site keeps, one the owner bought; each served by the site.
+    const headingFace = await page.locator('[data-font="heading"]').inputValue();
+    const bodyFace = await page.locator('[data-font="body"]').inputValue();
+    await page.locator('[data-font="heading"]').selectOption('garamond');
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('iframe').contentDocument.querySelector('h1')).fontFamily.startsWith('"EB Garamond"'));
+    assert((await page.locator('[data-font-sample="heading"]').evaluate((e) => getComputedStyle(e).fontFamily)).startsWith('"EB Garamond"'), 'headings in EB Garamond, on the canvas and in the sample');
+    await page.locator('[data-fonts-add] > summary').click();
+    await page.locator('[data-google-search]').fill('lora');
+    await page.locator('[data-google-add="Lora"]').waitFor();
+    // Google is not asked from here: what the server does with it, the unit tests check.
+    await page.route('**/api/fonts/google', (route) =>
+      route.request().method() === 'POST'
+        ? route.fulfill({ json: { font: { name: 'google:lora', label: 'Lora', faces: [] }, fonts: [{ name: 'google:lora', label: 'Lora', faces: [] }] } })
+        : route.continue(),
+    );
+    await page.locator('[data-google-add="Lora"]').click();
+    await page.locator('[data-google-add="Lora"]:disabled').waitFor();
+    assert((await page.locator('[data-fonts-add] [role="status"]').innerText()).includes('Lora'), 'a family of Google Fonts, found in the catalogue and added');
+    await page.unroute('**/api/fonts/google');
+    await page.locator('[data-font-label]').fill('Brand Sans');
+    await page.locator('[data-font-weight]').selectOption('100 900');
+    await page.locator('[data-font-style]').selectOption('italic');
+    await page.locator('[data-font-style]').selectOption('normal');
+    await page.locator('[data-font-file]').setInputFiles(join(root, 'fonts', 'inter-latin.woff2'));
+    await page.locator('[data-font-upload]').click();
+    await page.locator('[data-site-font="own:brand-sans"]').waitFor();
+    await page.locator('[data-font="body"]').selectOption('own:brand-sans');
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('iframe').contentDocument.body).fontFamily.startsWith('own-brand-sans'));
+    assert(true, 'a typeface the owner bought, uploaded, served by the site and used for the text');
+    await page.locator('[data-font="heading"]').selectOption(headingFace);
+    await page.locator('[data-font="body"]').selectOption(bodyFace);
+    const errorsBefore = errors.length;
+    await page.route('**/api/fonts?name=*', (route) => route.fulfill({ status: 400, json: { error: 'refused here' } }));
+    await page.locator('[data-font-remove="own:brand-sans"]').click();
+    await page.locator('[data-fonts-add] [role="alert"]').waitFor();
+    await page.unroute('**/api/fonts?name=*');
+    // The refusal is the one error the browser logs here.
+    await page.waitForFunction(() => true);
+    if (errors.length === errorsBefore + 1 && errors[errorsBefore].includes('400')) errors.pop();
+    // The server never had Lora (its answer was the test's): taking the bought one away leaves the site with none.
+    await page.locator('[data-font-remove="own:brand-sans"]').click();
+    await page.locator('[data-site-font]').first().waitFor({ state: 'detached' });
+    assert(true, 'each taken away again, and a refusal said');
+    if (shots) await page.screenshot({ path: join(shots, 'theme-typefaces.png') });
+
     // A theme is a file: download it, and refuse a file that is not a theme.
     await page.locator('[data-design-part="style"]').click();
     await page.getByText('More settings', { exact: true }).click();

@@ -10,12 +10,9 @@ import atelier from '../../themes/atelier.json';
 import ro from '../../languages/ro.json';
 import baseCss from '../blocks/base.css' with { type: 'text' };
 import adminTokens from '../admin/tokens.css' with { type: 'text' };
-import bricolageLatin from '../../fonts/bricolage-grotesque-latin.woff2' with { type: 'file' };
-import bricolageLatinExt from '../../fonts/bricolage-grotesque-latin-ext.woff2' with { type: 'file' };
-import figtreeLatin from '../../fonts/figtree-latin.woff2' with { type: 'file' };
-import figtreeLatinExt from '../../fonts/figtree-latin-ext.woff2' with { type: 'file' };
-import figtreeItalicLatin from '../../fonts/figtree-italic-latin.woff2' with { type: 'file' };
-import figtreeItalicLatinExt from '../../fonts/figtree-italic-latin-ext.woff2' with { type: 'file' };
+import { cleanFontFace, type FontFace } from '../core/index.ts';
+import faces from './faces.json';
+import { FONT_FILES } from './shipped-fonts.ts';
 import adminIcon from '../../brand/uhlaka-icon-16.svg' with { type: 'text' };
 import statsPackage from '../../extensions/stats/stats.uhlaka-extension' with { type: 'text' };
 
@@ -30,21 +27,21 @@ export const BASE_CSS: string = baseCss;
 /** The admin's design tokens (ADR 0084): every colour, size and duration of the admin, in one file. */
 export const ADMIN_TOKENS: string = adminTokens;
 /**
- * The files of the faces in `fonts/`, by file name (ADR 0068 d1). Imported as
- * files, so the single executable carries them; read when the site is built.
+ * The faces Uhlaka carries (ADR 0068 d1, ADR 0085 d6), as `tools/fonts.ts`
+ * made them: each family cut by script, so a page loads only the files its
+ * words need. Their files are in `fonts/`, imported as files
+ * (`shipped-fonts.ts`) so the single executable carries them.
  */
-const FONT_FILES: Record<string, string> = {
-  'bricolage-grotesque-latin.woff2': bricolageLatin,
-  'bricolage-grotesque-latin-ext.woff2': bricolageLatinExt,
-  'figtree-latin.woff2': figtreeLatin,
-  'figtree-latin-ext.woff2': figtreeLatinExt,
-  'figtree-italic-latin.woff2': figtreeItalicLatin,
-  'figtree-italic-latin-ext.woff2': figtreeItalicLatinExt,
+export const SHIPPED_FACES: readonly FontFace[] = (faces.faces as unknown[]).map(cleanFontFace).filter((f): f is FontFace => f !== null);
+const read = new Map<string, Promise<Uint8Array>>();
+/** The bytes of one of those files, read when first asked for (a site in Romanian never reads the Japanese ones); null for a name not among them. */
+export const shippedFont = (name: string): Promise<Uint8Array> | null => {
+  const path = Object.hasOwn(FONT_FILES, name) ? FONT_FILES[name] : undefined;
+  if (!path) return null;
+  let bytes = read.get(name);
+  if (!bytes) read.set(name, (bytes = Bun.file(path).bytes()));
+  return bytes;
 };
-let fonts: Promise<Map<string, Uint8Array>> | undefined;
-/** The faces' bytes, by file name, read once. */
-export const shippedFonts = (): Promise<Map<string, Uint8Array>> =>
-  (fonts ??= Promise.all(Object.entries(FONT_FILES).map(async ([name, path]) => [name, await Bun.file(path).bytes()] as const)).then((all) => new Map(all)));
 /** The theme a new site starts with. */
 export const DEFAULT_THEME: unknown = plain;
 /**

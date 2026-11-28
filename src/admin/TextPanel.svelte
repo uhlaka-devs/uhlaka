@@ -7,6 +7,7 @@
 import { BUTTON_LOOKS, FIELD_LOOKS, TEXT_KEYS, TEXT_LINES, TEXT_PARTS, TEXT_PHONE, TEXT_SPACINGS, TEXT_WEIGHTS, type TextLook, type TextPart, type Theme } from '../core/index.ts';
 import { t } from './messages.ts';
 import { tryTheme } from './themeEdit.ts';
+import Typefaces from './Typefaces.svelte';
 
 let { theme, ontheme }: { theme: Theme; ontheme: (theme: Theme) => void } = $props();
 
@@ -67,6 +68,8 @@ const setField = (value: string): void =>
     {/if}
   {/each}
 {/snippet}
+
+<Typefaces {theme} {apply} />
 
 <h3>{t.text.parts.heading}</h3>
 {@render look('heading', ['weight', 'case'])}

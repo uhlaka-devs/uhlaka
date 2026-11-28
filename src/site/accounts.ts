@@ -54,7 +54,7 @@ export const cookieOf = (request: Request, name = SESSION_COOKIE): string => {
  */
 export function ownerOnly(method: string, path: string): boolean {
   if (path.startsWith('/api/import') || path.startsWith('/api/export/') || path === '/api/messages' || path.startsWith('/api/users') || path.startsWith('/api/backups') || path.startsWith('/api/visitors') || path.startsWith('/api/mail')) return true;
-  return (path === '/api/theme' || path === '/api/theme/publish' || path === '/api/site' || path === '/api/redirects' || path === '/api/not-found' || path === '/api/search-console' || path === '/api/forms' || path === '/api/performance') && method !== 'GET';
+  return (path === '/api/theme' || path === '/api/theme/publish' || path === '/api/site' || path === '/api/redirects' || path === '/api/not-found' || path === '/api/search-console' || path === '/api/forms' || path === '/api/performance' || path.startsWith('/api/fonts')) && method !== 'GET';
 }
 
 /** What the admin may know about the person signed in. */

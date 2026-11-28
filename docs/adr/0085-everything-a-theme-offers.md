@@ -214,6 +214,44 @@ Romanian page never downloads Japanese.
 A style names a typeface by a name from these three lists, never by a CSS
 stack typed in. This is its own pull request, after the one for d5.
 
+**How it is built** (the pull request for d6):
+
+| | Named in a style | Kept | Served at |
+| --- | --- | --- | --- |
+| Uhlaka's | `inter`, `manrope`, `literata`, `garamond`, `jetbrains`, `noto-sans`, `noto-serif`, with `bricolage`, `figtree` and the device's stacks of before | `fonts/`, carried by the program | `/assets/fonts/<family>-<script>.woff2` |
+| Google Fonts | `google:<family>` (`google:playfair-display`) | the site's database (`fonts`, `font_files`), in its backups | `/assets/fonts/<hash>.woff2` |
+| Bought | `own:<name>` (`own:brand-sans`) | the same | the same |
+
+- The families Uhlaka carries are Inter and Manrope (without serifs),
+  Literata and EB Garamond (with serifs), JetBrains Mono, Noto Sans and Noto
+  Serif, each with Latin Extended, Cyrillic, Greek and Vietnamese; Figtree and
+  Bricolage stay. Every stack ends in Noto Sans (or Noto Serif) and the Noto
+  of Arabic, Hebrew, Bengali, Tamil, Thai, Georgian, Armenian, Chinese
+  (simplified and traditional), Japanese and Korean: 585 files, 23 MB, all
+  OFL, made again by `bun tools/fonts.ts`.
+- **A site carries only the files its letters need.** The published
+  stylesheet declares, of the families its stacks name, the faces that draw a
+  character of its pages (or of the words the served site answers with): for
+  each character, the first family of the stack that has it. A stack that
+  starts with the device's typefaces leaves Latin, Greek and Cyrillic to the
+  device. A Romanian site carries Latin; one with a word in Japanese carries
+  the pieces of that word.
+- **The catalogue** of Google Fonts (1,908 families, with the scripts each
+  has) ships with the program, made by the same tool from the MIT package
+  `google-font-metadata`: searching it asks nobody. Adding a family asks
+  Google once, from the server, for every weight and style; only files from
+  `fonts.gstatic.com`, each checked to be a `woff2`, at most 40 MB a family.
+- **A bought face** is one `.woff2` at a time (at most 8 MB), with its weight
+  (light, regular, bold, or every weight of a variable face) and its style;
+  a family is its faces under one name. Only the owner adds or removes a
+  typeface, as only the owner changes the style.
+- A font of the site's own is declared under its name (`google-lora`), so it
+  never meets a face of the device; taken away, a style naming it falls back
+  to the rest of its stack.
+- The choice is at the top of **Text and buttons**: headings and text, each
+  with a sample in its face (`Ag Ăă Șș Țț Жж Ωω Ạạ`); adding a typeface is
+  under "Add a typeface".
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as
@@ -228,3 +266,6 @@ look; nothing new is on).
 - A second header for the phone, built apart: the phone's menu panel covers
   what people ask for most; a whole other header waits for someone to ask.
 - "Over the first block" chosen page by page, in a layout.
+- Han characters in Japanese or Korean forms on a page in those languages: the
+  stack names the Chinese Noto first, so a Japanese page draws Han and kana in
+  Noto Sans SC until the stack follows the page's language.
