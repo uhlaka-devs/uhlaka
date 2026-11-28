@@ -141,7 +141,7 @@ const assert = (condition, message) => {
     await page.locator('[data-new-token-name="color"]').fill('brand');
     await page.locator('[data-new-token-value="color"]').fill('#00aa88');
     await page.locator('[data-add-token="color"]').click();
-    await page.getByText('More settings', { exact: true }).click();
+    await page.locator('[data-theme-more] > summary').click();
     await page.getByText('Blocks', { exact: true }).click();
     await page.locator('select[data-theme-block]').selectOption('services');
     await page.locator('[data-theme-style="default"] select[data-style="background"]').selectOption('token:brand');
@@ -267,7 +267,7 @@ const assert = (condition, message) => {
 
     // A theme is a file: download it, and refuse a file that is not a theme.
     await page.locator('[data-design-part="style"]').click();
-    await page.getByText('More settings', { exact: true }).click();
+    await page.locator('[data-theme-more] > summary').click();
     await page.getByText('Save or load a style file').click();
     const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download this style' }).click()]);
     const themeFile = join(dir, 'downloaded.theme.json');
