@@ -163,7 +163,7 @@ const remove = (name: string): Promise<void> => run(name, () => api.deleteFont(n
   h3 { margin: var(--sp-5) 0 var(--sp-2); font: var(--label-m); letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary); }
   h4 { margin: var(--sp-4) 0 var(--sp-1); font: var(--title-s); }
   select, input[type='search'], [data-font-label] { width: 100%; }
-  .sample { margin: 0 0 var(--sp-3); font-size: 1.25rem; line-height: 1.3; overflow-wrap: anywhere; }
+  .sample { margin: 0 0 var(--sp-3); font: var(--title-l); overflow-wrap: anywhere; }
   .add { margin-top: var(--sp-3); }
   .add > summary { color: var(--primary); }
   .problem { padding: var(--sp-2) var(--sp-4); background: var(--error-container); color: var(--on-error-container); }
@@ -172,5 +172,5 @@ const remove = (name: string): Promise<void> => run(name, () => api.deleteFont(n
   li { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
   li span { display: grid; min-width: 0; }
   li small { color: var(--on-surface-variant); font: var(--body-s); }
-  .yours li span { font-size: 1.125rem; }
+  .yours li span { font: var(--title-m); }
 </style>
