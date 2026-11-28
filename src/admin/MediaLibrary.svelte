@@ -215,30 +215,30 @@ onMount(async () => {
 </section>
 
 <style>
-  header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-  h1 { margin: 0; font-size: 1.4rem; flex: 1; }
-  .split { display: grid; gap: 1rem; align-items: start; }
+  header { display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-4); }
+  h1 { margin: 0; font-size: var(--size-2xl); flex: 1; }
+  .split { display: grid; gap: var(--sp-4); align-items: start; }
   .split.open { grid-template-columns: minmax(0, 1fr) 22rem; }
-  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.8rem; }
-  li { display: grid; gap: 0.25rem; padding: 0.6rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--sp-3); }
+  li { display: grid; gap: var(--sp-1); padding: var(--sp-2); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   li.current { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
   .thumb { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
   img, video, .file { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--shape-xs); background: var(--surface-container); }
-  .file { display: grid; place-items: center; font-weight: 700; font-size: 1.3rem; color: var(--on-surface-variant); }
+  .file { display: grid; place-items: center; font-weight: 700; font-size: var(--size-xl); color: var(--on-surface-variant); }
   .thumb:focus-visible, .label:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
   audio { width: 100%; }
-  .kinds { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+  .kinds { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-4); }
   .kinds [aria-pressed='true'] { font-weight: 700; text-decoration: underline; }
   .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; padding: 0; border: 0; background: none; text-align: start; cursor: pointer; }
   .label:hover { color: var(--primary); text-decoration: underline; }
-  .details { position: sticky; top: 0; display: grid; gap: 0.7rem; padding: 1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .details { position: sticky; top: 0; display: grid; gap: var(--sp-3); padding: var(--sp-4); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .details header { margin: 0; }
-  .details h2 { flex: 1; margin: 0; font-size: 1rem; }
+  .details h2 { flex: 1; margin: 0; font-size: var(--size-l); }
   .details .big { aspect-ratio: auto; max-height: 16rem; object-fit: contain; }
   .details form { display: grid; }
   .details .title { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
-  .row { display: flex; align-items: center; gap: 0.6rem; margin: 0; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 0.8rem; margin: 0; font-size: 13px; }
+  .row { display: flex; align-items: center; gap: var(--sp-2); margin: 0; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-1) var(--sp-3); margin: 0; font-size: var(--size-m); }
   dt { color: var(--on-surface-variant); }
   dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
   .address { display: grid; justify-items: start; gap: 0.2rem; }

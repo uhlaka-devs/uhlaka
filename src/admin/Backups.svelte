@@ -198,21 +198,21 @@ const upload = () =>
 </section>
 
 <style>
-  .backups { max-width: 760px; padding: 1.5rem 2rem; }
-  h1 { font-size: 20px; margin: 0 0 0.4rem; }
-  h2 { font-size: 14px; margin: 1.6rem 0 0.5rem; }
-  .hint { color: var(--on-surface-variant); font-size: 13px; }
-  .last { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; padding: 0.8rem 1rem; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
-  .last p { margin: 0; flex: 1 1 100%; font-size: 13px; }
+  .backups { max-width: 760px; padding: var(--sp-6) var(--sp-8); }
+  h1 { font-size: var(--size-xl); margin: 0 0 var(--sp-2); }
+  h2 { font-size: var(--size-m); margin: var(--sp-6) 0 var(--sp-2); }
+  .hint { color: var(--on-surface-variant); font-size: var(--size-m); }
+  .last { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); padding: var(--sp-3) var(--sp-4); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .last p { margin: 0; flex: 1 1 100%; font-size: var(--size-m); }
   .files { list-style: none; padding: 0; margin: 0; }
-  .files li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; padding: 0.5rem 0; border-bottom: 1px solid var(--outline-variant); }
-  .what { flex: 1; font-size: 13px; }
-  .confirm { flex: 1 1 100%; padding: 0.6rem 0.8rem; background: var(--warning-container); border: 1px solid var(--warning); border-radius: var(--shape-sm); }
-  .confirm p { margin: 0 0 0.5rem; font-size: 13px; }
-  .row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; margin-top: 0.5rem; }
-  .field { display: grid; gap: 0.15rem; font-size: 12px; }
-  .check { display: flex; gap: 0.4rem; align-items: center; font-size: 13px; }
-  .good { color: var(--success); font-size: 13px; }
-  .bad { color: var(--error); font-size: 13px; }
+  .files li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0; border-bottom: 1px solid var(--outline-variant); }
+  .what { flex: 1; font-size: var(--size-m); }
+  .confirm { flex: 1 1 100%; padding: var(--sp-2) var(--sp-3); background: var(--warning-container); border: 1px solid var(--warning); border-radius: var(--shape-sm); }
+  .confirm p { margin: 0 0 var(--sp-2); font-size: var(--size-m); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-2); margin-top: var(--sp-2); }
+  .field { display: grid; gap: 0.15rem; font-size: var(--size-s); }
+  .check { display: flex; gap: var(--sp-2); align-items: center; font-size: var(--size-m); }
+  .good { color: var(--success); font-size: var(--size-m); }
+  .bad { color: var(--error); font-size: var(--size-m); }
 </style>

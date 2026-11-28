@@ -103,10 +103,10 @@ function paste(address: string): void {
 </fieldset>
 
 <style>
-  .current { margin: 0 0 0.5rem; font-weight: 600; overflow-wrap: anywhere; }
-  .actions { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
-  .list { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; gap: 0.25rem; max-height: 12rem; overflow: auto; }
+  .current { margin: 0 0 var(--sp-2); font-weight: 600; overflow-wrap: anywhere; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin-bottom: var(--sp-2); }
+  .list { list-style: none; margin: 0 0 var(--sp-2); padding: 0; display: grid; gap: var(--sp-1); max-height: 12rem; overflow: auto; }
   .pick { width: 100%; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pick.current { border-color: var(--primary) !important; box-shadow: 0 0 0 2px var(--primary); }
-  summary { cursor: pointer; font-size: 12.5px; color: var(--on-surface-variant); margin-bottom: 0.4rem; }
+  summary { cursor: pointer; font-size: var(--size-s); color: var(--on-surface-variant); margin-bottom: var(--sp-2); }
 </style>

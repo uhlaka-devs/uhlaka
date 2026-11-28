@@ -119,11 +119,11 @@ const missing = (target: MenuTarget): boolean => target.kind === 'page' && !page
 {/if}
 
 <style>
-  .menu-items { list-style: none; margin: 0 0 0.5rem; padding: 0; display: grid; gap: 0.5rem; }
-  .menu-items li { display: grid; gap: 0.3rem; padding: 0.5rem; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); background: var(--surface-lowest); }
-  .menu-items :global(.menu-items) { margin: 0.2rem 0 0; padding-inline-start: 0.6rem; border-inline-start: 2px solid var(--primary); }
+  .menu-items { list-style: none; margin: 0 0 var(--sp-2); padding: 0; display: grid; gap: var(--sp-2); }
+  .menu-items li { display: grid; gap: var(--sp-1); padding: var(--sp-2); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); background: var(--surface-lowest); }
+  .menu-items :global(.menu-items) { margin: 0.2rem 0 0; padding-inline-start: var(--sp-2); border-inline-start: 2px solid var(--primary); }
   .menu-items :global(.menu-items li) { background: var(--surface-low); }
   .row { display: flex; gap: 0.15rem; align-items: center; }
   .row input { flex: 1; min-width: 0; }
-  .row button { padding: 0.3rem 0.4rem !important; }
+  .row button { padding: var(--sp-1) var(--sp-2) !important; }
 </style>

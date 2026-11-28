@@ -23,5 +23,5 @@ const body = $derived({ ...doc, title: undefined });
 </section>
 
 <style>
-  h1 { margin: 0 0 0.3rem; font-size: 1.4rem; }
+  h1 { margin: 0 0 var(--sp-1); font-size: var(--size-2xl); }
 </style>

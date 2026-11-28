@@ -35,6 +35,17 @@ test('no screen of the admin writes a colour by hand', async () => {
   }
 });
 
+test('text sizes are on the scale', async () => {
+  for (const [file, css] of await styles()) {
+    const own = [...css.matchAll(/font-size:\s*([^;}]+)/g)].map((m) => m[1]!.trim()).filter((v) => /^[\d.]+(px|rem)$/.test(v));
+    expect(`${file}: ${own.join(' ')}`).toBe(`${file}: `);
+  }
+});
+
+test('light, dark or like the device can be chosen in the settings and the profile', async () => {
+  for (const file of ['SitePanel.svelte', 'Profile.svelte']) expect(await Bun.file(new URL(file, ADMIN)).text()).toContain('<SchemeChoice />');
+});
+
 test('the tokens give every role a value for light and for dark', async () => {
   const css = await Bun.file(new URL('tokens.css', ADMIN)).text();
   const light = css.slice(css.indexOf(':root {'), css.indexOf('}', css.indexOf(':root {')));

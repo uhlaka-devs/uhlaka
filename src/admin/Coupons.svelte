@@ -116,15 +116,15 @@ onMount(() => void attempt(async () => void (coupons = (await api.coupons()).cou
 </section>
 
 <style>
-  .coupons { max-width: 56rem; margin: 0 auto; padding: 1rem; }
-  .write { display: grid; gap: 0.6rem; max-width: 28rem; margin: 0.6rem 0 1rem; }
+  .coupons { max-width: 56rem; margin: 0 auto; padding: var(--sp-4); }
+  .write { display: grid; gap: var(--sp-2); max-width: 28rem; margin: var(--sp-2) 0 var(--sp-4); }
   .field { display: grid; gap: 0.2rem; border: 0; padding: 0; margin: 0; }
   .field small { color: var(--on-surface-variant); }
-  fieldset.field label { display: inline-flex; gap: 0.3rem; margin-inline-end: 1rem; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: start; padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--outline-variant); vertical-align: top; }
+  fieldset.field label { display: inline-flex; gap: var(--sp-1); margin-inline-end: var(--sp-4); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--size-m); }
+  th, td { text-align: start; padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid var(--outline-variant); vertical-align: top; }
   .n { text-align: end; white-space: nowrap; }
-  .row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; margin-inline-start: 0.5rem; }
+  .row { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+  .link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; margin-inline-start: var(--sp-2); }
   .bad { color: var(--error); }
 </style>

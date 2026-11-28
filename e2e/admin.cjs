@@ -330,6 +330,16 @@ function png(width, height) {
     await page.locator('[data-admin-language]').selectOption('');
     await page.locator('[data-screen="settings"] h1', { hasText: 'Settings' }).waitFor();
     assert(true, 'and back in English');
+    // Light, dark or like the device, kept on this device (ADR 0084 d4).
+    await page.locator('[data-scheme-choice="dark"]').click();
+    assert((await page.locator('html').getAttribute('data-scheme')) === 'dark', 'the admin can be dark');
+    await page.reload();
+    await page.locator('[data-scheme-choice="dark"][aria-pressed="true"]').waitFor();
+    assert((await page.locator('html').getAttribute('data-scheme')) === 'dark', 'and stays dark on this device');
+    await page.locator('[data-scheme-choice="light"]').click();
+    assert((await page.locator('html').getAttribute('data-scheme')) === 'light', 'or light');
+    await page.locator('[data-scheme-choice="device"]').click();
+    assert((await page.locator('html').getAttribute('data-scheme')) === null, 'or like the device again');
     // The way out to the site, and an address for each screen: reload keeps it, Back goes to the one before.
     await page.locator('[data-nav="pages"]').click();
     assert((await page.locator('[data-view-site]').getAttribute('href')) === '/' && (await page.locator('[data-view-site]').getAttribute('target')) === '_blank', 'the admin leads to the site, in a tab of its own');

@@ -170,19 +170,19 @@ async function download(id: string, address: string): Promise<void> {
 {#if problem}<p class="bad" role="alert">{problem}</p>{/if}
 
 <style>
-  h3 { margin: 1.1rem 0 0.5rem; font-size: 13px; }
-  h4 { margin: 0.8rem 0 0.3rem; font-size: 12px; }
-  .field { display: grid; gap: 0.15rem; font-size: 12px; margin-top: 0.5rem; }
-  .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
+  h3 { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--size-m); }
+  h4 { margin: var(--sp-3) 0 var(--sp-1); font-size: var(--size-s); }
+  .field { display: grid; gap: 0.15rem; font-size: var(--size-s); margin-top: var(--sp-2); }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-top: var(--sp-1); }
   .check span { margin: 0; }
-  .list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.3rem; font-size: 12px; }
-  .list li { display: flex; align-items: center; gap: 0.4rem; }
+  .list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-1); font-size: var(--size-s); }
+  .list li { display: flex; align-items: center; gap: var(--sp-2); }
   .list small { display: block; }
   .grow { flex: 1; min-width: 0; }
-  .row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .row { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); }
   .row input { flex: 1; min-width: 0; }
-  .held { display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
+  .held { display: flex; flex-wrap: wrap; gap: 0.2rem var(--sp-2); }
   .held label { display: flex; align-items: center; gap: 0.2rem; }
-  p { font-size: 13px; }
+  p { font-size: var(--size-m); }
   .bad { color: var(--error); }
 </style>

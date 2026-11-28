@@ -366,19 +366,19 @@ onMount(() => {
 </div>
 
 <style>
-  h2 { margin: 1rem 0 0.4rem; font-size: 1.05rem; }
-  .form { display: grid; gap: 0.7rem; max-width: 36rem; margin: 1rem 0; padding: 1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
-  .ask { display: inline-grid; gap: 0.4rem; padding: 0.5rem; background: var(--secondary-container); border-radius: var(--shape-sm); }
-  .field { display: grid; gap: 0.3rem; }
-  .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .toolbar { margin: 0.6rem 0; }
-  .tabs { display: flex; gap: 0.3rem; margin: 0.8rem 0 0.2rem; border-bottom: 1px solid var(--outline-variant); }
+  h2 { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--size-l); }
+  .form { display: grid; gap: var(--sp-3); max-width: 36rem; margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .ask { display: inline-grid; gap: var(--sp-2); padding: var(--sp-2); background: var(--secondary-container); border-radius: var(--shape-sm); }
+  .field { display: grid; gap: var(--sp-1); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .toolbar { margin: var(--sp-2) 0; }
+  .tabs { display: flex; gap: var(--sp-1); margin: var(--sp-3) 0 0.2rem; border-bottom: 1px solid var(--outline-variant); }
   .tabs button { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
   .tabs button.on { background: var(--secondary-container); border-color: var(--primary); }
-  table { margin-top: 1rem; border-collapse: collapse; min-width: 30rem; background: var(--surface-lowest); }
-  th, td { padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--outline-variant); text-align: start; }
+  table { margin-top: var(--sp-4); border-collapse: collapse; min-width: 30rem; background: var(--surface-lowest); }
+  th, td { padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--outline-variant); text-align: start; }
   .end { text-align: end; white-space: nowrap; }
-  .badge { display: inline-block; padding: 0.05rem 0.45rem; border-radius: var(--shape-full); background: var(--surface-container); font-size: 0.85rem; }
+  .badge { display: inline-block; padding: 0.05rem var(--sp-2); border-radius: var(--shape-full); background: var(--surface-container); font-size: var(--size-m); }
   [data-tone='success'] { color: var(--success); }
   [data-tone='warning'] { color: var(--warning); }
   [data-tone='danger'] { color: var(--error); }
@@ -390,34 +390,34 @@ onMount(() => {
   .badge[data-tone='warning'] { background: var(--warning-container); }
   .badge[data-tone='danger'] { background: var(--error-container); }
   .good { color: var(--success); }
-  .reveal { margin: 0.6rem 0; padding: 0.6rem 0.8rem; background: var(--warning-container); border: 1px solid var(--warning); border-radius: var(--shape-sm); }
+  .reveal { margin: var(--sp-2) 0; padding: var(--sp-2) var(--sp-3); background: var(--warning-container); border: 1px solid var(--warning); border-radius: var(--shape-sm); }
   .reveal code { overflow-wrap: anywhere; }
-  h3 { font-size: 0.9rem; margin: 0 0 0.4rem; }
-  .ranges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; }
+  h3 { font-size: var(--size-m); margin: 0 0 var(--sp-2); }
+  .ranges { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-3) 0; }
   .ranges button[aria-pressed='true'] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
-  .totals { display: flex; flex-wrap: wrap; gap: 1rem; }
-  .total { display: grid; padding: 0.8rem 1.2rem; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); min-width: 150px; background: var(--surface-lowest); }
-  .total strong { font-size: 1.6rem; }
-  .total span, .legend, .hint { font-size: 0.8rem; color: var(--on-surface-variant); }
-  .chart { width: 100%; max-width: 900px; height: auto; margin-top: 0.5rem; }
-  .chart text { font-size: 11px; fill: var(--outline); }
+  .totals { display: flex; flex-wrap: wrap; gap: var(--sp-4); }
+  .total { display: grid; padding: var(--sp-3) var(--sp-5); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); min-width: 150px; background: var(--surface-lowest); }
+  .total strong { font-size: var(--size-2xl); }
+  .total span, .legend, .hint { font-size: var(--size-s); color: var(--on-surface-variant); }
+  .chart { width: 100%; max-width: 900px; height: auto; margin-top: var(--sp-2); }
+  .chart text { font-size: var(--size-xs); fill: var(--outline); }
   .chart rect[data-series='0'], .key[data-series='0'] { fill: var(--primary); background: var(--primary); }
   .chart rect[data-series='1'], .key[data-series='1'] { fill: var(--primary); background: var(--secondary-container); }
   .chart rect[data-series='2'], .key[data-series='2'] { fill: var(--success); background: var(--success); }
   .chart rect, .key { fill: var(--outline); background: var(--surface-container); }
-  .legend { display: flex; align-items: center; gap: 0.3rem; }
-  .key { display: inline-block; width: 10px; height: 10px; border-radius: var(--shape-xs); margin-inline-start: 0.6rem; }
-  .lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-top: 1.4rem; }
+  .legend { display: flex; align-items: center; gap: var(--sp-1); }
+  .key { display: inline-block; width: 10px; height: 10px; border-radius: var(--shape-xs); margin-inline-start: var(--sp-2); }
+  .lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-5); margin-top: var(--sp-6); }
   .list ol { list-style: none; padding: 0; margin: 0; }
-  .list li { display: flex; justify-content: space-between; gap: 0.6rem; padding: 0.3rem 0.5rem; margin-bottom: 2px; font-size: 0.85rem; border-radius: var(--shape-xs); background: linear-gradient(to right, var(--secondary-container) var(--share), transparent var(--share)); }
+  .list li { display: flex; justify-content: space-between; gap: var(--sp-2); padding: var(--sp-1) var(--sp-2); margin-bottom: 2px; font-size: var(--size-m); border-radius: var(--shape-xs); background: linear-gradient(to right, var(--secondary-container) var(--share), transparent var(--share)); }
   .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hits { font-variant-numeric: tabular-nums; }
-  .month { align-items: center; margin: 0.8rem 0 0; }
+  .month { align-items: center; margin: var(--sp-3) 0 0; }
   .calendar { table-layout: fixed; width: 100%; max-width: 980px; min-width: 0; }
-  .calendar td { vertical-align: top; height: 5.5rem; padding: 0.3rem; border: 1px solid var(--outline-variant); }
+  .calendar td { vertical-align: top; height: 5.5rem; padding: var(--sp-1); border: 1px solid var(--outline-variant); }
   .calendar td.out { background: var(--surface-low); }
-  .calendar .date { display: block; font-size: 0.75rem; color: var(--on-surface-variant); }
-  .calendar .item { display: block; width: 100%; padding: 0.1rem 0.3rem; margin: 0.15rem 0; text-align: start; font-size: 0.8rem; background: var(--secondary-container); border-radius: var(--shape-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .calendar .add { padding: 0 0.4rem; font-size: 0.8rem; opacity: 0.5; }
+  .calendar .date { display: block; font-size: var(--size-s); color: var(--on-surface-variant); }
+  .calendar .item { display: block; width: 100%; padding: 0.1rem var(--sp-1); margin: 0.15rem 0; text-align: start; font-size: var(--size-s); background: var(--secondary-container); border-radius: var(--shape-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .calendar .add { padding: 0 var(--sp-2); font-size: var(--size-s); opacity: 0.5; }
   .calendar td:hover .add { opacity: 1; }
 </style>

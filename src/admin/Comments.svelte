@@ -63,14 +63,14 @@ onMount(() => void attempt(api.comments));
 </section>
 
 <style>
-  header { margin-bottom: 0.5rem; }
-  h1 { margin: 0; font-size: 1.4rem; }
-  .comments { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .comments li { padding: 1rem 1.2rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
-  .from { margin: 0 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: baseline; }
+  header { margin-bottom: var(--sp-2); }
+  h1 { margin: 0; font-size: var(--size-2xl); }
+  .comments { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-3); max-width: 46rem; }
+  .comments li { padding: var(--sp-4) var(--sp-5); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .from { margin: 0 0 var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); align-items: baseline; }
   .from small { color: var(--on-surface-variant); }
-  .state { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: var(--shape-full); background: var(--success-container); color: var(--success); }
+  .state { font-size: var(--size-s); padding: 0.1rem var(--sp-2); border-radius: var(--shape-full); background: var(--success-container); color: var(--success); }
   .state.waiting { background: var(--warning-container); color: var(--warning); }
-  .body { margin: 0 0 0.5rem; white-space: pre-line; }
-  .actions { display: flex; gap: 0.5rem; }
+  .body { margin: 0 0 var(--sp-2); white-space: pre-line; }
+  .actions { display: flex; gap: var(--sp-2); }
 </style>

@@ -136,12 +136,12 @@ async function accept(): Promise<void> {
 </section>
 
 <style>
-  h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
-  h2 { margin: 2rem 0 0.5rem; font-size: 1.05rem; }
-  .cards { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; max-width: 46rem; }
-  .cards li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.7rem 1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  h1 { margin: 0 0 var(--sp-2); font-size: var(--size-2xl); }
+  h2 { margin: var(--sp-8) 0 var(--sp-2); font-size: var(--size-l); }
+  .cards { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-2); max-width: 46rem; }
+  .cards li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .who { flex: 1 1 16rem; }
   .who p { margin: 0.2rem 0 0; color: var(--on-surface-variant); }
-  .who small { margin-inline-start: 0.5rem; color: var(--on-surface-variant); }
-  .field { display: grid; gap: 0.3rem; max-width: 46rem; }
+  .who small { margin-inline-start: var(--sp-2); color: var(--on-surface-variant); }
+  .field { display: grid; gap: var(--sp-1); max-width: 46rem; }
 </style>

@@ -7,6 +7,7 @@
 import { api, type State } from './api.ts';
 import ImageField from './ImageField.svelte';
 import { t } from './messages.ts';
+import SchemeChoice from './SchemeChoice.svelte';
 
 let { me, onsaved }: { me: State['me']; onsaved: (state: State) => void } = $props();
 
@@ -59,13 +60,15 @@ async function save(event: SubmitEvent): Promise<void> {
     {#if saved}<span role="status" data-profile-saved>{t.me.saved}</span>{/if}
     {#if problem}<p class="bad" role="alert">{problem}</p>{/if}
   </form>
+  <!-- Kept on this device as soon as it is chosen, not with the form (ADR 0084 d4). -->
+  <SchemeChoice />
 </section>
 
 <style>
-  h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
-  form { max-width: 36rem; display: grid; gap: 0.8rem; justify-items: start; }
+  h1 { margin: 0 0 var(--sp-2); font-size: var(--size-2xl); }
+  form { max-width: 36rem; display: grid; gap: var(--sp-3); justify-items: start; }
   form .field { width: 100%; }
-  .check { display: flex; gap: 0.6rem; align-items: flex-start; }
+  .check { display: flex; gap: var(--sp-2); align-items: flex-start; }
   .check input { margin-top: 0.2rem; }
   .check span { display: grid; gap: 0.2rem; }
   .check small { color: var(--muted, var(--on-surface-variant)); }
