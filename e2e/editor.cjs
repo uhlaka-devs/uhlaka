@@ -642,6 +642,13 @@ const assert = (condition, message) => {
     await page.locator('[data-type-singular]').fill('Project');
     await page.locator('[data-type-add-field]').click();
     await page.locator('[data-type-field] input').fill('Client');
+    // What each entry shows besides its words (ADR 0085 d7): the type's choice, the author's box on as before.
+    await page.locator('[data-type-extra="readingTime"]').check();
+    await page.locator('[data-type-extra="nextPrev"]').check();
+    await page.locator('[data-type-extra="nextPrev"]').uncheck();
+    await page.locator('[data-type-extra="author"]').uncheck();
+    await page.locator('[data-type-extra="author"]').check();
+    assert(await page.locator('[data-type-extra="author"]').isChecked() && await page.locator('[data-type-extra="readingTime"]').isChecked(), 'a type chooses what its entries show: the reading time on, the author as before');
     await page.locator('[data-type-save]').click();
     await page.locator('[data-type="projects"]').waitFor();
     assert((await page.locator('[data-type="projects"]').innerText()).includes('/projects/'), 'a content type is made from a name and gets an address');

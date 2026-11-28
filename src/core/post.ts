@@ -7,7 +7,7 @@
 import type { Byline } from './archive.ts';
 import { type Block, blocksText, cleanImage, describeBlocks, type ImageValue, mediaSources, normalizeBlocks } from './blocks.ts';
 import type { Words } from './localize.ts';
-import { normalizeRichText } from './richtext.ts';
+import { normalizeRichText, type RichText, richTextPlain } from './richtext.ts';
 import { cleanSeo, type Seo } from './seo.ts';
 import { normalizeProduct, type Product } from './shop.ts';
 import { BLOG_SLUG, cleanTypeFields, type ContentType, postsType } from './types.ts';
@@ -257,3 +257,41 @@ export const breadcrumbData = (url: string, trail: Crumb[]): Record<string, unkn
   '@type': 'BreadcrumbList',
   itemListElement: trail.map((crumb, i) => ({ '@type': 'ListItem', position: i + 1, name: crumb.name, item: `${url}${crumb.href}` })),
 });
+
+/** Minutes an entry takes to read, at 200 words a minute; at least one (ADR 0085 d7). */
+export const readingMinutes = (post: Post): number => Math.max(1, Math.round(blocksText(post.blocks, Number.MAX_SAFE_INTEGER).split(/\s+/).filter(Boolean).length / 200));
+
+/** The address a heading of an entry is linked at from its contents: its words, as a slug. */
+export const headingAnchor = (text: string): string => `h-${slugify(text).slice(0, 60) || 'section'}`;
+
+/**
+ * The contents of an entry: its text blocks' headings 2 and 3, in order, each
+ * once, with the anchor `RichText` gives it. Fewer than three: none.
+ */
+export function entryContents(blocks: Block[]): { level: 2 | 3; text: string; id: string }[] {
+  const out: { level: 2 | 3; text: string; id: string }[] = [];
+  const seen = new Set<string>();
+  const walk = (list: Block[]): void => {
+    for (const block of list) {
+      if (block.type === 'text')
+        for (const node of (block.content.body as RichText | undefined) ?? [])
+          if (node.type === 'heading' && (node.level === 2 || node.level === 3)) {
+            const text = richTextPlain([node]).trim();
+            const id = headingAnchor(text);
+            if (text && !seen.has(id)) {
+              seen.add(id);
+              out.push({ level: node.level, text, id });
+            }
+          }
+      if (block.children) walk(block.children);
+    }
+  };
+  walk(blocks);
+  return out.length >= 3 ? out : [];
+}
+
+/** The entries before and after this one in the type's own order; none past either end. */
+export function neighbours(entries: Post[], slug: string): { previous: Post | null; next: Post | null } {
+  const at = entries.findIndex((p) => p.slug === slug);
+  return at < 0 ? { previous: null, next: null } : { previous: entries[at - 1] ?? null, next: entries[at + 1] ?? null };
+}

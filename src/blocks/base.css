@@ -272,6 +272,19 @@ summary.faq-question{cursor:pointer}
 .pager-numbers a,.pager-numbers span{display:inline-block;min-width:2.25em;padding:.25em .5em;text-align:center;border-radius:var(--t-radius-sm)}
 .pager-numbers [aria-current]{background-color:var(--t-color-primary);color:var(--t-color-on-primary,var(--t-color-background))}
 .post-more{display:none;margin-top:var(--t-space-xs)}
+/* What an entry shows besides its words (ADR 0085 d7). */
+.post-reading{margin:0;font-size:var(--t-size-sm);color:var(--t-color-muted)}
+.post-contents,.post-share,.post-around{--b-width:var(--t-width-narrow)}
+.post-contents .b-in{border-inline-start:3px solid var(--t-color-border);padding-inline-start:var(--t-space-md)}
+.post-contents-title{margin:0 0 var(--t-space-xs);font-weight:700}
+.post-contents ol{margin:0;padding-inline-start:1.2em}
+.post-contents li.sub{margin-inline-start:var(--t-space-md);list-style-type:circle}
+.post-share .b-in{display:flex;flex-wrap:wrap;align-items:center;gap:var(--t-space-xs) var(--t-space-md);font-size:var(--t-size-sm)}
+.post-share span{color:var(--t-color-muted)}
+.post-around .b-in{display:flex;justify-content:space-between;gap:var(--t-space-md);border-top:1px solid var(--t-color-border);padding-top:var(--t-space-md)}
+.post-around a{display:flex;flex-direction:column;max-width:48%;text-decoration:none}
+.post-around a small{color:var(--t-color-muted)}
+.post-around [rel=next]{margin-inline-start:auto;text-align:end}
 
 /*
  * The menu. An item that holds others is a <details>; its panel hangs under it.

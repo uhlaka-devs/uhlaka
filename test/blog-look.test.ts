@@ -3,8 +3,8 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { normalizePage, normalizeSite, parseTheme, type Post, type Theme, themeCss, withAreas } from '../src/core/index.ts';
-import { renderBlogList, renderParts } from '../src/site/document.ts';
+import { cleanEntryExtras, type ContentType, entryContents, neighbours, normalizePage, normalizeSite, normalizeTypes, parseTheme, type Post, readingMinutes, type Theme, themeCss, withAreas } from '../src/core/index.ts';
+import { renderBlogList, renderParts, renderPost } from '../src/site/document.ts';
 import { publishedSite } from '../src/site/export.ts';
 import { resultsPage } from '../src/site/search.ts';
 import { Store } from '../src/site/store.ts';
@@ -131,5 +131,55 @@ describe('the page for a missing address and the search results (ADR 0085 d7)', 
     } finally {
       one.close();
     }
+  });
+});
+
+describe("what an entry shows besides its words, as its type says (ADR 0085 d7)", () => {
+  const heading = (text: string, level = 2) => ({ type: 'heading', level, children: [{ text }] });
+  const words = (n: number) => ({ type: 'paragraph', children: [{ text: Array.from({ length: n }, () => 'word').join(' ') }] });
+  const body = [heading('Wood'), words(500), heading('Oil', 3), heading('Wood'), heading('Care'), words(100)];
+  const post = (slug: string, title: string) => ({ slug, title, date: '2026-11-01', blocks: [{ id: `b_${slug}`, type: 'text', content: { body } }], categories: [], tags: [], author: { name: 'Ana', bio: 'Makes tables.' } }) as unknown as Post;
+  const entries = [post('first', 'First'), post('middle', 'Middle'), post('last', 'Last')];
+  const typeWith = (entry: Record<string, unknown> | undefined) => normalizeTypes([{ id: 'posts', name: 'Blog', singular: 'Post', path: 'blog', dated: true, entry }])[0] as ContentType;
+  const draw = (entry: Record<string, unknown> | undefined, url = 'https://example.com', slug = 'middle') => {
+    const type = typeWith(entry);
+    return renderPost(normalizeSite({ name: 'S', url }), parseTheme(plain).theme as Theme, entries.find((e) => e.slug === slug) as Post, [], type, { posts: { type, entries } });
+  };
+
+  test('read from the type: only what differs from before is kept', () => {
+    expect(typeWith({ readingTime: true, nextPrev: true, share: true, contents: true, author: false }).entry).toEqual({ readingTime: true, nextPrev: true, share: true, contents: true, author: false });
+    expect(typeWith({ readingTime: 'yes', author: true }).entry).toBeUndefined();
+    expect(cleanEntryExtras('no')).toEqual({});
+  });
+
+  test('before: the author only; nothing else, and no anchors on headings', () => {
+    const html = draw(undefined);
+    expect(html).toContain('data-author');
+    for (const absent of ['post-reading', 'post-contents', 'post-share', 'post-around', 'id="h-']) expect(html).not.toContain(absent);
+  });
+
+  test('all of them on: reading time, contents linked to anchors, sharing, previous and next; the author off', () => {
+    const html = draw({ readingTime: true, nextPrev: true, share: true, contents: true, author: false });
+    expect(html).toContain('<p class="post-reading">3 min read</p>');
+    const contents = /<nav class="b post-contents"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
+    expect([...contents.matchAll(/href="#([^"]+)"/g)].map((m) => m[1])).toEqual(['h-wood', 'h-oil', 'h-care']);
+    expect(contents).toContain('<li class="sub"><a href="#h-oil">Oil</a></li>');
+    expect(html).toContain('<h2 id="h-wood">');
+    expect(html).toContain('<h3 id="h-oil">');
+    expect(html).toContain('https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fexample.com%2Fblog%2Fmiddle%2F');
+    expect(html).toContain('mailto:?subject=Middle&amp;body=');
+    expect(html).toContain('<a rel="prev" href="/blog/first/"><small>Previous</small>First</a>');
+    expect(html).toContain('<a rel="next" href="/blog/last/"><small>Next</small>Last</a>');
+    expect(html).not.toContain('data-author');
+  });
+
+  test('no sharing without the site\'s address, no previous before the first, no contents under three headings', () => {
+    expect(draw({ share: true }, '')).not.toContain('post-share');
+    const first = draw({ nextPrev: true }, 'https://example.com', 'first');
+    expect(first).not.toContain('rel="prev" href="/blog/');
+    expect(first).toContain('rel="next" href="/blog/middle/"');
+    expect(entryContents([{ id: 'b', type: 'text', content: { body: [heading('One'), heading('Two')] } }] as never)).toEqual([]);
+    expect(neighbours(entries, 'gone')).toEqual({ previous: null, next: null });
+    expect(readingMinutes({ blocks: [] } as unknown as Post)).toBe(1);
   });
 });

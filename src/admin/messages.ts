@@ -814,6 +814,8 @@ export const en = {
     categories: 'Entries are grouped by category and tag',
     feed: 'Offer a feed for readers',
     comments: 'Visitors may comment on entries; you approve what is shown',
+    entryShows: 'Each entry also shows',
+    extras: { readingTime: 'How long it takes to read', author: "The author's box, with a picture and a few words", nextPrev: 'Links to the previous and the next', share: 'Links to share it (once the site has its address)', contents: 'Its contents, from its headings, when it has three or more' } as Record<string, string>,
     schema: 'For search engines, each entry is',
     schemaNone: 'Nothing more than a page',
     schemaArticle: 'An article',

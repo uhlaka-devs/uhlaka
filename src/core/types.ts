@@ -87,6 +87,27 @@ export interface ContentType {
   schema?: EntrySchema;
   /** Its entries are products the shop sells (ADR 0065 d1): said to search engines as products, priced by the shop. */
   sells?: true;
+  /** What an entry shows besides its words (ADR 0085 d7); absent: the author's box only, as before. */
+  entry?: EntryExtras;
+}
+
+/** The extras of an entry of a type, each on only when set (the author's box: off only when set). */
+export interface EntryExtras {
+  readingTime?: true;
+  author?: false;
+  nextPrev?: true;
+  share?: true;
+  contents?: true;
+}
+export const ENTRY_EXTRAS = ['readingTime', 'author', 'nextPrev', 'share', 'contents'] as const;
+
+/** A type's extras, cleaned: only what differs from before is kept. */
+export function cleanEntryExtras(raw: unknown): { entry?: EntryExtras } {
+  if (!isObject(raw)) return {};
+  const entry: EntryExtras = {};
+  for (const key of ['readingTime', 'nextPrev', 'share', 'contents'] as const) if (raw[key] === true) entry[key] = true;
+  if (raw.author === false) entry.author = false;
+  return Object.keys(entry).length ? { entry } : {};
 }
 
 const TYPE_LANGUAGE = /^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/;
@@ -209,6 +230,7 @@ export function normalizeTypes(input: unknown): ContentType[] {
       fields: cleanFields(raw.fields),
       ...(slugify(raw.layout) ? { layout: slugify(raw.layout) } : {}),
       ...(raw.comments === true ? { comments: true as const } : {}),
+      ...cleanEntryExtras(raw.entry),
       ...(isObject(raw.translations) && Object.keys(raw.translations).length ? { translations: normalizeTypeTranslations(raw.translations) } : {}),
       // A type that sells is one of products (ADR 0065 d1).
       ...(raw.sells === true ? { schema: 'product' as const, sells: true as const } : ENTRY_SCHEMAS.includes(raw.schema as EntrySchema) ? { schema: raw.schema as EntrySchema } : {}),
