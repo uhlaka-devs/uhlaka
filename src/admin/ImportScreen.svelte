@@ -190,17 +190,17 @@ onMount(() =>
 </section>
 
 <style>
-  header { margin-bottom: 1rem; }
-  h1 { margin: 0; font-size: 1.4rem; }
-  h2 { margin: 0 0 0.3rem; font-size: 1.1rem; }
-  h3 { margin: 1.2rem 0 0.3rem; font-size: 0.95rem; }
+  header { margin-bottom: var(--sp-4); }
+  h1 { margin: 0; font-size: var(--size-2xl); }
+  h2 { margin: 0 0 var(--sp-1); font-size: var(--size-l); }
+  h3 { margin: var(--sp-5) 0 var(--sp-1); font-size: var(--size-l); }
   .intro { max-width: 46rem; }
-  .card { max-width: 46rem; padding: 1.2rem 1.4rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
-  .counts { list-style: none; margin: 0.8rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; }
-  .counts strong { font-size: 1.2rem; }
-  .notes { margin: 0; padding-inline-start: 1.2rem; display: grid; gap: 0.4rem; white-space: pre-line; }
-  .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
-  .quiet { color: #6a6880; }
+  .card { max-width: 46rem; padding: var(--sp-5) var(--sp-6); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .counts { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-6); }
+  .counts strong { font-size: var(--size-xl); }
+  .notes { margin: 0; padding-inline-start: var(--sp-5); display: grid; gap: var(--sp-2); white-space: pre-line; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-top: var(--sp-2); }
+  .quiet { color: var(--on-surface-variant); }
   progress { width: min(100%, 30rem); }
-  button.primary { margin-top: 1rem; }
+  button.primary { margin-top: var(--sp-4); }
 </style>

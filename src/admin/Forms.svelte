@@ -263,21 +263,21 @@ const lines = (value: string): string[] => value.split('\n');
 </section>
 
 <style>
-  header { margin-bottom: 0.5rem; }
-  h1 { margin: 0; font-size: 1.4rem; }
-  h2 { margin: 1.5rem 0 0.5rem; font-size: 1.05rem; }
-  .forms { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .forms li, .fields li { padding: 0.9rem 1.1rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
-  .forms p { margin: 0 0 0.3rem; }
-  .forms small { color: #6a6880; margin-inline-start: 0.5rem; }
-  .form-editor { max-width: 46rem; display: grid; gap: 0.8rem; }
-  .form-editor label { display: grid; gap: 0.25rem; }
-  .form-editor label > span { font-weight: 600; font-size: 0.9rem; }
-  .fields { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
-  .fields li { display: grid; grid-template-columns: 1fr 14rem; gap: 0.6rem 1rem; align-items: end; }
+  header { margin-bottom: var(--sp-2); }
+  h1 { margin: 0; font-size: var(--size-2xl); }
+  h2 { margin: var(--sp-6) 0 var(--sp-2); font-size: var(--size-l); }
+  .forms { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-3); max-width: 46rem; }
+  .forms li, .fields li { padding: var(--sp-4) var(--sp-4); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .forms p { margin: 0 0 var(--sp-1); }
+  .forms small { color: var(--on-surface-variant); margin-inline-start: var(--sp-2); }
+  .form-editor { max-width: 46rem; display: grid; gap: var(--sp-3); }
+  .form-editor label { display: grid; gap: var(--sp-1); }
+  .form-editor label > span { font-weight: 600; font-size: var(--size-m); }
+  .fields { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+  .fields li { display: grid; grid-template-columns: 1fr 14rem; gap: var(--sp-2) var(--sp-4); align-items: end; }
   .fields .wide, .fields .tools { grid-column: 1 / -1; }
-  .tick { display: flex !important; gap: 0.4rem; align-items: center; }
-  .tools, .add { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .tick { display: flex !important; gap: var(--sp-2); align-items: center; }
+  .tools, .add { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
   .add input { flex: 1 1 14rem; }
   .add select { width: auto; }
   @media (max-width: 40rem) { .fields li { grid-template-columns: 1fr; } }

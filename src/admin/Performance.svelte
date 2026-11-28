@@ -66,9 +66,9 @@ async function save(): Promise<void> {
 {#if problem}<p class="bad" role="alert">{problem}</p>{/if}
 
 <style>
-  h3 { margin: 1.1rem 0 0.5rem; font-size: 13px; }
-  .field { display: grid; gap: 0.15rem; font-size: 12px; }
-  .row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
-  p { font-size: 13px; }
-  .bad { color: #b42318; }
+  h3 { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--size-m); }
+  .field { display: grid; gap: 0.15rem; font-size: var(--size-s); }
+  .row { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); }
+  p { font-size: var(--size-m); }
+  .bad { color: var(--error); }
 </style>

@@ -105,14 +105,14 @@ const files = () => attempt('files', async () => save(await api.exportFile('file
 </section>
 
 <style>
-  .export { max-width: 760px; padding: 1.5rem 2rem; }
-  h1 { font-size: 20px; margin: 0 0 0.4rem; }
-  h2 { font-size: 14px; margin: 1.8rem 0 0.4rem; }
-  .hint { color: #555; font-size: 13px; }
-  .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.2rem 0.8rem; margin: 0.3rem 0 0.8rem 1.4rem; }
-  .apart { margin: 0.1rem 0 0.8rem 1.4rem; }
-  .check { display: flex; gap: 0.4rem; align-items: center; font-size: 13px; }
-  ul { font-size: 13px; margin: 0.2rem 0 0.8rem; }
-  .good { color: #067647; font-size: 13px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .export { max-width: 760px; padding: var(--sp-6) var(--sp-8); }
+  h1 { font-size: var(--size-xl); margin: 0 0 var(--sp-2); }
+  h2 { font-size: var(--size-m); margin: var(--sp-8) 0 var(--sp-2); }
+  .hint { color: var(--on-surface-variant); font-size: var(--size-m); }
+  .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.2rem var(--sp-3); margin: var(--sp-1) 0 var(--sp-3) var(--sp-6); }
+  .apart { margin: 0.1rem 0 var(--sp-3) var(--sp-6); }
+  .check { display: flex; gap: var(--sp-2); align-items: center; font-size: var(--size-m); }
+  ul { font-size: var(--size-m); margin: 0.2rem 0 var(--sp-3); }
+  .good { color: var(--success); font-size: var(--size-m); }
+  .bad { color: var(--error); font-size: var(--size-m); }
 </style>

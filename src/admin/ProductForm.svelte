@@ -110,20 +110,20 @@ async function saveStock(): Promise<void> {
 </fieldset>
 
 <style>
-  .product { min-width: 0; border: 1px solid #ddd; border-radius: 6px; padding: 0.6rem; margin: 0.8rem 0; display: grid; gap: 0.35rem; }
-  legend { font-weight: 600; font-size: 13px; padding: 0 0.3rem; }
-  h4 { margin: 0.5rem 0 0; font-size: 12px; }
-  .field { display: grid; gap: 0.15rem; font-size: 12px; }
-  .two { display: flex; gap: 0.4rem; align-items: end; }
+  .product { min-width: 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); padding: var(--sp-2); margin: var(--sp-3) 0; display: grid; gap: var(--sp-1); }
+  legend { font-weight: 600; font-size: var(--size-m); padding: 0 var(--sp-1); }
+  h4 { margin: var(--sp-2) 0 0; font-size: var(--size-s); }
+  .field { display: grid; gap: 0.15rem; font-size: var(--size-s); }
+  .two { display: flex; gap: var(--sp-2); align-items: end; }
   .two > * { flex: 1; min-width: 0; }
   .two > button { flex: none; }
-  .check { display: flex; align-items: center; gap: 0.5rem; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
   .check span { margin: 0; }
-  .variants { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 11px; }
+  .variants { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: var(--size-xs); }
   .variants td:first-child { overflow-wrap: anywhere; }
   .variants th { text-align: left; font-weight: 600; overflow-wrap: anywhere; }
   .variants input { width: 100%; min-width: 0; box-sizing: border-box; }
   .two input, .two select { width: 100%; box-sizing: border-box; }
-  .row { display: flex; gap: 0.5rem; align-items: center; }
-  .bad { color: #b42318; }
+  .row { display: flex; gap: var(--sp-2); align-items: center; }
+  .bad { color: var(--error); }
 </style>

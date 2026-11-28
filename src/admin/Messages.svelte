@@ -108,20 +108,20 @@ onMount(() => {
 </section>
 
 <style>
-  header { margin-bottom: 0.5rem; }
-  h1 { margin: 0; font-size: 1.4rem; }
-  h2 { margin: 2rem 0 0.3rem; font-size: 1.05rem; }
-  .messages { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .messages li { padding: 1rem 1.2rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
-  .from { margin: 0 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: baseline; }
-  .from small { color: #6a6880; }
-  .body { margin: 0 0 0.5rem; white-space: pre-line; }
-  .by-form { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; margin-top: 1rem; }
-  .by-form label { display: flex; gap: 0.5rem; align-items: center; }
-  .answers { display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: 0.25rem 1rem; margin: 0 0 0.5rem; }
-  .answers dt { color: #6a6880; }
+  header { margin-bottom: var(--sp-2); }
+  h1 { margin: 0; font-size: var(--size-2xl); }
+  h2 { margin: var(--sp-8) 0 var(--sp-1); font-size: var(--size-l); }
+  .messages { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-3); max-width: 46rem; }
+  .messages li { padding: var(--sp-4) var(--sp-5); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .from { margin: 0 0 var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); align-items: baseline; }
+  .from small { color: var(--on-surface-variant); }
+  .body { margin: 0 0 var(--sp-2); white-space: pre-line; }
+  .by-form { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; margin-top: var(--sp-4); }
+  .by-form label { display: flex; gap: var(--sp-2); align-items: center; }
+  .answers { display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: var(--sp-1) var(--sp-4); margin: 0 0 var(--sp-2); }
+  .answers dt { color: var(--on-surface-variant); }
   .answers dd { margin: 0; white-space: pre-line; }
-  details { font-size: 0.85rem; color: #6a6880; margin-bottom: 0.5rem; }
-  .rights { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 46rem; }
+  details { font-size: var(--size-m); color: var(--on-surface-variant); margin-bottom: var(--sp-2); }
+  .rights { display: flex; flex-wrap: wrap; gap: var(--sp-2); max-width: 46rem; }
   .rights input { flex: 1 1 16rem; }
 </style>

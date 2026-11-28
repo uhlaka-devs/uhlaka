@@ -36,9 +36,9 @@ const nameOf = (id = ''): string => people.find((p) => p.id === id)?.name ?? '';
 </section>
 
 <style>
-  h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
-  .waiting { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; max-width: 46rem; }
-  .waiting li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.8rem; padding: 0.7rem 1rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
-  .open { border: 0 !important; padding: 0 !important; background: none !important; font-weight: 600 !important; color: #4a3bd6 !important; text-align: start; }
-  small { color: #6a6880; }
+  h1 { margin: 0 0 var(--sp-2); font-size: var(--size-2xl); }
+  .waiting { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-2); max-width: 46rem; }
+  .waiting li { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-1) var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .open { border: 0 !important; padding: 0 !important; background: none !important; font-weight: 600 !important; color: var(--primary) !important; text-align: start; }
+  small { color: var(--on-surface-variant); }
 </style>

@@ -85,5 +85,5 @@ const yesno = (key: string): string => (values[key] === true ? 'yes' : values[ke
 {/each}
 
 <style>
-  .check { display: flex; align-items: center; gap: 0.5rem; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
 </style>

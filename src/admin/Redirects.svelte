@@ -112,13 +112,13 @@ function lead(path: string): void {
 {/if}
 
 <style>
-  h3 { margin: 1.1rem 0 0.5rem; font-size: 13px; }
-  .redirects { list-style: none; padding: 0; margin: 0 0 0.5rem; display: grid; gap: 0.25rem; font-size: 13px; }
-  .redirects li { display: flex; align-items: center; gap: 0.35rem; overflow-wrap: anywhere; }
-  .redirects button { margin-inline-start: auto; padding: 0 0.4rem !important; }
+  h3 { margin: var(--sp-4) 0 var(--sp-2); font-size: var(--size-m); }
+  .redirects { list-style: none; padding: 0; margin: 0 0 var(--sp-2); display: grid; gap: var(--sp-1); font-size: var(--size-m); }
+  .redirects li { display: flex; align-items: center; gap: var(--sp-1); overflow-wrap: anywhere; }
+  .redirects button { margin-inline-start: auto; padding: 0 var(--sp-2) !important; }
   .missing { flex: 1; display: grid; gap: 0.1rem; }
-  .missing small { color: #667085; font-size: 11px; }
-  .add { display: grid; gap: 0.4rem; }
-  .add label { display: grid; gap: 0.15rem; font-size: 12px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .missing small { color: var(--on-surface-variant); font-size: var(--size-xs); }
+  .add { display: grid; gap: var(--sp-2); }
+  .add label { display: grid; gap: 0.15rem; font-size: var(--size-s); }
+  .bad { color: var(--error); font-size: var(--size-m); }
 </style>

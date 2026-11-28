@@ -138,19 +138,19 @@ onMount(async () => {
 <style>
   /* The admin's own rules arrive with it; the door is drawn before, so it brings what it needs. */
   :global(html, body) { height: 100%; margin: 0; }
-  :global(body) { font: 14px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1c1b22; background: #f3f2f7; }
-  .notice { margin: 4rem auto; max-width: 30rem; text-align: center; }
-  .door { display: grid; place-items: center; min-height: 100vh; padding: 1rem; box-sizing: border-box; }
-  form { box-sizing: border-box; width: min(100%, 24rem); padding: 1.6rem; background: #fff; border: 1px solid #dddbe6; border-radius: 10px; }
-  h1 { margin: 0 0 0.8rem; font-size: 1.3rem; }
-  .field { display: block; margin-bottom: 0.8rem; }
-  .field span { display: block; margin-bottom: 0.2rem; font-size: 12.5px; color: #4b4960; }
-  input, select { box-sizing: border-box; width: 100%; padding: 0.5rem; border: 1px solid #cfccdc; border-radius: 6px; background: #fff; color: inherit; font: inherit; }
-  .hint, small { display: block; color: #6a6880; font-size: 12.5px; }
+  :global(body) { font: var(--body-m); color: var(--on-surface); background: var(--surface); }
+  .notice { margin: var(--sp-16) auto; max-width: 30rem; text-align: center; }
+  .door { display: grid; place-items: center; min-height: 100vh; padding: var(--sp-4); box-sizing: border-box; }
+  form { box-sizing: border-box; width: min(100%, 24rem); padding: var(--sp-6); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); }
+  h1 { margin: 0 0 var(--sp-3); font-size: var(--size-xl); }
+  .field { display: block; margin-bottom: var(--sp-3); }
+  .field span { display: block; margin-bottom: 0.2rem; font-size: var(--size-s); color: var(--on-surface-variant); }
+  input, select { box-sizing: border-box; width: 100%; padding: var(--sp-2); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); background: var(--surface-lowest); color: inherit; font: inherit; }
+  .hint, small { display: block; color: var(--on-surface-variant); font-size: var(--size-s); }
   small { margin-top: 0.2rem; }
-  .bad { color: #b3261e; }
-  form > .hint { margin: 0 0 1rem; }
-  form > p.hint:last-child { margin: 1rem 0 0; }
-  button { width: 100%; margin-top: 0.4rem; padding: 0.55rem; border: 1px solid #6d5dfc; border-radius: 6px; background: #6d5dfc; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  .bad { color: var(--error); }
+  form > .hint { margin: 0 0 var(--sp-4); }
+  form > p.hint:last-child { margin: var(--sp-4) 0 0; }
+  button { width: 100%; margin-top: var(--sp-2); padding: var(--sp-2); border: 1px solid var(--primary); border-radius: var(--shape-sm); background: var(--primary); color: var(--on-primary); font: inherit; font-weight: 600; cursor: pointer; }
   button:disabled { opacity: 0.45; cursor: default; }
 </style>

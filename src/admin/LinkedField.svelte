@@ -82,9 +82,9 @@ const pick = (slug: string): void => {
 </fieldset>
 
 <style>
-  .linked ol, .linked ul { list-style: none; margin: 0 0 0.5rem; padding: 0; }
-  .linked ol li { display: flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0; border-bottom: 1px solid #eceaf3; }
+  .linked ol, .linked ul { list-style: none; margin: 0 0 var(--sp-2); padding: 0; }
+  .linked ol li { display: flex; align-items: center; gap: var(--sp-1); padding: var(--sp-1) 0; border-bottom: 1px solid var(--outline-variant); }
   .linked ol li span { flex: 1; }
   .linked ul li button { width: 100%; text-align: start; margin-bottom: 0.2rem; }
-  .linked input { width: 100%; margin-bottom: 0.4rem; }
+  .linked input { width: 100%; margin-bottom: var(--sp-2); }
 </style>

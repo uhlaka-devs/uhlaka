@@ -78,10 +78,10 @@ async function run(): Promise<void> {
 </section>
 
 <style>
-  .check { max-width: 46rem; margin: 0 2rem 2rem; padding-top: 1rem; border-top: 1px solid #e6e4ee; }
-  h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
-  ul { margin: 0.3rem 0 0.8rem; padding-inline-start: 1.2rem; }
+  .check { max-width: 46rem; margin: 0 var(--sp-8) var(--sp-8); padding-top: var(--sp-4); border-top: 1px solid var(--outline-variant); }
+  h2 { margin: 0 0 var(--sp-2); font-size: var(--size-l); }
+  ul { margin: var(--sp-1) 0 var(--sp-3); padding-inline-start: var(--sp-5); }
   li { overflow-wrap: anywhere; }
-  small { color: #6a6880; }
-  .good { color: #1d6b3a; }
+  small { color: var(--on-surface-variant); }
+  .good { color: var(--success); }
 </style>

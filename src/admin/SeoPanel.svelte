@@ -88,20 +88,20 @@ const short = (text: string, max: number): string => (text.length > max ? `${tex
 </details>
 
 <style>
-  .seo { margin: 0 0 0.8rem; padding: 0.5rem 0.6rem; border: 1px solid #e6e4ee; border-radius: 6px; }
+  .seo { margin: 0 0 var(--sp-3); padding: var(--sp-2) var(--sp-2); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   summary { cursor: pointer; font-weight: 600; }
-  .seo[open] summary { margin-bottom: 0.6rem; }
-  .check { display: flex; align-items: center; gap: 0.5rem; }
+  .seo[open] summary { margin-bottom: var(--sp-2); }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
   .check span { margin: 0; }
-  .links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; font-size: 12.5px; }
-  .links li { display: flex; align-items: center; gap: 0.4rem; justify-content: space-between; overflow-wrap: anywhere; }
-  .label { margin: 0.8rem 0 0.3rem; font-size: 12.5px; color: #6a6880; }
-  .result, .card { display: grid; gap: 0.15rem; padding: 0.5rem 0.6rem; border-radius: 6px; background: #fff; border: 1px solid #e6e4ee; overflow-wrap: anywhere; }
-  .result strong { color: #1a0dab; font-weight: 500; font-size: 15px; }
-  .result span, .card span { color: #4d5156; font-size: 12.5px; }
+  .links { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); font-size: var(--size-s); }
+  .links li { display: flex; align-items: center; gap: var(--sp-2); justify-content: space-between; overflow-wrap: anywhere; }
+  .label { margin: var(--sp-3) 0 var(--sp-1); font-size: var(--size-s); color: var(--on-surface-variant); }
+  .result, .card { display: grid; gap: 0.15rem; padding: var(--sp-2) var(--sp-2); border-radius: var(--shape-sm); background: var(--surface-lowest); border: 1px solid var(--outline-variant); overflow-wrap: anywhere; }
+  .result strong { color: #1a0dab; font-weight: 500; font-size: var(--size-l); }
+  .result span, .card span { color: #4d5156; font-size: var(--size-s); }
   .result.hidden { opacity: 0.45; text-decoration: line-through; }
-  .card { padding: 0 0 0.5rem; overflow: hidden; }
+  .card { padding: 0 0 var(--sp-2); overflow: hidden; }
   .card img { width: 100%; aspect-ratio: 1.91; object-fit: cover; }
-  .card strong, .card span { padding: 0 0.6rem; }
-  .card strong:first-child { padding-top: 0.5rem; }
+  .card strong, .card span { padding: 0 var(--sp-2); }
+  .card strong:first-child { padding-top: var(--sp-2); }
 </style>

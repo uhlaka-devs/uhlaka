@@ -1,7 +1,7 @@
 /**
  * The admin's design system (ADR 0084): every colour is a role in
- * src/admin/tokens.css. Screens still written by hand move a part at a time
- * (d6); this holds the line while they do.
+ * src/admin/tokens.css, so light and dark are two sets of values for the
+ * same names and no screen shows a light box on a dark admin.
  */
 import { expect, test } from 'bun:test';
 import { readdir } from 'node:fs/promises';
@@ -9,10 +9,11 @@ import { readdir } from 'node:fs/promises';
 const ADMIN = new URL('../src/admin/', import.meta.url);
 /** A colour written by hand in CSS. */
 const LITERAL = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(/g;
-/** Screens already drawn with the tokens only: a colour by hand here is a mistake. */
-const MOVED = ['App.svelte', 'DesignPanel.svelte', 'HeaderPanel.svelte', 'FooterPanel.svelte', 'StyleGallery.svelte', 'SitePanel.svelte'];
-/** How many colours by hand the other screens still have. It may only go down: lower it as screens move. */
-const CEILING = 228;
+/**
+ * The only colours by hand allowed: the search preview draws a result as the
+ * search engine shows it, in its own colours, whatever the admin looks like.
+ */
+const ALLOWED: Record<string, string[]> = { 'SeoPanel.svelte': ['#1a0dab', '#4d5156'] };
 
 async function styles(): Promise<Map<string, string>> {
   const out = new Map<string, string>();
@@ -25,23 +26,30 @@ async function styles(): Promise<Map<string, string>> {
 
 const literals = (css: string): string[] => css.match(LITERAL) ?? [];
 
-test('the screens moved to the tokens write no colour by hand', async () => {
+test('no screen of the admin writes a colour by hand', async () => {
   const all = await styles();
-  for (const file of MOVED) {
-    expect(all.has(file)).toBe(true);
-    expect(`${file}: ${literals(all.get(file)!).join(' ')}`).toBe(`${file}: `);
+  expect(all.size).toBeGreaterThanOrEqual(50);
+  for (const [file, css] of all) {
+    const own = literals(css).filter((c) => !(ALLOWED[file] ?? []).includes(c.toLowerCase()));
+    expect(`${file}: ${own.join(' ')}`).toBe(`${file}: `);
   }
 });
 
-test('the colours written by hand in the admin do not grow', async () => {
-  const count = [...(await styles()).values()].reduce((n, css) => n + literals(css).length, 0);
-  expect(count).toBeLessThanOrEqual(CEILING);
+test('text sizes are on the scale', async () => {
+  for (const [file, css] of await styles()) {
+    const own = [...css.matchAll(/font-size:\s*([^;}]+)/g)].map((m) => m[1]!.trim()).filter((v) => /^[\d.]+(px|rem)$/.test(v));
+    expect(`${file}: ${own.join(' ')}`).toBe(`${file}: `);
+  }
+});
+
+test('light, dark or like the device can be chosen in the settings and the profile', async () => {
+  for (const file of ['SitePanel.svelte', 'Profile.svelte']) expect(await Bun.file(new URL(file, ADMIN)).text()).toContain('<SchemeChoice />');
 });
 
 test('the tokens give every role a value for light and for dark', async () => {
   const css = await Bun.file(new URL('tokens.css', ADMIN)).text();
   const light = css.slice(css.indexOf(':root {'), css.indexOf('}', css.indexOf(':root {')));
-  const dark = css.slice(css.indexOf(":root[data-scheme='dark']"));
+  const dark = css.slice(css.indexOf('prefers-color-scheme: dark'));
   const roles = (block: string): string[] => [...block.matchAll(/--([a-z-]+):\s*oklch/g)].map((m) => m[1]!).filter((r) => !r.startsWith('elev'));
   expect(roles(light).length).toBeGreaterThanOrEqual(25);
   for (const role of roles(light)) expect(`${role}: ${roles(dark).includes(role)}`).toBe(`${role}: true`);

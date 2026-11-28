@@ -149,7 +149,7 @@ const input = (e: Event): string => (e.currentTarget as HTMLInputElement | HTMLT
 {/each}
 
 <style>
-  .check { display: flex; align-items: center; gap: 0.5rem; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
   .check span { margin: 0; }
-  .code-input { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.85rem; white-space: pre; overflow-x: auto; tab-size: 2; }
+  .code-input { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: var(--size-m); white-space: pre; overflow-x: auto; tab-size: 2; }
 </style>

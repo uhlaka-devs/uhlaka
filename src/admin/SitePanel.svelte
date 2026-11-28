@@ -44,6 +44,7 @@ import Performance from './Performance.svelte';
 import ShopSettingsPanel from './ShopSettings.svelte';
 import Visitors from './Visitors.svelte';
 import EmailSettings from './EmailSettings.svelte';
+import SchemeChoice from './SchemeChoice.svelte';
 import Redirects from './Redirects.svelte';
 </script>
 
@@ -91,6 +92,7 @@ import Redirects from './Redirects.svelte';
     {#each languages as l (l.language)}<option value={l.language}>{named(l)}</option>{/each}
   </select>
 </label>
+<SchemeChoice />
 <label class="field">
   <span>{t.site.url}</span>
   <input type="url" value={site.url} onchange={(e) => set({ url: e.currentTarget.value.trim() })} />

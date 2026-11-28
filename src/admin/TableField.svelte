@@ -30,9 +30,9 @@ const cell = (i: number, j: number, text: string): void => set(table.rows.map((r
 </fieldset>
 
 <style>
-  .grid { display: grid; gap: 0.2rem; margin: 0.5rem 0; overflow-x: auto; }
-  .grid input { min-width: 0; padding: 0.25rem 0.35rem !important; font-size: 12.5px; }
+  .grid { display: grid; gap: 0.2rem; margin: var(--sp-2) 0; overflow-x: auto; }
+  .grid input { min-width: 0; padding: var(--sp-1) var(--sp-1) !important; font-size: var(--size-s); }
   .grid input.head { font-weight: 700; }
-  .actions { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-  .check { display: flex; align-items: center; gap: 0.4rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
 </style>

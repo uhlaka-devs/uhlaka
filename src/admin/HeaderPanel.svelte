@@ -233,7 +233,7 @@ onMount(() => {
   .pic.menu-centre .logo { margin-inline-end: auto; }
   .pic.menu-centre .nav:nth-of-type(4) { margin-inline-start: auto; }
   .pic.logo-centre { justify-content: center; }
-  .pic.logo-centre .logo { order: 2; margin: 0 6px; }
+  .pic.logo-centre .logo { order: 2; margin: 0 var(--sp-1); }
   .pic.logo-centre .nav:nth-of-type(2), .pic.logo-centre .nav:nth-of-type(3) { order: 1; }
   .pic.logo-centre .nav:nth-of-type(4) { order: 3; }
   details { margin: var(--sp-3) 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); padding: var(--sp-2) var(--sp-3); }

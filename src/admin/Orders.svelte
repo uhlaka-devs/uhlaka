@@ -223,13 +223,13 @@ onMount(() => void list());
 </section>
 
 <style>
-  .orders { max-width: 56rem; margin: 0 auto; padding: 1rem; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: start; padding: 0.35rem 0.4rem; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  .orders { max-width: 56rem; margin: 0 auto; padding: var(--sp-4); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--size-m); }
+  th, td { text-align: start; padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid var(--outline-variant); vertical-align: top; }
   .n { text-align: end; white-space: nowrap; }
   .total td { font-weight: 600; }
-  .row { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; margin: 0.4rem 0; }
+  .row { display: flex; gap: var(--sp-2); align-items: center; flex-wrap: wrap; margin: var(--sp-2) 0; }
   .link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
-  .history, .files { font-size: 12px; }
-  .bad { color: #b42318; }
+  .history, .files { font-size: var(--size-s); }
+  .bad { color: var(--error); }
 </style>

@@ -603,6 +603,14 @@ export const en = {
     save: 'Save',
     saved: 'Saved.',
   },
+  // How the admin looks on this device (ADR 0084 d4): kept in this browser, for this person only.
+  scheme: {
+    label: 'How the admin looks',
+    hint: 'On this device. "Like the device" follows its own setting for day and night.',
+    device: 'Like the device',
+    light: 'Light',
+    dark: 'Dark',
+  },
   review: {
     heading: 'To review',
     intro: 'What contributors sent to be read. Open one, change it if you want, and publish it, or send it back with a note.',

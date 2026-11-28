@@ -46,11 +46,11 @@ $effect(() => {
 </div>
 
 <style>
-  .lock { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #e6e4ee; }
-  h3 { margin: 0; font-size: 0.85rem; color: #6a6880; text-transform: uppercase; letter-spacing: 0.04em; }
+  .lock { display: grid; gap: var(--sp-2); margin-top: var(--sp-5); padding-top: var(--sp-3); border-top: 1px solid var(--outline-variant); }
+  h3 { margin: 0; font-size: var(--size-m); color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
   p { margin: 0; }
-  .row { display: flex; gap: 0.4rem; }
+  .row { display: flex; gap: var(--sp-2); }
   .row input { flex: 1; min-width: 0; }
   .lock > button { justify-self: start; }
-  .good { color: #1d6b3a; }
+  .good { color: var(--success); }
 </style>
