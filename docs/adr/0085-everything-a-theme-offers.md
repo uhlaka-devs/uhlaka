@@ -253,6 +253,62 @@ stack typed in. This is its own pull request, after the one for d5.
   with a sample in its face (`Ag Ăă Șș Țț Жж Ωω Ạạ`); adding a typeface is
   under "Add a typeface".
 
+### d7. Stage 4: the blog, an entry, and the pages of their own
+
+*Proposed; the questions below are David's before it is built.*
+
+How a list and an entry **look** is the style's (`layout.list`, `layout.entry`),
+from closed lists, so a ready-made style gives a blog a finished look; what an
+entry **shows besides its words** is its type's, because a blog wants a reading
+time and a list of projects does not (question 1). Every list's first value is
+how it looked before, kept as an absence.
+
+| Choice | Kept in | Values |
+| --- | --- | --- |
+| The list | style: `layout.list.look` | one under another, the picture above (`stack`, as before), the picture beside the words (`side`), a grid of two or three (`grid`), a grid of boxes (`cards`, in the style's surface colour, with its border and radius) |
+| What a card shows | style: `layout.list.hide` | any of `picture`, `meta` (date, author, categories), `excerpt`; absent: all of them, as before |
+| The excerpt's length | style: `layout.list.excerpt` | as before (`long`, the first 200 characters), `short` (the first 100), `none` |
+| "Read more" under each card | style: `layout.list.more` | on or off |
+| Numbered pages | none: always | the pages of a list as numbers (1 2 3 … 9) between "Newer" and "Older"; a choice nobody would turn off is not offered |
+| The picture of an entry | style: `layout.entry.cover` | under the title (`below`, as before), above it (`above`), behind it (`behind`: the whole band, with the style's colour over it, as a group's picture, d4), or `none` |
+| Reading time | type: `entry.readingTime` | on or off; minutes at 200 words a minute, after the date |
+| The author's box | type: `entry.author` | on (as before, when the author has a picture or a few words) or off |
+| Previous and next | type: `entry.nextPrev` | on or off; the entries before and after in the type's own order, with their titles |
+| Sharing | type: `entry.share` | on or off; plain links (Facebook, X, LinkedIn, WhatsApp, e-mail) with icons the site carries, no script and no count, so no visitor's browser asks anyone before a click |
+| Contents | type: `entry.contents` | on or off; the entry's headings 2 and 3, linked, above its first block, when it has three or more |
+| The page for an address that does not exist | site: `pages.notFound`, a section's slug | a section, drawn under the heading "Page not found" and a search field; none: as before |
+| Search results | site: `pages.search`, a section's slug | a section drawn under the results (a few links, a form); none: as before |
+| The footer in columns | site: `footer.section`, a section's slug | a section drawn above the footer's line (its columns are a group's, d4); none: as before |
+| "Back to top" | site: `footer.top` | on or off: a link at the end of the footer's line to the top of the page, no script |
+
+The ready-made blog type has reading time, the author's box and previous and
+next on; sharing and contents off. A new site gets the sections "404" and
+"Footer", made of ordinary blocks, chosen in its settings, so a beginner finds
+them in Sections and changes them by clicking them on the page.
+
+The panels: a click on a list opens **The list** (its look, then under "More
+settings" what a card shows, the excerpt, "Read more"); a click on an entry's
+head opens **The entry** (where its picture sits; reading time, the author,
+previous and next, sharing, contents). The footer's panel gains its section
+and "Back to top". The 404 page and the results page are shown in the editor
+too, so their sections are changed where they are seen.
+
+Everything works without script. A style or a site written before reads and
+draws as before.
+
+*Why the list's look is the style's and an entry's extras the type's:* a grid
+or cards is how a site looks and moves with another style, as the header's
+arrangement does; whether a project shows a reading time is what that type of
+entry is, and a new style must not switch it on.
+
+**Questions for David before it is built:**
+
+1. Reading time, sharing, contents, previous and next: on the type (each type
+   its own, as above), or in the style (one choice for all, as a WordPress
+   theme's customizer has it)?
+2. Starter sites with demo pages (a restaurant, a shop, a blog, each a whole
+   site to import): part of this plan, in stage 5, or a separate work?
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as
