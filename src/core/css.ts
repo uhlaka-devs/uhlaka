@@ -3,7 +3,7 @@
  * value written here has passed `isFreeValue` or names a token.
  */
 import type { Block } from './blocks.ts';
-import { type BlockStyle, freeValueCss, isFree, isFreeValue, STYLE_PROPS, type StyleProp, TOKEN_GROUPS, type TokenGroup, tokenVar } from './style.ts';
+import { type BlockStyle, freeValueCss, isFree, isFreeValue, isOwnValue, STYLE_PROPS, type StyleProp, TOKEN_GROUPS, type TokenGroup, tokenVar } from './style.ts';
 import { colorsFor, type FooterArrangement, hasToken, type HeaderArrangement, otherPalette, otherScheme, ownScheme, type Scheme, shownBy, type Theme } from './theme.ts';
 import { isId } from './util.ts';
 
@@ -19,11 +19,20 @@ export function declarations(style: BlockStyle | undefined, theme: Theme): strin
     const value = style[prop];
     if (!value) continue;
     const { kind, css } = STYLE_PROPS[prop];
+    if (!css) continue;
     if (isFree(value)) {
-      if (isFreeValue(kind, value.value)) out.push(`${css}:${freeValueCss(kind, value.value)}`);
-    } else if (kind !== 'align' && hasToken(theme, kind as TokenGroup, value.token)) {
+      if (isFreeValue(kind, value.value, prop)) out.push(`${css}:${freeValueCss(kind, value.value, prop)}`);
+    } else if (kind !== 'align' && kind !== 'choice' && hasToken(theme, kind as TokenGroup, value.token)) {
       out.push(`${css}:var(${tokenVar(kind as TokenGroup, value.token)})`);
     }
+  }
+  // A tall band holds its content in the middle unless it says otherwise (ADR 0085 d4).
+  if (out.some((d) => d.startsWith('min-height:'))) out.push('display:flex;flex-direction:column;justify-content:var(--b-align-y,center)');
+  // A gradient runs from the band's own background, or from nothing, to its second colour.
+  if (out.some((d) => d.startsWith('--b-gradient:'))) {
+    const background = out.find((d) => d.startsWith('background-color:'));
+    if (background) out.push(`--b-bg:${background.slice('background-color:'.length)}`);
+    out.push('background-image:linear-gradient(var(--b-gradient-dir,180deg),var(--b-bg,transparent),var(--b-gradient))');
   }
   // A band with its own background and text colour (a hero, a header) has its links and accents in that text colour:
   // the page's link colour is made for the page's background, not the band's (ADR 0074 d1).
@@ -214,7 +223,7 @@ export function blocksCss(blocks: Block[], theme: Theme): string {
 export function countFreeValues(blocks: Block[]): number {
   let n = 0;
   for (const b of blocks) {
-    n += Object.values(b.style ?? {}).filter((v) => v && isFree(v)).length;
+    n += Object.entries(b.style ?? {}).filter(([prop, v]) => isOwnValue(prop, v)).length;
     if (b.children) n += countFreeValues(b.children);
   }
   return n;
@@ -233,7 +242,7 @@ export function countFreeColors(blocks: Block[]): number {
 /** "Reset to theme": the same blocks with every free value removed. Content is untouched. */
 export function resetToTheme(blocks: Block[]): Block[] {
   return blocks.map((b) => {
-    const kept = Object.fromEntries(Object.entries(b.style ?? {}).filter(([, v]) => v && !isFree(v))) as BlockStyle;
+    const kept = Object.fromEntries(Object.entries(b.style ?? {}).filter(([prop, v]) => v && !isOwnValue(prop, v))) as BlockStyle;
     const { style: _style, ...rest } = b;
     return {
       ...rest,

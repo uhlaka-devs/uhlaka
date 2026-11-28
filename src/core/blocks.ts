@@ -43,7 +43,9 @@ export type Field =
   /** A table: rows of cells, plain text each, the first row its headings when `header` (ADR 0047). */
   | { kind: 'table' }
   /** A box to tick: on or off. */
-  | { kind: 'check' };
+  | { kind: 'check' }
+  /** One name from a closed list, or '' for none (ADR 0085 d4). */
+  | { kind: 'choice'; options: readonly string[] };
 
 export interface ImageValue {
   src: string;
@@ -89,6 +91,12 @@ export interface BlockDef {
   /** What a block of this type holds when the author adds it. */
   create: () => Record<string, unknown>;
 }
+
+/** The proportions a group's columns take (ADR 0085 d4): each number is a column's share. */
+export const GROUP_COLUMNS = ['1-1', '1-2', '2-1', '1-1-1', '1-1-1-1'] as const;
+export type GroupColumns = (typeof GROUP_COLUMNS)[number];
+/** How many columns a proportion has. */
+export const columnCount = (columns: unknown): number => (typeof columns === 'string' && (GROUP_COLUMNS as readonly string[]).includes(columns) ? columns.split('-').length : 1);
 
 const text = (max = 300): Field => ({ kind: 'text', max });
 const multiline = (max = 2000): Field => ({ kind: 'text', max, multiline: true });
@@ -272,9 +280,13 @@ export const BLOCKS = {
     fields: { section: { kind: 'section' } },
     create: () => ({ section: '' }),
   },
+  /**
+   * Blocks held together (ADR 0085 d4): one under another, or each as a
+   * column in one of a few proportions, with a picture behind them if wanted.
+   */
   group: {
     container: true,
-    fields: {},
+    fields: { columns: { kind: 'choice', options: GROUP_COLUMNS }, reverse: { kind: 'check' }, image: { kind: 'image' } },
     create: () => ({}),
   },
 } as const satisfies Record<string, BlockDef>;
@@ -407,6 +419,8 @@ function cleanField(field: Field, raw: unknown): unknown {
       return cleanTable(raw);
     case 'check':
       return raw === true;
+    case 'choice':
+      return typeof raw === 'string' && field.options.includes(raw) ? raw : '';
   }
 }
 

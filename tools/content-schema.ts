@@ -55,6 +55,8 @@ function fieldSchema(field: Field): Schema {
       return ref('table');
     case 'check':
       return { type: 'boolean' };
+    case 'choice':
+      return { enum: ['', ...field.options] };
   }
 }
 

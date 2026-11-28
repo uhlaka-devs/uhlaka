@@ -112,6 +112,50 @@ drag into:* a beginner picks one of five pictures; a builder of rows and
 cells, as Astra and Kadence have, asks for decisions most people cannot make,
 and a header dragged together under one style breaks under the next.
 
+### d4. Stage 2: sections, columns and backgrounds
+
+Everything lands on the **group**, which is already the block that holds
+others; Uhlaka gets no "columns" or "cover" block of its own. What a group
+**is made of** stays in its content, so an import, a translation or another
+style keeps it; what it **looks like** is style, from closed lists, so a
+ready-made style may give a group's variant a height or a gradient.
+
+| Choice | Kept in | Values |
+| --- | --- | --- |
+| Columns | content: `columns` | none (one under another, as before), `1-1`, `1-2`, `2-1`, `1-1-1`, `1-1-1-1`: each block in the group is one column, in that proportion; more blocks than columns start a new row |
+| On a phone, the last column first | content: `reverse` | on or off; a phone always shows the columns one under another |
+| A picture behind | content: `image` | a picture from the library, drawn as a picture (with its sizes), covering the whole band |
+| The colour over the picture | style: `overlay`, `overlayStrength` | a colour of the style (by default the page's text colour, with the text in the page's background colour); light, medium or deep |
+| A gradient | style: `gradient`, `gradientDirection` | a second colour of the style, from the band's own background (or from nothing) to it; down, to the right or across |
+| Height | style: `height` | as tall as its content, half the screen (`half`) or the whole screen (`screen`) |
+| Vertical alignment | style: `alignY` | top, middle or bottom: of the content in a tall band (the middle when not chosen), and of columns of different heights |
+| Hidden | style: `hideOn` | on a phone (`phone`) or on a wide screen (`wide`); on **every** block, not only a group |
+
+A **column is a block.** To put more than one block in a column, the column
+is a group itself: choosing columns in the panel adds an empty group for each
+column the group lacks, so a beginner sees boxes to drop blocks into and never
+builds the nesting by hand. Choosing fewer columns removes nothing: what is
+left over moves to the next row, for the person to move or delete.
+
+The proportions are the five that the themes and the Site Editor offer by
+default; a free proportion (typed widths) is left out by d1. Four columns
+become two between a phone and a wide screen. The phone's width is the
+menu's (48rem), so a site has one place where it changes.
+
+The group's panel shows **Columns** (five small pictures and "none") and
+**A picture behind**; under "More settings" the height, the vertical
+alignment, the colour over the picture and its strength, the gradient, the
+phone's order and where it is hidden. In the editor a hidden block is shown
+faded on the screen it is hidden on, so it can still be chosen.
+
+Everything is CSS, without script. A style written before reads as before:
+nothing new is on.
+
+*Why the content holds the columns:* they are the page's structure; a style
+that changed them would rearrange the page, and "Reset to theme" would undo
+someone's layout. *Why a column is any block:* one image or one text beside
+another is the most common case, and it needs no extra box.
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as
