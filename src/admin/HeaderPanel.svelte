@@ -125,32 +125,35 @@ onMount(() => {
 </details>
 
 <style>
-  h3 { margin: 1.2rem 0 0.5rem; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #5b4cdb; }
-  .label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 0.3rem; }
-  .problem { position: sticky; top: -0.9rem; z-index: 1; margin: 0 -0.9rem 0.6rem; padding: 0.5rem 0.9rem; background: #fdecea; }
-  .switch { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.7rem; border: 1px solid #dddbe6; border-radius: 10px; background: #fff; cursor: pointer; }
-  .switch strong { display: block; font-size: 13px; }
-  .switch small { display: block; color: #6a6880; margin-top: 0.15rem; }
-  .switch input { appearance: none; flex: none; width: 34px; height: 20px; margin: 0; border-radius: 99px; background: #cfcde0; position: relative; cursor: pointer; transition: background 0.15s; }
-  .switch input::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform 0.15s; }
-  .switch input:checked { background: #5b4cdb; }
-  .switch input:checked::after { transform: translateX(14px); }
-  .switch input:focus-visible { outline: 2px solid #5b4cdb; outline-offset: 2px; }
-  .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
-  .choice { display: grid; gap: 0.3rem; justify-items: center; padding: 0.45rem 0.3rem; border: 1px solid #dddbe6; border-radius: 8px; font-size: 12px; text-align: center; cursor: pointer; background: #fff; }
-  .choice.on { border: 2px solid #5b4cdb; padding: calc(0.45rem - 1px) calc(0.3rem - 1px); }
+  h3 { margin: var(--sp-5) 0 var(--sp-2); font: var(--label-m); letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary); }
+  .label { display: block; font: var(--title-s); margin-bottom: var(--sp-1); }
+  .problem { position: sticky; top: calc(-1 * var(--sp-4)); z-index: 1; margin: 0 calc(-1 * var(--sp-4)) var(--sp-3); padding: var(--sp-2) var(--sp-4); background: var(--error-container); color: var(--on-error-container); }
+  .switch { display: flex; gap: var(--sp-3); align-items: center; justify-content: space-between; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); background: var(--surface-lowest); cursor: pointer; }
+  .switch strong { display: block; font: var(--title-s); }
+  .switch small { display: block; color: var(--on-surface-variant); margin-top: 2px; }
+  /* The switch: the thumb grows and moves when it is on. */
+  .switch input { appearance: none; order: 2; flex: none; width: 52px; height: 32px; margin: 0; border: 2px solid var(--outline); border-radius: var(--shape-full); background: var(--surface-highest); position: relative; cursor: pointer; transition: background var(--dur-medium) var(--ease-standard), border-color var(--dur-medium) var(--ease-standard); }
+  .switch input::after { content: ''; position: absolute; top: 50%; left: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--outline); transform: translateY(-50%); transition: all var(--dur-medium) var(--ease-decel); }
+  .switch input:checked { background: var(--primary); border-color: var(--primary); }
+  .switch input:checked::after { left: 22px; width: 24px; height: 24px; background: var(--on-primary); }
+  .switch input:active::after { left: 2px; width: 28px; height: 28px; }
+  .switch input:checked:active::after { left: 18px; }
+  .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+  .choice { display: grid; gap: var(--sp-1); justify-items: center; padding: var(--sp-2) var(--sp-1); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); font: var(--label-m); text-align: center; cursor: pointer; background: var(--surface-lowest); transition: background-color var(--dur-short-2) var(--ease-standard); }
+  .choice:hover { background: color-mix(in oklch, var(--on-surface) var(--state-hover), var(--surface-lowest)); }
+  .choice.on { border: 2px solid var(--primary); padding: calc(var(--sp-2) - 1px) calc(var(--sp-1) - 1px); background: var(--secondary-container); color: var(--on-secondary-container); }
   .choice input { position: absolute; opacity: 0; pointer-events: none; }
-  .choice:has(input:focus-visible) { outline: 2px solid #5b4cdb; outline-offset: 2px; }
-  .pic { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; width: 100%; max-width: 72px; height: 30px; padding: 4px; border-radius: 4px; background: #f2f1f7; }
-  .pic i { display: block; height: 5px; border-radius: 2px; background: #b9b5d6; }
-  .pic .logo { width: 18px; background: #5b4cdb; }
+  .choice:has(input:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
+  .pic { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; width: 100%; max-width: 72px; height: 30px; padding: var(--sp-1); border-radius: var(--shape-xs); background: var(--surface-container); }
+  .pic i { display: block; height: 5px; border-radius: 2px; background: var(--outline-variant); }
+  .pic .logo { width: 18px; background: var(--primary); }
   .pic .nav { width: 9px; }
   .pic.inline .logo { margin-inline-end: auto; }
   .pic.centered, .pic.stacked { justify-content: center; }
   .pic.centered .logo, .pic.stacked .logo { flex-basis: 100%; max-width: 18px; margin: 0 calc(50% - 9px); }
   .pic.stacked { align-content: center; }
   .pic.stacked .logo { width: 24px; max-width: 24px; margin: 0 calc(50% - 12px); }
-  details { margin: 0.6rem 0; border: 1px solid #e4e2ee; border-radius: 6px; padding: 0.5rem 0.6rem; }
-  summary { cursor: pointer; font-weight: 600; }
-  details[open] > summary { margin-bottom: 0.6rem; }
+  details { margin: var(--sp-3) 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); padding: var(--sp-2) var(--sp-3); }
+  summary { cursor: pointer; font: var(--title-s); min-height: var(--target-dense); display: flex; align-items: center; }
+  details[open] > summary { margin-bottom: var(--sp-3); }
 </style>

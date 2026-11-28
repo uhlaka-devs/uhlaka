@@ -57,6 +57,7 @@ import {
   linkSuggestions,
 } from '../core/index.ts';
 import { api, signedIn, type Doc, type Kind, type PostInfo, type State, type TranslationInfo } from './api.ts';
+import Icon from './Icon.svelte';
 import ContentList from './ContentList.svelte';
 import Layouts from './Layouts.svelte';
 import { layoutName } from './layouts.ts';
@@ -872,57 +873,57 @@ onMount(() => {
       <!-- In groups, each named by what it holds (ADR 0082 d5). -->
       <span class="group">{t.nav.groups.content}</span>
       {#if staff}
-      <button type="button" aria-current={view === 'pages' ? 'page' : undefined} onclick={() => (view = 'pages')} data-nav="pages">{t.nav.pages}</button>
+      <button type="button" aria-current={view === 'pages' ? 'page' : undefined} onclick={() => (view = 'pages')} data-nav="pages"><Icon name="file-text" />{t.nav.pages}</button>
       {/if}
       {#each types as ty (ty.id)}
-        <button type="button" aria-current={view === `list:${ty.id}` ? 'page' : undefined} onclick={() => (view = `list:${ty.id}`)} data-nav={ty.id}>{ty.name}</button>
+        <button type="button" aria-current={view === `list:${ty.id}` ? 'page' : undefined} onclick={() => (view = `list:${ty.id}`)} data-nav={ty.id}><Icon name={ty.id === POSTS_TYPE ? 'newspaper' : 'folder'} />{ty.name}</button>
       {/each}
       {#if staff}
-      <button type="button" aria-current={view === 'sections' ? 'page' : undefined} onclick={() => (view = 'sections')} data-nav="sections">{t.nav.sections}</button>
+      <button type="button" aria-current={view === 'sections' ? 'page' : undefined} onclick={() => (view = 'sections')} data-nav="sections"><Icon name="layout-template" />{t.nav.sections}</button>
       {/if}
-      <button type="button" aria-current={view === 'media' ? 'page' : undefined} onclick={() => (view = 'media')} data-nav="media">{t.nav.media}</button>
+      <button type="button" aria-current={view === 'media' ? 'page' : undefined} onclick={() => (view = 'media')} data-nav="media"><Icon name="image" />{t.nav.media}</button>
       {#if owner}
-        <button type="button" aria-current={view === 'forms' ? 'page' : undefined} onclick={() => ((formAsked = ''), (view = 'forms'))} data-nav="forms">{t.nav.forms}</button>
+        <button type="button" aria-current={view === 'forms' ? 'page' : undefined} onclick={() => ((formAsked = ''), (view = 'forms'))} data-nav="forms"><Icon name="clipboard-list" />{t.nav.forms}</button>
         <span class="group">{t.nav.groups.design}</span>
-        <button type="button" onclick={() => openDesign('style')} data-nav="theme">{t.look.parts.style}</button>
-        <button type="button" onclick={() => openDesign('header')} data-nav="header">{t.look.parts.header}</button>
-        <button type="button" onclick={() => openDesign('footer')} data-nav="footer">{t.look.parts.footer}</button>
-        <button type="button" aria-current={view === 'layouts' ? 'page' : undefined} onclick={() => (view = 'layouts')} data-nav="layouts">{t.nav.layouts}</button>
+        <button type="button" onclick={() => openDesign('style')} data-nav="theme"><Icon name="palette" />{t.look.parts.style}</button>
+        <button type="button" onclick={() => openDesign('header')} data-nav="header"><Icon name="panel-top" />{t.look.parts.header}</button>
+        <button type="button" onclick={() => openDesign('footer')} data-nav="footer"><Icon name="panel-bottom" />{t.look.parts.footer}</button>
+        <button type="button" aria-current={view === 'layouts' ? 'page' : undefined} onclick={() => (view = 'layouts')} data-nav="layouts"><Icon name="layout-dashboard" />{t.nav.layouts}</button>
       {/if}
       {#if staff}
       <span class="group">{t.nav.groups.people}</span>
-      <button type="button" aria-current={view === 'review' ? 'page' : undefined} onclick={() => (view = 'review')} data-nav="review">{t.nav.review}{waiting ? ` (${waiting})` : ''}</button>
+      <button type="button" aria-current={view === 'review' ? 'page' : undefined} onclick={() => (view = 'review')} data-nav="review"><Icon name="clipboard-check" />{t.nav.review}{waiting ? ` (${waiting})` : ''}</button>
       {/if}
       {#if owner}
-        <button type="button" aria-current={view === 'messages' ? 'page' : undefined} onclick={() => (view = 'messages')} data-nav="messages">{t.nav.messages}</button>
+        <button type="button" aria-current={view === 'messages' ? 'page' : undefined} onclick={() => (view = 'messages')} data-nav="messages"><Icon name="mail" />{t.nav.messages}</button>
       {/if}
       {#if staff && types.some((ty) => ty.comments)}
-        <button type="button" aria-current={view === 'comments' ? 'page' : undefined} onclick={() => (view = 'comments')} data-nav="comments">{t.nav.comments}</button>
+        <button type="button" aria-current={view === 'comments' ? 'page' : undefined} onclick={() => (view = 'comments')} data-nav="comments"><Icon name="message-square" />{t.nav.comments}</button>
       {/if}
       {#if owner && site.accounts}
-        <button type="button" aria-current={view === 'people' ? 'page' : undefined} onclick={() => (view = 'people')} data-nav="people">{t.nav.people}</button>
+        <button type="button" aria-current={view === 'people' ? 'page' : undefined} onclick={() => (view = 'people')} data-nav="people"><Icon name="users" />{t.nav.people}</button>
       {/if}
       {#if site.shop.on && (owner || (staff && site.shop.editors))}
         <span class="group">{t.nav.groups.shop}</span>
-        <button type="button" aria-current={view === 'orders' ? 'page' : undefined} onclick={() => (view = 'orders')} data-nav="orders">{t.nav.orders}</button>
-        <button type="button" aria-current={view === 'coupons' ? 'page' : undefined} onclick={() => (view = 'coupons')} data-nav="coupons">{t.nav.coupons}</button>
+        <button type="button" aria-current={view === 'orders' ? 'page' : undefined} onclick={() => (view = 'orders')} data-nav="orders"><Icon name="shopping-cart" />{t.nav.orders}</button>
+        <button type="button" aria-current={view === 'coupons' ? 'page' : undefined} onclick={() => (view = 'coupons')} data-nav="coupons"><Icon name="ticket-percent" />{t.nav.coupons}</button>
       {/if}
       {#if staff}
       <span class="group">{t.nav.groups.tools}</span>
-      <button type="button" aria-current={view === 'stats' ? 'page' : undefined} onclick={() => (view = 'stats')} data-nav="stats">{t.nav.stats}</button>
-      <button type="button" aria-current={view === 'seo' ? 'page' : undefined} onclick={() => (view = 'seo')} data-nav="seo">{t.nav.seo}</button>
+      <button type="button" aria-current={view === 'stats' ? 'page' : undefined} onclick={() => (view = 'stats')} data-nav="stats"><Icon name="chart-line" />{t.nav.stats}</button>
+      <button type="button" aria-current={view === 'seo' ? 'page' : undefined} onclick={() => (view = 'seo')} data-nav="seo"><Icon name="search" />{t.nav.seo}</button>
       {/if}
       {#if owner}
-        <button type="button" aria-current={view === 'types' ? 'page' : undefined} onclick={() => (view = 'types')} data-nav="types">{t.ctypes.heading}</button>
-        <button type="button" aria-current={view === 'import' ? 'page' : undefined} onclick={() => (view = 'import')} data-nav="import">{t.nav.import}</button>
-        <button type="button" aria-current={view === 'export' ? 'page' : undefined} onclick={() => (view = 'export')} data-nav="export">{t.nav.export}</button>
-        <button type="button" aria-current={view === 'extensions' || view.startsWith('ext:') ? 'page' : undefined} onclick={() => (view = 'extensions')} data-nav="extensions">{t.ext.heading}</button>
-        <button type="button" aria-current={view === 'backups' ? 'page' : undefined} onclick={() => (view = 'backups')} data-nav="backups">{t.nav.backups}</button>
-        <button type="button" aria-current={view === 'settings' ? 'page' : undefined} onclick={() => ((design = ''), (view = 'settings'))} data-nav="settings">{t.nav.settings}</button>
+        <button type="button" aria-current={view === 'types' ? 'page' : undefined} onclick={() => (view = 'types')} data-nav="types"><Icon name="database" />{t.ctypes.heading}</button>
+        <button type="button" aria-current={view === 'import' ? 'page' : undefined} onclick={() => (view = 'import')} data-nav="import"><Icon name="upload" />{t.nav.import}</button>
+        <button type="button" aria-current={view === 'export' ? 'page' : undefined} onclick={() => (view = 'export')} data-nav="export"><Icon name="download" />{t.nav.export}</button>
+        <button type="button" aria-current={view === 'extensions' || view.startsWith('ext:') ? 'page' : undefined} onclick={() => (view = 'extensions')} data-nav="extensions"><Icon name="puzzle" />{t.ext.heading}</button>
+        <button type="button" aria-current={view === 'backups' ? 'page' : undefined} onclick={() => (view = 'backups')} data-nav="backups"><Icon name="archive" />{t.nav.backups}</button>
+        <button type="button" aria-current={view === 'settings' ? 'page' : undefined} onclick={() => ((design = ''), (view = 'settings'))} data-nav="settings"><Icon name="settings" />{t.nav.settings}</button>
       {/if}
       {#if site.accounts}
         <span class="grow"></span>
-        <button type="button" aria-current={view === 'me' ? 'page' : undefined} onclick={() => (view = 'me')} data-nav="me">{t.nav.me}</button>
+        <button type="button" aria-current={view === 'me' ? 'page' : undefined} onclick={() => (view = 'me')} data-nav="me"><Icon name="circle-user" />{t.nav.me}</button>
         <small class="me">{site.me.name || site.me.email}</small>
         <button type="button" onclick={signOut} data-sign-out>{t.door.signOut}</button>
       {/if}
@@ -1338,85 +1339,104 @@ onMount(() => {
 {/if}
 
 <style>
+  /* Everything below is drawn with the admin's tokens (src/admin/tokens.css, ADR 0084): roles and steps, never values. */
   :global(html, body) { height: 100%; margin: 0; }
-  :global(body) { font: 14px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1c1b22; background: #f3f2f7; }
+  :global(body) { font: var(--body-m); color: var(--on-surface); background: var(--surface); -webkit-font-smoothing: antialiased; }
   :global(*) { box-sizing: border-box; }
+  :global(:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
   .notice { margin: 4rem auto; max-width: 30rem; text-align: center; }
-  .admin { display: grid; height: 100vh; grid-template-columns: 11rem 1fr; }
+  .admin { display: grid; height: 100vh; grid-template-columns: 13.5rem 1fr; }
   .admin.building { grid-template-columns: 1fr; }
   .rail[hidden] { display: none; }
-  .rail { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.9rem 0.6rem; background: #1c1b22; color: #fff; }
-  .rail .group { margin: 0.9rem 0.5rem 0.2rem; font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #8a87a0; }
-  .rail .group:first-of-type { margin-top: 0.2rem; }
-  .rail .me { padding: 0 0.5rem; color: #a9a6bd; overflow-wrap: anywhere; }
-  .rail .site { display: grid; gap: 0.1rem; padding: 0.3rem 0.5rem 0.5rem; margin-bottom: 0.4rem; border-radius: 6px; color: #fff; text-decoration: none; overflow-wrap: anywhere; }
-  .rail .site small { color: #a9a6bd; }
-  .rail .site:hover { background: #2e2c3a; }
-  .rail .site:hover small { color: #fff; text-decoration: underline; }
-  .out { padding: 0.4rem 0.7rem; border: 1px solid #cfccdc; border-radius: 6px; color: inherit; text-decoration: none; white-space: nowrap; }
-  .out:hover { border-color: #6d5dfc; }
-  :global(.editor .rail button) { border-color: transparent; background: none; color: #d9d7e6; text-align: start; }
-  :global(.editor .rail button:hover:not(:disabled):not([aria-current='page'])) { border-color: transparent; background: #2e2c3a; }
-  :global(.editor .rail button[aria-current='page']) { background: #6d5dfc; color: #fff; font-weight: 600; }
-  :global(.editor .screen) { overflow-y: auto; padding: 1.5rem 2rem; }
+  /* The menu at the side: a light surface, a pill behind the screen you are on. */
+  .rail { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-3); overflow-y: auto; background: var(--surface-low); color: var(--on-surface-variant); }
+  .rail .group { margin: var(--sp-4) var(--sp-4) var(--sp-1); font: var(--label-m); letter-spacing: 0.04em; text-transform: uppercase; color: var(--on-surface-variant); }
+  .rail .group:first-of-type { margin-top: var(--sp-1); }
+  .rail .me { padding: 0 var(--sp-4); color: var(--on-surface-variant); font: var(--body-s); overflow-wrap: anywhere; }
+  .rail .site { display: grid; gap: 2px; padding: var(--sp-2) var(--sp-4) var(--sp-3); margin-bottom: var(--sp-2); border-radius: var(--shape-md); color: var(--on-surface); font: var(--title-m); text-decoration: none; overflow-wrap: anywhere; }
+  .rail .site small { font: var(--body-s); color: var(--on-surface-variant); }
+  .rail .site:hover { background: color-mix(in oklch, var(--on-surface) var(--state-hover), transparent); }
+  .rail .site:hover small { text-decoration: underline; }
+  .out { display: inline-flex; align-items: center; min-height: var(--target); padding: 0 var(--sp-4); border: 1px solid var(--outline); border-radius: var(--shape-full); color: var(--primary); font: var(--label-l); text-decoration: none; white-space: nowrap; }
+  .out:hover { background: color-mix(in oklch, var(--primary) var(--state-hover), transparent); }
+  :global(.editor .rail button) { justify-content: flex-start; gap: var(--sp-3); min-height: var(--target); padding: 0 var(--sp-4); border: 0; border-radius: var(--shape-full); background: none; color: var(--on-surface-variant); font: var(--label-l); text-align: start; }
+  :global(.editor .rail button:hover:not(:disabled):not([aria-current='page'])) { background: color-mix(in oklch, var(--on-surface) var(--state-hover), transparent); }
+  :global(.editor .rail button[aria-current='page']) { background: var(--secondary-container); color: var(--on-secondary-container); font-weight: 650; }
+  :global(.editor .screen) { overflow-y: auto; padding: var(--sp-6) var(--sp-8); }
   .stack { min-width: 0; overflow-y: auto; }
   /* Settings: one column at reading width, each group of settings a card of its own. */
   .settings { max-width: 46rem; }
-  .settings :global(h3) { margin-top: 1.6rem; padding-top: 1.1rem; border-top: 1px solid #e4e2ee; font-size: 15px; }
-  :global(.editor .bar button.on) { background: #efedff; border-color: #6d5dfc; color: #3a2fb8; font-weight: 600; }
+  .settings :global(h3) { margin-top: var(--sp-6); padding-top: var(--sp-5); border-top: 1px solid var(--outline-variant); font: var(--title-m); }
+  :global(.editor .bar button.on) { background: var(--secondary-container); border-color: transparent; color: var(--on-secondary-container); }
   .stack > :global(.screen) { overflow-y: visible; }
-  .toast { position: fixed; inset-block-end: 1rem; inset-inline-end: 1rem; padding: 0.5rem 0.8rem; background: #fff; border: 1px solid #b3261e; border-radius: 6px; }
-  .builder { display: grid; min-width: 0; height: 100vh; grid-template: 'bar bar bar' auto 'left canvas right' 1fr / 14rem 1fr 19rem; }
+  /* The message at the bottom. */
+  .toast { position: fixed; inset-block-end: var(--sp-4); inset-inline-end: var(--sp-4); display: flex; align-items: center; min-height: 48px; padding: var(--sp-2) var(--sp-4); border-radius: var(--shape-xs); background: var(--inverse-surface); color: var(--inverse-on-surface); box-shadow: var(--elev-3); }
+  .builder { display: grid; min-width: 0; height: 100vh; grid-template: 'bar bar bar' auto 'left canvas right' 1fr / 15rem 1fr 20rem; }
   .builder[hidden] { display: none; }
-  .doc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 16rem; }
-  .bar { grid-area: bar; display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.9rem; background: #fff; border-bottom: 1px solid #dddbe6; }
+  .doc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 16rem; font: var(--title-s); }
+  .bar { grid-area: bar; display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-4); background: var(--surface-lowest); border-bottom: 1px solid var(--outline-variant); }
   .grow { flex: 1; }
-  .sep { width: 1px; align-self: stretch; background: #dddbe6; }
-  .status, .state { color: #6a6880; font-size: 13px; }
-  .status[data-state='error'] { color: #b3261e; }
-  .left, .right { overflow-y: auto; padding: 0.9rem; background: #fff; }
-  .left { grid-area: left; border-right: 1px solid #dddbe6; }
-  .right { grid-area: right; border-left: 1px solid #dddbe6; }
-  .canvas { grid-area: canvas; padding: 0.9rem; min-width: 0; }
+  .sep { width: 1px; align-self: stretch; background: var(--outline-variant); }
+  .status, .state { color: var(--on-surface-variant); font: var(--body-s); }
+  .status[data-state='error'] { color: var(--error); }
+  .left, .right { overflow-y: auto; padding: var(--sp-4); background: var(--surface-lowest); }
+  .left { grid-area: left; border-right: 1px solid var(--outline-variant); }
+  .right { grid-area: right; border-left: 1px solid var(--outline-variant); }
+  .canvas { grid-area: canvas; padding: var(--sp-4); min-width: 0; background: var(--surface-container); }
   .canvas { display: grid; justify-items: center; }
-  iframe { width: 100%; height: 100%; border: 1px solid #dddbe6; border-radius: 8px; background: #fff; transition: max-width 0.2s; }
+  iframe { width: 100%; height: 100%; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); background: var(--surface-lowest); box-shadow: var(--elev-1); transition: max-width var(--dur-medium-2) var(--ease-standard); }
+  /* Segmented buttons: the devices, light and dark. */
   .devices { display: inline-flex; }
-  .devices button { border-radius: 0; margin-inline-start: -1px; font-size: 0.85rem; padding: 0.3rem 0.55rem; }
-  .devices button:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
-  .devices button:last-child { border-start-end-radius: 6px; border-end-end-radius: 6px; }
-  .devices button[aria-pressed='true'] { background: #f0eeff; border-color: #6d5dfc; position: relative; }
-  h2 { margin: 1.1rem 0 0.5rem; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #6a6880; }
+  .devices button { border-radius: 0; margin-inline-start: -1px; padding: 0 var(--sp-3); color: var(--on-surface); }
+  .devices button:first-child { border-start-start-radius: var(--shape-full); border-end-start-radius: var(--shape-full); padding-inline-start: var(--sp-4); }
+  .devices button:last-child { border-start-end-radius: var(--shape-full); border-end-end-radius: var(--shape-full); padding-inline-end: var(--sp-4); }
+  .devices button[aria-pressed='true'] { background: var(--secondary-container); color: var(--on-secondary-container); position: relative; }
+  h2 { margin: var(--sp-5) 0 var(--sp-2); font: var(--label-m); letter-spacing: 0.04em; text-transform: uppercase; color: var(--on-surface-variant); }
   h2:first-child { margin-top: 0; }
-  ul { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; gap: 0.25rem; }
+  ul { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: var(--sp-1); }
   .library { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .find { width: 100%; margin-bottom: 0.6rem; padding: 0.4rem 0.5rem; border: 1px solid #cfccdc; border-radius: 6px; background: #fff; color: inherit; font: inherit; }
-  .blocks { margin-bottom: 0.4rem; }
-  .blocks summary { cursor: pointer; padding: 0.25rem 0; font-size: 12.5px; font-weight: 600; color: #4b4960; }
-  .blocks .library { margin-top: 0.3rem; }
-  :global(.editor button) { padding: 0.4rem 0.7rem; border: 1px solid #cfccdc; border-radius: 6px; background: #fff; color: inherit; font: inherit; cursor: pointer; }
-  :global(.editor button:hover:not(:disabled)) { border-color: #6d5dfc; }
-  :global(.editor button:disabled) { opacity: 0.45; cursor: default; }
-  :global(.editor button.primary) { background: #6d5dfc; border-color: #6d5dfc; color: #fff; font-weight: 600; }
-  :global(.editor button.quiet) { border-color: transparent; color: #6a6880; }
-  :global(.editor button.danger) { color: #b3261e; margin-top: 1rem; }
-  .library button { width: 100%; height: 100%; padding-inline: 0.5rem; text-align: start; font-size: 13px; line-height: 1.25; }
-  .tabs { display: flex; gap: 0.25rem; margin-bottom: 0.8rem; }
-  .tabs button { flex: 1; }
-  .tabs button[aria-selected='true'] { background: #f1efff; border-color: #6d5dfc; font-weight: 600; }
-  :global(.editor .field) { display: block; margin-bottom: 0.7rem; }
-  :global(.editor label > span, .editor legend) { display: block; margin-bottom: 0.2rem; font-size: 12.5px; color: #4b4960; }
-  :global(.editor input[type='text'], .editor input[type='email'], .editor input[type='password'], .editor input[type='number'], .editor input[type='url'], .editor input[type='date'], .editor textarea, .editor select) { width: 100%; padding: 0.4rem 0.5rem; border: 1px solid #cfccdc; border-radius: 6px; background: #fff; color: inherit; font: inherit; }
-  :global(.editor input[aria-invalid='true']) { border-color: #b3261e; }
+  .find { width: 100%; min-height: var(--target); margin-bottom: var(--sp-3); padding: 0 var(--sp-4); border: 0; border-radius: var(--shape-full); background: var(--surface-high); color: inherit; font: var(--body-m); }
+  .blocks { margin-bottom: var(--sp-2); }
+  .blocks summary { cursor: pointer; padding: var(--sp-1) 0; font: var(--title-s); color: var(--on-surface-variant); }
+  .blocks .library { margin-top: var(--sp-1); }
+  /* Buttons: pills, by weight. Outlined is the ordinary one; .primary is filled, .quiet is text. */
+  :global(.editor button) { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: var(--target); padding: 0 var(--sp-4); border: 1px solid var(--outline); border-radius: var(--shape-full); background: transparent; color: var(--primary); font: var(--label-l); cursor: pointer; transition: background-color var(--dur-short-2) var(--ease-standard), box-shadow var(--dur-short-2) var(--ease-standard); }
+  :global(.editor button:hover:not(:disabled)) { background-color: color-mix(in oklch, var(--primary) var(--state-hover), transparent); }
+  :global(.editor button:active:not(:disabled)) { background-color: color-mix(in oklch, var(--primary) var(--state-pressed), transparent); }
+  :global(.editor button:disabled) { cursor: default; color: color-mix(in oklch, var(--on-surface) var(--disabled-content), transparent); border-color: color-mix(in oklch, var(--on-surface) var(--disabled-container), transparent); }
+  :global(.editor button.primary) { background: var(--primary); border-color: transparent; color: var(--on-primary); }
+  :global(.editor button.primary:hover:not(:disabled)) { background: color-mix(in oklch, var(--on-primary) var(--state-hover), var(--primary)); box-shadow: var(--elev-1); }
+  :global(.editor button.primary:disabled) { background: color-mix(in oklch, var(--on-surface) var(--disabled-container), transparent); color: color-mix(in oklch, var(--on-surface) var(--disabled-content), transparent); }
+  :global(.editor button.quiet) { border-color: transparent; padding-inline: var(--sp-3); }
+  :global(.editor button.danger) { border-color: transparent; color: var(--error); margin-top: var(--sp-4); }
+  :global(.editor button.danger:hover:not(:disabled)) { background-color: color-mix(in oklch, var(--error) var(--state-hover), transparent); }
+  /* The blocks to add: small cards, not pills. */
+  .library button { width: 100%; height: 100%; min-height: var(--target); padding: var(--sp-2) var(--sp-3); justify-content: flex-start; border-color: var(--outline-variant); border-radius: var(--shape-sm); color: var(--on-surface); font: var(--body-m); text-align: start; line-height: 1.25; }
+  .library button:hover:not(:disabled) { background-color: color-mix(in oklch, var(--on-surface) var(--state-hover), transparent); }
+  /* Tabs: an indicator under the chosen one. */
+  .tabs { display: flex; margin-bottom: var(--sp-4); border-bottom: 1px solid var(--outline-variant); }
+  .tabs button { flex: 1; position: relative; min-height: 48px; border: 0; border-radius: 0; color: var(--on-surface-variant); font: var(--title-s); }
+  .tabs button::after { content: ''; position: absolute; inset-inline: 25%; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--primary); transform: scaleX(0); transition: transform var(--dur-medium) var(--ease-decel); }
+  .tabs button[aria-selected='true'] { color: var(--primary); }
+  .tabs button[aria-selected='true']::after { transform: scaleX(1); }
+  :global(.editor .field) { display: block; margin-bottom: var(--sp-4); }
+  :global(.editor label > span, .editor legend) { display: block; margin-bottom: var(--sp-1); font: var(--label-m); color: var(--on-surface-variant); }
+  /* Fields: outlined, the border doubles in the primary colour when you type. */
+  :global(.editor input[type='text'], .editor input[type='email'], .editor input[type='password'], .editor input[type='number'], .editor input[type='url'], .editor input[type='date'], .editor textarea, .editor select) { width: 100%; min-height: var(--target); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--outline); border-radius: var(--shape-xs); background: var(--surface-lowest); color: var(--on-surface); font: var(--body-l); transition: border-color var(--dur-short-2) var(--ease-standard); }
+  :global(.editor :is(input, textarea, select):hover:not(:disabled):not(:focus)) { border-color: var(--on-surface); }
+  :global(.editor :is(input[type='text'], input[type='email'], input[type='password'], input[type='number'], input[type='url'], input[type='date'], textarea, select):focus-visible) { outline: 0; border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+  :global(.editor input[aria-invalid='true']) { border-color: var(--error); box-shadow: inset 0 0 0 1px var(--error); }
+  :global(.editor input[type='checkbox'], .editor input[type='radio']) { width: 18px; height: 18px; accent-color: var(--primary); }
   :global(.editor textarea) { resize: vertical; }
-  :global(.editor fieldset) { margin: 0; padding: 0.6rem; border: 1px solid #e4e2ee; border-radius: 6px; }
-  :global(.editor fieldset label) { display: block; margin-bottom: 0.5rem; }
-  :global(.editor .item) { padding-bottom: 0.5rem; margin-bottom: 0.6rem; border-bottom: 1px dashed #dddbe6; }
-  :global(.editor .hint, .editor small) { display: block; color: #6a6880; font-size: 12.5px; }
-  :global(.editor .bad) { color: #b3261e; font-size: 12.5px; }
-  :global(.editor .own) { color: #c77700; font-style: normal; margin-inline-start: 0.3rem; }
-  :global(.editor .custom) { display: flex; gap: 0.3rem; margin-top: 0.3rem; }
-  :global(.editor .custom input[type='color']) { width: 2.4rem; padding: 0; border: 1px solid #cfccdc; border-radius: 6px; background: none; }
-  .check { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; }
+  :global(.editor fieldset) { margin: 0; padding: var(--sp-3) var(--sp-4); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); }
+  :global(.editor fieldset label) { display: block; margin-bottom: var(--sp-2); }
+  :global(.editor .item) { padding-bottom: var(--sp-2); margin-bottom: var(--sp-3); border-bottom: 1px dashed var(--outline-variant); }
+  :global(.editor .hint, .editor small) { display: block; color: var(--on-surface-variant); font: var(--body-s); }
+  :global(.editor .bad) { color: var(--error); font: var(--body-s); }
+  :global(.editor .own) { color: var(--warning); font-style: normal; margin-inline-start: var(--sp-1); }
+  :global(.editor .custom) { display: flex; gap: var(--sp-1); margin-top: var(--sp-1); }
+  :global(.editor .custom input[type='color']) { width: var(--target); min-height: var(--target); padding: 2px; border: 1px solid var(--outline); border-radius: var(--shape-xs); background: none; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-3); }
   .check span { margin: 0; }
   .check.off { opacity: 0.55; }
 </style>

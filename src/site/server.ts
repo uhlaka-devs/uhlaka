@@ -41,7 +41,7 @@ import { backTo, barHtml, barLinks, barWords, SIGN_OUT_PATH, withBar } from './a
 import { shopGate } from '../parts/shop/gate.ts';
 import { extensionHost, type Spawn } from './extensions.ts';
 import { BUILT_ADMIN } from './built-admin.ts';
-import { ADMIN_ICON, BASE_CSS, SHIPPED_STATS, SHIPPED_THEMES, shippedFonts } from './shipped.ts';
+import { ADMIN_ICON, ADMIN_TOKENS, BASE_CSS, SHIPPED_STATS, SHIPPED_THEMES, shippedFonts } from './shipped.ts';
 import { STATS, type Store, type User, writesAll } from './store.ts';
 import { reportsOf, rowWrites } from '../view/index.ts';
 import { newer } from './update.ts';
@@ -123,6 +123,7 @@ const adminPage = (pack: LanguagePack | null): string => `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${DISPLAY_NAME}</title>
 <link rel="icon" href="/admin/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body>
 <div id="app"></div>
@@ -1364,6 +1365,9 @@ export async function startEditor(
       case '/admin/app.js':
       case '/admin/frame.js':
         return text(assets.get(url.pathname.slice(7)) ?? '', 'text/javascript');
+      case '/admin/admin.css':
+        // The admin's design tokens and its face (ADR 0084), before the admin's own styles.
+        return text(`${fontFacesCss(new Set(['Figtree']))}${ADMIN_TOKENS}`, 'text/css');
       case '/admin/icon.svg':
         return text(ADMIN_ICON, 'image/svg+xml');
       case '/preview':

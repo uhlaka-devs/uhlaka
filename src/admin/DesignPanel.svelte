@@ -70,11 +70,13 @@ let {
 </div>
 
 <style>
-  .parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; margin: 0 0 0.8rem; border-radius: 9px; background: #eceaf4; }
-  .parts button { margin: 0; padding: 0.4rem 0.2rem; border: 0; border-radius: 7px; background: transparent; font-size: 12.5px; font-weight: 600; color: #4b4960; line-height: 1.2; }
-  .parts button[aria-selected='true'] { background: #fff; color: #1e1e27; box-shadow: 0 1px 2px rgb(30 30 39 / 0.12); }
-  .parts button:focus-visible { outline: 2px solid #5b4cdb; outline-offset: 1px; }
-  .saved { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; margin: 0 0 0.8rem; padding: 0.55rem 0.7rem; border-radius: 8px; background: #f2f1f7; }
-  .saved[data-theme-state='changed'] { background: #fff6d6; }
+  /* Three parts as tabs, with an indicator under the chosen one (ADR 0084). */
+  .parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 0 var(--sp-4); border-bottom: 1px solid var(--outline-variant); }
+  .parts button { position: relative; margin: 0; min-height: 48px; padding: var(--sp-1) var(--sp-1); border: 0; border-radius: 0; background: transparent; font: var(--title-s); color: var(--on-surface-variant); line-height: 1.2; }
+  .parts button::after { content: ''; position: absolute; inset-inline: 20%; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--primary); transform: scaleX(0); transition: transform var(--dur-medium) var(--ease-decel); }
+  .parts button[aria-selected='true'] { color: var(--primary); }
+  .parts button[aria-selected='true']::after { transform: scaleX(1); }
+  .saved { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4); border-radius: var(--shape-md); background: var(--surface-container); color: var(--on-surface-variant); }
+  .saved[data-theme-state='changed'] { background: var(--warning-container); color: var(--on-warning-container); }
   .saved p { margin: 0; flex: 1 1 12rem; }
 </style>
