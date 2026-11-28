@@ -89,6 +89,7 @@ jobs:
           node e2e/export.cjs
           node e2e/shop.cjs
           node e2e/dark-mode.cjs
+          node e2e/palettes.cjs
           node e2e/admin-bar.cjs
       # The whole source tree, both kinds of test together. Below the floor, or a file no test measures, fails the build.
       - name: Coverage

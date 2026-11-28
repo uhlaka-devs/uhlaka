@@ -30,6 +30,7 @@ import {
 } from '../core/index.ts';
 import { say, t } from './messages.ts';
 import StyleEditor from './StyleEditor.svelte';
+import PaletteGallery from './PaletteGallery.svelte';
 import StyleGallery from './StyleGallery.svelte';
 import { tryTheme } from './themeEdit.ts';
 
@@ -265,6 +266,8 @@ const hex6 = (value: string): string => (/^#[0-9a-f]{6}$/i.test(value) ? value :
     </div>
   </details>
 {/snippet}
+
+<PaletteGallery {theme} onchange={(next) => { problem = ''; drafts = {}; onchange(next); }} />
 
 {@render tokens('color', true)}
 {@render tokens('font', true)}

@@ -32,6 +32,7 @@ export * from './shop.ts';
 export * from './style.ts';
 export * from './theme.ts';
 export * from './contrast.ts';
+export * from './palettes.ts';
 export * from './translation.ts';
 export * from './tree.ts';
 export * from './types.ts';

@@ -11,7 +11,7 @@ export const MIN_CONTRAST = 4.5;
 
 type Rgb = [number, number, number];
 
-function rgbOf(value: string | undefined): Rgb | null {
+export function rgbOf(value: string | undefined): Rgb | null {
   const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(value?.trim() ?? '')?.[1];
   if (!hex) return null;
   const full = hex.length === 3 ? [...hex].map((c) => c + c).join('') : hex;
@@ -96,7 +96,7 @@ export function contrastIssues(theme: Theme): ContrastIssue[] {
 
 type Hsl = [number, number, number];
 
-function hslOf([r, g, b]: Rgb): Hsl {
+export function hslOf([r, g, b]: Rgb): Hsl {
   const [x, y, z] = [r / 255, g / 255, b / 255];
   const max = Math.max(x, y, z);
   const min = Math.min(x, y, z);
@@ -108,7 +108,7 @@ function hslOf([r, g, b]: Rgb): Hsl {
   return [h * 60, s, l];
 }
 
-function hexOf([h, s, l]: Hsl): string {
+export function hexOf([h, s, l]: Hsl): string {
   const k = (n: number): number => (n + h / 30) % 12;
   const a = s * Math.min(l, 1 - l);
   const f = (n: number): number => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
@@ -118,7 +118,7 @@ function hexOf([h, s, l]: Hsl): string {
 const clamp = (v: number): number => Math.max(0, Math.min(1, v));
 
 /** The same colour, lighter or darker step by step until it reads on `on`; the nearest it gets otherwise. */
-function readableOn(value: string, on: string, lighter: boolean): string {
+export function readableOn(value: string, on: string, lighter: boolean): string {
   const rgb = rgbOf(value);
   if (!rgb) return value;
   const [h, s, l] = hslOf(rgb);

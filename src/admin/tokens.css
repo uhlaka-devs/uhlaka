@@ -1,0 +1,151 @@
+/*
+ * The admin's design tokens (ADR 0084). Every colour, size, corner, shadow,
+ * state and duration of the admin is here, and only here: a component names a
+ * role (`--primary`, `--surface-container`) or a step (`--sp-4`, `--shape-md`),
+ * never a value. Material 3's principles, drawn as Uhlaka's.
+ *
+ * The colours come from one hue, the blue of the logo's H (#287df0, ADR 0080),
+ * as tones from black to white; the roles take tones from them.
+ */
+:root {
+  --seed-h: 258;
+
+  /* Colour roles: light. */
+  --primary: oklch(49% 0.19 var(--seed-h));
+  --on-primary: oklch(100% 0 0);
+  --primary-container: oklch(93% 0.045 var(--seed-h));
+  --on-primary-container: oklch(29% 0.11 var(--seed-h));
+  --secondary-container: oklch(92.5% 0.022 var(--seed-h));
+  --on-secondary-container: oklch(27% 0.035 var(--seed-h));
+  --surface: oklch(98.6% 0.003 var(--seed-h));
+  --surface-lowest: oklch(100% 0 0);
+  --surface-low: oklch(97.2% 0.005 var(--seed-h));
+  --surface-container: oklch(95.7% 0.007 var(--seed-h));
+  --surface-high: oklch(94% 0.009 var(--seed-h));
+  --surface-highest: oklch(92% 0.011 var(--seed-h));
+  --on-surface: oklch(21% 0.012 var(--seed-h));
+  --on-surface-variant: oklch(43% 0.016 var(--seed-h));
+  --outline: oklch(61% 0.016 var(--seed-h));
+  --outline-variant: oklch(86% 0.012 var(--seed-h));
+  --error: oklch(50% 0.19 27);
+  --on-error: oklch(100% 0 0);
+  --error-container: oklch(93.5% 0.04 27);
+  --on-error-container: oklch(33% 0.12 27);
+  --success: oklch(48% 0.12 150);
+  --success-container: oklch(93.5% 0.05 150);
+  --on-success-container: oklch(30% 0.08 150);
+  --warning: oklch(52% 0.12 65);
+  --warning-container: oklch(94% 0.07 88);
+  --on-warning-container: oklch(34% 0.08 65);
+  --inverse-surface: oklch(30% 0.012 var(--seed-h));
+  --inverse-on-surface: oklch(95% 0.006 var(--seed-h));
+  --inverse-primary: oklch(80% 0.11 var(--seed-h));
+  --scrim: oklch(0% 0 0 / 0.4);
+
+  /* Text: Figtree (ADR 0068), shipped with Uhlaka. */
+  --font: 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+  --headline-s: 600 24px/32px var(--font);
+  --title-l: 600 20px/28px var(--font);
+  --title-m: 600 16px/24px var(--font);
+  --title-s: 600 14px/20px var(--font);
+  --body-l: 400 16px/24px var(--font);
+  --body-m: 400 14px/20px var(--font);
+  --body-s: 400 12px/16px var(--font);
+  --label-l: 550 14px/20px var(--font);
+  --label-m: 550 12px/16px var(--font);
+  --label-s: 550 11px/16px var(--font);
+
+  /* Space: the grid of 4. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Corners. */
+  --shape-xs: 4px;
+  --shape-sm: 8px;
+  --shape-md: 12px;
+  --shape-lg: 16px;
+  --shape-xl: 28px;
+  --shape-full: 999px;
+
+  /* Shadows: only for what floats; height shows mostly by surface colour. */
+  --elev-1: 0 1px 2px oklch(0% 0 0 / 0.14), 0 1px 3px 1px oklch(0% 0 0 / 0.08);
+  --elev-2: 0 1px 2px oklch(0% 0 0 / 0.14), 0 2px 6px 2px oklch(0% 0 0 / 0.09);
+  --elev-3: 0 4px 8px 3px oklch(0% 0 0 / 0.1), 0 1px 3px oklch(0% 0 0 / 0.16);
+
+  /* States: a layer of the content's colour over the element. */
+  --state-hover: 8%;
+  --state-focus: 10%;
+  --state-pressed: 10%;
+  --state-drag: 16%;
+  --disabled-content: 38%;
+  --disabled-container: 12%;
+
+  /* Targets. */
+  --target: 40px;
+  --target-dense: 32px;
+
+  /* Motion. */
+  --dur-short: 100ms;
+  --dur-short-2: 150ms;
+  --dur-medium: 250ms;
+  --dur-medium-2: 300ms;
+  --dur-long: 450ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decel: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-accel: cubic-bezier(0.3, 0, 0.8, 0.15);
+}
+
+@media (pointer: coarse) {
+  :root { --target: 48px; --target-dense: 40px; }
+}
+
+/*
+ * Dark: the same roles, other tones. Turned on with `data-scheme="dark"` on
+ * <html> once every screen of the admin is on these tokens (ADR 0084 d6); a
+ * screen still written by hand would show light boxes on a dark admin.
+ */
+:root[data-scheme='dark'] {
+  --primary: oklch(80% 0.11 var(--seed-h));
+  --on-primary: oklch(27% 0.1 var(--seed-h));
+  --primary-container: oklch(37% 0.12 var(--seed-h));
+  --on-primary-container: oklch(93% 0.045 var(--seed-h));
+  --secondary-container: oklch(34% 0.035 var(--seed-h));
+  --on-secondary-container: oklch(91% 0.022 var(--seed-h));
+  --surface: oklch(17.5% 0.008 var(--seed-h));
+  --surface-lowest: oklch(14.5% 0.006 var(--seed-h));
+  --surface-low: oklch(20.5% 0.009 var(--seed-h));
+  --surface-container: oklch(22.5% 0.01 var(--seed-h));
+  --surface-high: oklch(26% 0.012 var(--seed-h));
+  --surface-highest: oklch(29.5% 0.014 var(--seed-h));
+  --on-surface: oklch(92.5% 0.008 var(--seed-h));
+  --on-surface-variant: oklch(79% 0.015 var(--seed-h));
+  --outline: oklch(63% 0.015 var(--seed-h));
+  --outline-variant: oklch(37% 0.015 var(--seed-h));
+  --error: oklch(79% 0.11 27);
+  --on-error: oklch(31% 0.12 27);
+  --error-container: oklch(38% 0.13 27);
+  --on-error-container: oklch(93% 0.04 27);
+  --success: oklch(79% 0.12 150);
+  --success-container: oklch(35% 0.07 150);
+  --on-success-container: oklch(92% 0.05 150);
+  --warning: oklch(84% 0.12 80);
+  --warning-container: oklch(38% 0.07 70);
+  --on-warning-container: oklch(93% 0.06 88);
+  --inverse-surface: oklch(92.5% 0.008 var(--seed-h));
+  --inverse-on-surface: oklch(25% 0.01 var(--seed-h));
+  --inverse-primary: oklch(49% 0.19 var(--seed-h));
+  --scrim: oklch(0% 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
+}

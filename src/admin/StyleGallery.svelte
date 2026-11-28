@@ -99,22 +99,25 @@ function choose(style: Theme): void {
 {/if}
 
 <style>
-  .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.6rem; }
-  .card { display: grid; gap: 0.35rem; padding: 0.35rem; margin: 0; text-align: start; background: #fff; border: 1px solid #dddbe6; border-radius: 10px; cursor: pointer; font: inherit; color: #1e1e27; }
-  .card:hover { border-color: #a9a3e8; }
-  .card:focus-visible { outline: 2px solid #5b4cdb; outline-offset: 2px; }
-  .card.current { border: 2px solid #5b4cdb; padding: calc(0.35rem - 1px); }
+  .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); margin-bottom: var(--sp-3); }
+  /* A style is a card; the one in use has the primary colour round it. */
+  .card { display: grid; gap: var(--sp-2); padding: var(--sp-2); margin: 0; text-align: start; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); cursor: pointer; font: inherit; color: var(--on-surface); transition: box-shadow var(--dur-short-2) var(--ease-standard); }
+  .card:hover { box-shadow: var(--elev-1); }
+  .card.current { border: 2px solid var(--primary); padding: calc(var(--sp-2) - 1px); }
   .card.own { cursor: default; }
-  .sample { display: grid; gap: 0.15rem; padding: 0.55rem 0.6rem; border-radius: 7px; background: var(--bg, #f2f1f7); color: var(--fg, #1e1e27); border: 1px solid rgb(0 0 0 / 0.06); }
+  .card.own:hover { box-shadow: none; }
+  /* The sample shows the style's own colours: --bg and --fg come from the style, not from the admin. */
+  .sample { display: grid; gap: 2px; padding: var(--sp-2) var(--sp-3); border-radius: var(--shape-sm); background: var(--bg, var(--surface-container)); color: var(--fg, var(--on-surface)); border: 1px solid color-mix(in oklch, var(--on-surface) 6%, transparent); }
   .aa { font-size: 1.6rem; line-height: 1; font-weight: 700; }
   .line { font-size: 0.72rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dots { display: flex; gap: 3px; margin-top: 0.2rem; }
-  .dots i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgb(0 0 0 / 0.15); }
-  .name { display: flex; flex-direction: column; padding: 0 0.2rem 0.1rem; font-weight: 600; font-size: 13px; }
-  .name small { font-weight: 400; color: #5d5d72; }
-  .ask { display: grid; gap: 0.3rem; padding: 0.7rem; margin-bottom: 0.8rem; border-radius: 8px; background: #fff6d6; border: 1px solid #f0d78c; }
+  .dots { display: flex; gap: 3px; margin-top: 2px; }
+  .dots i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid color-mix(in oklch, var(--on-surface) 15%, transparent); }
+  .name { display: flex; flex-direction: column; padding: 0 var(--sp-1) 2px; font: var(--title-s); }
+  .name small { font: var(--body-s); color: var(--on-surface-variant); }
+  .ask { display: grid; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-4); border-radius: var(--shape-md); background: var(--warning-container); color: var(--on-warning-container); }
   .ask p { margin: 0; }
-  .row { display: grid; gap: 0.4rem; margin-top: 0.3rem; }
+  .row { display: grid; gap: var(--sp-2); margin-top: var(--sp-1); }
   .row button { margin: 0; }
-  .danger { background: #b42318; border-color: #b42318; color: #fff; }
+  .row button.danger { margin: 0; background: var(--error); border-color: transparent; color: var(--on-error); }
+  .row button.danger:hover { background: color-mix(in oklch, var(--on-error) var(--state-hover), var(--error)); }
 </style>

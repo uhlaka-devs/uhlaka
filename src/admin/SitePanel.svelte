@@ -176,12 +176,12 @@ import Redirects from './Redirects.svelte';
 <p class="hint">{t.site.live}</p>
 
 <style>
-  h3 { margin: 1.1rem 0 0.5rem; font-size: 13px; }
+  h3 { margin: var(--sp-5) 0 var(--sp-2); font: var(--title-s); }
   .grow { flex: 1; }
-  .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-top: var(--sp-3); }
   .check span { margin: 0; }
-  .business { margin: 0.8rem 0; }
-  .business summary { cursor: pointer; font-weight: 600; }
-  .day { display: grid; grid-template-columns: 7rem 1fr; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
-  .label { margin: 0.6rem 0 0.3rem; }
+  .business { margin: var(--sp-4) 0; }
+  .business summary { cursor: pointer; font: var(--title-s); }
+  .day { display: grid; grid-template-columns: 7rem 1fr; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-1); }
+  .label { margin: var(--sp-3) 0 var(--sp-1); }
 </style>

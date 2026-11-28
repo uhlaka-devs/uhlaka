@@ -9,6 +9,7 @@ import studio from '../../themes/studio.json';
 import atelier from '../../themes/atelier.json';
 import ro from '../../languages/ro.json';
 import baseCss from '../blocks/base.css' with { type: 'text' };
+import adminTokens from '../admin/tokens.css' with { type: 'text' };
 import bricolageLatin from '../../fonts/bricolage-grotesque-latin.woff2' with { type: 'file' };
 import bricolageLatinExt from '../../fonts/bricolage-grotesque-latin-ext.woff2' with { type: 'file' };
 import figtreeLatin from '../../fonts/figtree-latin.woff2' with { type: 'file' };
@@ -26,6 +27,8 @@ export const SHIPPED_LANGUAGES: Record<string, unknown> = { 'ro.json': ro };
 export const ADMIN_ICON: string = adminIcon;
 /** The structure every page's CSS starts with; the theme's comes after it. */
 export const BASE_CSS: string = baseCss;
+/** The admin's design tokens (ADR 0084): every colour, size and duration of the admin, in one file. */
+export const ADMIN_TOKENS: string = adminTokens;
 /**
  * The files of the faces in `fonts/`, by file name (ADR 0068 d1). Imported as
  * files, so the single executable carries them; read when the site is built.

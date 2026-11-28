@@ -94,14 +94,15 @@ const setStyle = (style: BlockStyle): void =>
 </details>
 
 <style>
-  h3 { margin: 1.2rem 0 0.5rem; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #5b4cdb; }
-  .problem { position: sticky; top: -0.9rem; z-index: 1; margin: 0 -0.9rem 0.6rem; padding: 0.5rem 0.9rem; background: #fdecea; }
-  .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
-  .choice { padding: 0.5rem; border: 1px solid #dddbe6; border-radius: 8px; font-size: 12px; text-align: center; cursor: pointer; background: #fff; }
-  .choice.on { border: 2px solid #5b4cdb; padding: calc(0.5rem - 1px); }
+  h3 { margin: var(--sp-5) 0 var(--sp-2); font: var(--label-m); letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary); }
+  .problem { position: sticky; top: calc(-1 * var(--sp-4)); z-index: 1; margin: 0 calc(-1 * var(--sp-4)) var(--sp-3); padding: var(--sp-2) var(--sp-4); background: var(--error-container); color: var(--on-error-container); }
+  .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); }
+  .choice { padding: var(--sp-2); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); font: var(--label-m); text-align: center; cursor: pointer; background: var(--surface-lowest); transition: background-color var(--dur-short-2) var(--ease-standard); }
+  .choice:hover { background: color-mix(in oklch, var(--on-surface) var(--state-hover), var(--surface-lowest)); }
+  .choice.on { border: 2px solid var(--primary); padding: calc(var(--sp-2) - 1px); background: var(--secondary-container); color: var(--on-secondary-container); }
   .choice input { position: absolute; opacity: 0; pointer-events: none; }
-  .choice:has(input:focus-visible) { outline: 2px solid #5b4cdb; outline-offset: 2px; }
-  details { margin: 0.6rem 0; border: 1px solid #e4e2ee; border-radius: 6px; padding: 0.5rem 0.6rem; }
-  summary { cursor: pointer; font-weight: 600; }
-  details[open] > summary { margin-bottom: 0.6rem; }
+  .choice:has(input:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
+  details { margin: var(--sp-3) 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); padding: var(--sp-2) var(--sp-3); }
+  summary { cursor: pointer; font: var(--title-s); min-height: var(--target-dense); display: flex; align-items: center; }
+  details[open] > summary { margin-bottom: var(--sp-3); }
 </style>
