@@ -60,8 +60,15 @@ const area = (section: string) => (section ? { ...areaBlock(section), children: 
 const top = $derived(area(frame.top));
 const side = $derived(frame.sidebar === 'none' ? null : area(frame.side));
 const bottom = $derived(area(frame.bottom));
+/** The bar above the header, and what else the header holds (ADR 0085 d3): the site's choice, drawn wherever the layout has a header. */
+const bar = $derived(frame.header ? area(site.header?.bar ?? '') : null);
+const search = $derived(site.header?.search === true);
+const cart = $derived(site.header?.cart === true && site.shop !== undefined);
 </script>
 
+{#if bar && bar.children.length}
+<div class="site-bar" data-site={mark('header')}><BlockView block={bar} /></div>
+{/if}
 {#if frame.header}
 <header class="site-header" data-site={mark('header')}>
   <div class="site-in">
@@ -72,6 +79,7 @@ const bottom = $derived(area(frame.bottom));
       <input class="menu-check" type="checkbox" id="site-menu" aria-label={words.menu} />
       <label class="menu-button" for="site-menu">{words.menu}</label>
       <div class="site-nav">
+        <label class="menu-close" for="site-menu"><span aria-hidden="true">×</span><span class="site-hide">{words.menuClose}</span></label>
         {#if hasMenu}
           <nav aria-label={words.mainMenu}>
             <ul class="menu">
@@ -107,6 +115,21 @@ const bottom = $derived(area(frame.bottom));
         {#if isLink(site.action)}<a class="button" href={site.action.href}>{site.action.label}</a>{/if}
       </div>
     {/if}
+    <div class="site-tools">
+    {#if search}
+      <details class="site-search">
+        <summary><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg><span class="site-hide">{words.search}</span></summary>
+        <form role="search" method="get" action={editing ? undefined : '/_/search'}>
+          <label class="site-hide" for="site-search-q">{words.search}</label>
+          {#if !editing && site.languages.includes(site.language)}<input type="hidden" name="l" value={site.language} />{/if}
+          <input id="site-search-q" name="q" type="search" maxlength="200" required disabled={editing} />
+          <button class="button" type={editing ? 'button' : 'submit'}>{words.search}</button>
+        </form>
+      </details>
+    {/if}
+    {#if cart}
+      <a class="site-cart" href="/_/cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2" /><circle cx="9.5" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /></svg><span class="site-hide">{words.cart}</span></a>
+    {/if}
     {#if others.length > 1}
       <nav class="site-languages" aria-label={words.languages}>
         {#each others as other}<a href={site.served && !editing ? choicePath(other.language, other.href) : other.href} hreflang={other.language} lang={other.language} aria-current={other.current ? 'true' : undefined}><span class="lang-long">{other.name}</span><span class="lang-short" aria-hidden="true">{other.language.toUpperCase()}</span></a>{/each}
@@ -119,6 +142,7 @@ const bottom = $derived(area(frame.bottom));
         <span class="scheme-to-light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" /><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" /></svg><span class="scheme-label">{words.schemeLight}</span></span>
       </button>
     {/if}
+    </div>
   </div>
 </header>
 {/if}

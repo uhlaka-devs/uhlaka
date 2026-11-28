@@ -1085,6 +1085,8 @@ onMount(() => {
           changed={site.themeChanged}
           pages={pagesIn(site.site, site.site.language, site.pages)}
           lists={menuLists}
+          sections={site.sections}
+          shop={site.shop.on}
           handPicked={page ? countFreeColors(page.blocks) : 0}
           onpart={(part) => openDesign(part)}
           onsite={editSite}

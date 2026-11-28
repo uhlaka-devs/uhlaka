@@ -337,6 +337,15 @@ export function contentSchema(): Schema {
           url: { type: 'string', description: 'https://example.com, no trailing slash.' },
           logo: nullable(ref('image')),
           action: { ...nullable(ref('link')), description: 'The one button in the header.' },
+          header: {
+            type: 'object',
+            description: 'What the header shows besides the logo, the menu and the button (ADR 0085 d3).',
+            properties: {
+              bar: { type: 'string', description: "The slug of a section shown in a bar above the header, such as a phone number and opening hours." },
+              search: { type: 'boolean', description: 'A search in the header.' },
+              cart: { type: 'boolean', description: 'A link to the cart in the header, while the shop is on.' },
+            },
+          },
           footer: { type: 'string' },
           footerLinks: { type: 'array', items: ref('link') },
           menu: { anyOf: [{ type: 'null' }, { type: 'array', items: { type: 'object' } }], description: 'null: the site makes the menu from the pages marked inMenu.' },

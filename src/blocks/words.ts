@@ -9,6 +9,7 @@ import { applyPack, type Catalog, type LanguagePack } from '../core/language.ts'
 export const en = {
   mainMenu: 'Main',
   menu: 'Menu',
+  menuClose: 'Close the menu',
   footerMenu: 'Footer',
   notFound: 'Page not found',
   newer: 'Newer posts',
