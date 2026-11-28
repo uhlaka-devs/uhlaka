@@ -92,7 +92,7 @@ describe('the page for a missing address and the search results (ADR 0085 d7)', 
     await one.setSite({ name: 'Atelier', ...settings });
     await one.savePage({ slug: '', title: 'Home', blocks: [] });
     await one.publish('');
-    for (const [slug, words] of [['gone', 'Try our menu'], ['more', 'Ask us instead']]) {
+    for (const [slug, words] of [['gone', 'Try our menu'], ['more', 'Ask us instead']] as const) {
       await one.saveSection({ slug, title: slug, blocks: [{ type: 'text', content: { body: [{ type: 'paragraph', children: [{ text: words }] }] } }] });
       await one.publishSection(slug);
     }
