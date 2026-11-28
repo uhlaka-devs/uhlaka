@@ -950,7 +950,7 @@ onMount(() => {
     {:else if view === 'layouts'}
       <Layouts site={site.site} sections={site.sections} onsave={saveLayouts} />
     {:else if view === 'types'}
-      <ContentTypes site={site.site} shop={site.shop.on} counts={Object.fromEntries(types.map((ty) => [ty.id, site?.entries[ty.id]?.length ?? 0]))} templates={site.templates} terms={Object.fromEntries(types.map((ty) => [ty.id, [...new Set((site?.entries[ty.id] ?? []).flatMap((e) => e.terms ?? []))]]))} onsave={saveTypes} ondesign={(id) => edit(id, `template:${id}`)} />
+      <ContentTypes site={site.site} shop={site.shop.on} sections={site.sections} counts={Object.fromEntries(types.map((ty) => [ty.id, site?.entries[ty.id]?.length ?? 0]))} templates={site.templates} terms={Object.fromEntries(types.map((ty) => [ty.id, [...new Set((site?.entries[ty.id] ?? []).flatMap((e) => e.terms ?? []))]]))} onsave={saveTypes} ondesign={(id) => edit(id, `template:${id}`)} />
     {:else if view.startsWith('list:')}
       {@const listed = types.find((ty) => `list:${ty.id}` === view)}
       {#if listed}

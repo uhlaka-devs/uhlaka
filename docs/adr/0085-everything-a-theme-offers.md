@@ -313,6 +313,72 @@ from the first screen) are not part of this plan: David, 2026-11-28, a
 separate work after stage 5, made of content files (`.uhlaka.json`) that use
 what stages 4 and 5 bring.
 
+### d8. Stage 5: finishing
+
+*Accepted (David, 2026-11-28, on the decision cards: the site's background is a
+colour or a picture around the box; the bar that keeps "Add to cart" in view is
+on every screen; and in the project: "on each block, with a setting for the whole
+site: by default you set it for everything, with the option to change it on a
+block").*
+
+The same rule as d7: how a thing **looks and moves** is the style's, from
+closed lists; what a site **holds** (a picture, a section) is the site's or its
+type's. Every list's first value is how it looked before, kept as an absence,
+so a style or a site written before draws as before.
+
+| Choice | Kept in | Values |
+| --- | --- | --- |
+| Appearing as the page scrolls | style: `layout.motion.appear` | none (absent, as before), `fade`, `rise` (fades in, coming up a little): each block of a page's own, once it comes into view |
+| A change under the pointer | style: `layout.motion.hover` | none (absent, as before), `lift` (a card rises, with the style's deep shadow), `zoom` (a picture grows inside its frame) |
+| A block's own motion | a block's style: `appear`, `hover` | the same names and `none`: over the style's, for that block and what it holds; absent: the style's |
+| A logo for the dark | site: `logoDark` | a picture from the library, drawn instead of the logo while the site shows its dark colours; none: the one logo |
+| A boxed page | style: `layout.page.boxed` | off (absent, as before) or on: the header, the blocks and the footer in a box as wide as the style's wide width, with a margin around it |
+| The site's background | style: `layout.page.background` | a colour of the style, around the box; absent: its surface colour |
+| A picture around the box | site: `background` | a picture from the library, covering what is around the box, fixed as the page scrolls; drawn only while the page is boxed |
+| A sidebar that stays in view | style: `layout.page.stickySide` | off (absent, as before) or on: the sidebar of a layout stays at the top while the page scrolls past it, when it is shorter than the screen |
+| A section on every entry of a type | type: `entry.section`, a section's slug | a section drawn after each entry's blocks, before previous and next (a sign-up, "Call us"); none: as before |
+| The shop's list | always, while the shop is on | a list of a type that sells shows each product's price, the old price struck through when it is on sale |
+| The badge on a product | style: `layout.shop.badge` | on: "Sale" on a product on sale and "Sold out" on one with none left, in a corner of its picture; off (absent) |
+| Zoom on a product's picture | style: `layout.shop.zoom` | off (absent) or on: the picture of a product's page grows under the pointer, and a click opens it whole over the page |
+| "Add to cart" kept in view | style: `layout.shop.bar` | off (absent) or on, on every screen: once the product's Buy part has scrolled away above, a bar at the bottom of the screen shows its name, price and "Add to cart", which leads back to the Buy part (where its options and quantity are) |
+
+**Without script**, as the rest: appearing uses the browser's view timelines
+(`animation-timeline: view()`), a browser without them shows every block at
+once; the bar that keeps "Add to cart" in view follows the Buy part by the same
+means, and a browser without them draws no bar; the picture opened whole is a
+`:target` over the page, closed by a link. **A visitor who asked for less
+motion** (`prefers-reduced-motion`) gets none of it: no appearing, no lift, no
+zoom, the sidebar and the bar still keep their place. In the editor nothing
+appears or moves, so every block can be chosen.
+
+**The dark logo** follows what the site shows (ADR 0074): the visitor's device,
+or the switch in the header. Both pictures are in the page; CSS shows one.
+
+**The badge's words** are the site's language pack's (`site.shopSale`,
+`site.shopSoldOut`); "Sale" takes the style's primary colour, "Sold out" its
+text colour. A product sold out shows that badge, not "Sale".
+
+**The ready-made styles** give the new choices a value: Atelier rises and lifts,
+Studio fades in and zooms; both show the badge, zoom and keep the bar. Plain
+stays as it is, a style written before there was a layout, whose every choice
+is the first. None is boxed, so a site keeps its
+look until the owner boxes it.
+
+**The panels.** Design gains no new part: under the style, a group **The
+page** has the boxed page, the colour and the picture around it; under "More
+settings" the motion and the sidebar that stays in view; the dark logo
+sits under the logo in the header's panel; the shop's three choices go into
+**Blog and pages**, shown only while the shop is on; a type's section is under
+"Each entry also shows", in Content types.
+
+*Why the motion is the style's first and the block's second:* one choice for
+the whole site is what a beginner makes, and keeps a site from moving in five
+ways at once; a block that must stand still, or the one that should move on a
+still site, chooses in its own style panel (David's decision). *Why a section on a type and not a system of places:* the
+layouts' bands (ADR 0035) already put a section above and below the blocks of
+any kind of page; what they lack is the place inside an entry, after its words,
+which is where the themes' "hooks" are used most.
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as
@@ -327,6 +393,7 @@ look; nothing new is on).
 - A second header for the phone, built apart: the phone's menu panel covers
   what people ask for most; a whole other header waits for someone to ask.
 - "Over the first block" chosen page by page, in a layout.
+- A picture behind a page that is not boxed (d8).
 - Han characters in Japanese or Korean forms on a page in those languages: the
   stack names the Chinese Noto first, so a Japanese page draws Han and kana in
   Noto Sans SC until the stack follows the page's language.

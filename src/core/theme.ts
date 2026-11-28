@@ -81,6 +81,10 @@ export const EXCERPT_LENGTHS = ['long', 'short'] as const;
 export const ENTRY_COVERS = ['below', 'above', 'behind', 'none'] as const;
 export type EntryCover = (typeof ENTRY_COVERS)[number];
 
+/** How blocks appear as the page scrolls, and what changes under the pointer (ADR 0085 d8); the first of each is none. */
+export const MOTION_APPEAR = ['none', 'fade', 'rise'] as const;
+export const MOTION_HOVER = ['none', 'lift', 'zoom'] as const;
+
 export interface ThemeLayout {
   header: {
     arrangement: HeaderArrangement;
@@ -107,14 +111,20 @@ export interface ThemeLayout {
   list: { look?: Exclude<ListLook, 'stack'>; hide?: CardPart[]; excerpt?: 'short'; more?: true };
   /** An entry's head: where its picture sits. */
   entry: { cover?: Exclude<EntryCover, 'below'> };
+  /** Blocks appearing as the page scrolls, and a change under the pointer (ADR 0085 d8). Absent: none. */
+  motion: { appear?: 'fade' | 'rise'; hover?: 'lift' | 'zoom' };
+  /** The page in a box, the colour of the style around it, and a sidebar that stays in view. Absent: off. */
+  page: { boxed?: true; background?: string; stickySide?: true };
+  /** A product in a list and on its page: the badge, zoom on its picture, the bar that keeps "Add to cart" in view. Absent: off. */
+  shop: { badge?: true; zoom?: true; bar?: true };
 }
 
 /** The parts of a style's layout. */
-export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar', 'text', 'button', 'field', 'list', 'entry'] as const;
+export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar', 'text', 'button', 'field', 'list', 'entry', 'motion', 'page', 'shop'] as const;
 /** The parts that have a style of their own. */
 const STYLED_PARTS = ['header', 'footer', 'menu', 'bar'] as const;
 
-export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {}, text: {}, button: {}, field: {}, list: {}, entry: {} };
+export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {}, text: {}, button: {}, field: {}, list: {}, entry: {}, motion: {}, page: {}, shop: {} };
 
 /** Light or dark: what a palette is made for (ADR 0074). */
 export const SCHEMES = ['light', 'dark'] as const;
@@ -291,6 +301,9 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
     } else if (part === 'list' || part === 'entry') {
       parseEntries(part, raw, theme, issues);
       continue;
+    } else if (part === 'motion' || part === 'page' || part === 'shop') {
+      parseFinish(part, raw, theme, issues);
+      continue;
     } else if (part === 'menu') {
       for (const [key, allowedValues] of [['current', MENU_CURRENT], ['phone', MENU_PHONE]] as const) {
         const value = raw[key];
@@ -344,6 +357,39 @@ function parseEntries(part: 'list' | 'entry', raw: Record<string, unknown>, them
     if (typeof raw.more !== 'boolean') issues.push({ path: `${at}.more`, message: 'true or false' });
     else if (raw.more) list.more = true;
   }
+}
+
+/** On or off, kept only when on; anything else is reported. */
+function flag(raw: Record<string, unknown>, key: string, at: string, issues: Issue[]): true | undefined {
+  const value = raw[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== 'boolean') issues.push({ path: `${at}.${key}`, message: 'true or false' });
+  return value === true ? true : undefined;
+}
+
+/** The finishing of a style (ADR 0085 d8): motion, the page's box, the shop's products. */
+function parseFinish(part: 'motion' | 'page' | 'shop', raw: Record<string, unknown>, theme: Theme, issues: Issue[]): void {
+  const at = `layout.${part}`;
+  const keys = { motion: ['appear', 'hover'], page: ['boxed', 'background', 'stickySide'], shop: ['badge', 'zoom', 'bar'] }[part];
+  for (const key of Object.keys(raw)) if (!keys.includes(key)) issues.push({ path: `${at}.${key}`, message: `one of: ${keys.join(', ')}` });
+  if (part === 'motion') {
+    const appear = pick(MOTION_APPEAR, raw.appear, `${at}.appear`, issues);
+    const hover = pick(MOTION_HOVER, raw.hover, `${at}.hover`, issues);
+    if (appear) theme.layout.motion.appear = appear as 'fade' | 'rise';
+    if (hover) theme.layout.motion.hover = hover as 'lift' | 'zoom';
+    return;
+  }
+  if (part === 'page') {
+    const page = theme.layout.page;
+    if (flag(raw, 'boxed', at, issues)) page.boxed = true;
+    if (flag(raw, 'stickySide', at, issues)) page.stickySide = true;
+    if (raw.background !== undefined) {
+      if (typeof raw.background === 'string' && hasToken(theme, 'color', raw.background)) page.background = raw.background;
+      else issues.push({ path: `${at}.background`, message: 'a colour of this theme' });
+    }
+    return;
+  }
+  for (const key of keys as ('badge' | 'zoom' | 'bar')[]) if (flag(raw, key, at, issues)) theme.layout.shop[key] = true;
 }
 
 /** The text, button and field looks of a style (ADR 0085 d5). */

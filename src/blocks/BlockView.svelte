@@ -15,8 +15,13 @@ const editing = isEditing();
 // Hidden on a phone or on a wide screen (ADR 0085 d4): in the editor only faded, so it can still be chosen.
 const hide = $derived(block.style?.hideOn);
 const hidden = $derived(hide && 'value' in hide && choiceCss('hideOn', hide.value) !== null ? `${editing ? 'cms-' : ''}hide-${hide.value}` : '');
+/** The block's own motion, over the style's for the whole site (ADR 0085 d8). */
+const own = (prop: 'appear' | 'hover'): string | undefined => {
+  const value = block.style?.[prop];
+  return value && 'value' in value && choiceCss(prop, value.value) !== null ? String(value.value) : undefined;
+};
 </script>
 
-<section class={['b', `b-${block.type}`, block.variant && `v-${block.variant}`, hidden]} data-b={block.id} data-type={mark(block.type)}>
+<section class={['b', `b-${block.type}`, block.variant && `v-${block.variant}`, hidden]} data-b={block.id} data-type={mark(block.type)} data-appear={own('appear')} data-hover={own('hover')}>
   <div class="b-in"><Component {block} /></div>
 </section>

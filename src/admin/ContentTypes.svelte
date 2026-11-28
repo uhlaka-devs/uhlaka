@@ -5,6 +5,7 @@
  * about it is code.
  */
 import { type ContentType, contentTypes, ENTRY_EXTRAS, ENTRY_SCHEMAS, type EntrySchema, type FieldMeaning, meaningsFor, languageName, prefixOf, READY_LAYOUTS, type TypeTranslation, STANDARD, type Site, slugify, TYPE_FIELD_KINDS, type TypeField, type TypeFieldKind } from '../core/index.ts';
+import type { SectionInfo } from './api.ts';
 import Audience from './Audience.svelte';
 import { layoutName } from './layouts.ts';
 import { say, t } from './messages.ts';
@@ -17,8 +18,11 @@ let {
   onsave,
   ondesign,
   shop = false,
+  sections = [],
 }: {
   site: Site;
+  /** The sections a type may draw after each entry (ADR 0085 d8). */
+  sections?: SectionInfo[];
   /** The shop is on (ADR 0065 d10): a type may sell. */
   shop?: boolean;
   counts: Record<string, number>;
@@ -54,13 +58,20 @@ const kindChange = (kind: TypeFieldKind): Partial<TypeField> =>
   kind === 'choice' ? { kind, options: ['1', '2'] } : kind === 'entries' ? { kind, to: targets[0]?.id ?? '' } : { kind };
 /** One extra of an entry (ADR 0085 d7): kept only while it differs from before (the author's box on, the rest off). */
 const setExtra = (key: (typeof ENTRY_EXTRAS)[number], on: boolean): void => {
-  const entry: Record<string, boolean> = { ...(draft?.entry ?? {}) };
+  const entry: Record<string, boolean | string> = { ...(draft?.entry ?? {}) };
   if (key === 'author') {
     if (on) delete entry.author;
     else entry.author = false;
   } else if (on) entry[key] = true;
   else delete entry[key];
   patch({ entry: Object.keys(entry).length ? (entry as ContentType['entry']) : undefined });
+};
+/** The section drawn after each entry (ADR 0085 d8), or none. */
+const setSection = (slug: string): void => {
+  const entry = { ...(draft?.entry ?? {}) };
+  if (slug) entry.section = slug;
+  else delete entry.section;
+  patch({ entry: Object.keys(entry).length ? entry : undefined });
 };
 const patchField = (i: number, change: Partial<TypeField>): void => patch({ fields: (draft?.fields ?? []).map((f, j) => (j === i ? { ...f, ...change } : f)) });
 
@@ -140,6 +151,15 @@ async function remove(): Promise<void> {
         {#each ENTRY_EXTRAS as key (key)}
           <label class="check"><input type="checkbox" checked={key === 'author' ? draft.entry?.author !== false : draft.entry?.[key] === true} onchange={(e) => setExtra(key, e.currentTarget.checked)} data-type-extra={key} /><span>{t.ctypes.extras[key]}</span></label>
         {/each}
+        {#if sections.length || draft.entry?.section}
+          <label class="field">
+            <span>{t.ctypes.afterSection}</span>
+            <select value={draft.entry?.section ?? ''} onchange={(e) => setSection(e.currentTarget.value)} data-type-section>
+              <option value="">{t.blogLook.noSection}</option>
+              {#each sections as section (section.slug)}<option value={section.slug}>{section.title}</option>{/each}
+            </select>
+          </label>
+        {/if}
       </fieldset>
       {#if editing}{#key editing}<Audience kind="type" key={editing} />{/key}{/if}
 

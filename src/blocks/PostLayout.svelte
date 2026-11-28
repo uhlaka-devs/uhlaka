@@ -6,7 +6,7 @@
  * the page puts them.
  */
 import type { Block, ContentType, Crumb, MenuLink, Post, Site } from '../core/index.ts';
-import { entryContents, entryPath, listPath, neighbours, pictureIn, placesRelated, postsType, readingMinutes, typeAuthorPath } from '../core/index.ts';
+import { areaBlock, entryContents, entryPath, listPath, neighbours, pictureIn, placesRelated, postsType, readingMinutes, shownPrice, typeAuthorPath } from '../core/index.ts';
 import EntryFields from './EntryFields.svelte';
 import { type EntryLists, setEntry } from './editing.ts';
 import BlockView from './BlockView.svelte';
@@ -17,6 +17,7 @@ import Frozen from './Frozen.svelte';
 import PostMeta from './PostMeta.svelte';
 import Related from './Related.svelte';
 import Shell from './Shell.svelte';
+import ShopPrice from './ShopPrice.svelte';
 import { wordsFor } from './words.ts';
 
 let {
@@ -64,6 +65,12 @@ const shares = $derived.by(() => {
     [words.shareEmail, `mailto:?subject=${title}&body=${u}`],
   ] as const;
 });
+/** The section the type draws after each entry's blocks (ADR 0085 d8), with what it holds in this language. */
+const after = $derived(extras.section && site.areas?.[extras.section]?.length ? { ...areaBlock(extras.section), children: site.areas[extras.section] ?? [] } : null);
+/** A product's price, for the bar that keeps "Add to cart" in view; null when it is not one that can be bought. */
+const forBar = $derived(site.shop && kind.sells && post.product && !editing ? shownPrice(site.shop, post.product, kind.id, post.of ?? post.slug) : null);
+/** A product's picture can be opened whole (the style says whether, ADR 0085 d8). */
+const zooms = $derived(!!site.shop && !!kind.sells && !editing);
 // Read once: a page is drawn for one entry and one type.
 // svelte-ignore state_referenced_locally
 setEntry({ post, type: type ?? postsType(), language: site.language, editing: editing ? (designing ? 'template' : 'entry') : null });
@@ -85,7 +92,15 @@ setEntry({ post, type: type ?? postsType(), language: site.language, editing: ed
           <PostMeta type={kind} {post} language={site.language} />
           {#if extras.readingTime}<p class="post-reading">{words.readingTime.replace('{n}', String(readingMinutes(post)))}</p>{/if}
           <h1>{post.title}</h1>
-          {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'full')}<img class="post-cover" src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt={post.cover.alt} />{/if}
+          {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'full')}
+            {#if zooms}
+              <a class="post-zoom post-cover" id="zoom-from" href="#zoom-whole" aria-label={words.zoomOpen}><img src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt={post.cover.alt} /></a>
+              <div class="zoom-whole" id="zoom-whole" role="dialog" aria-label={post.cover.alt || post.title}>
+                <a class="zoom-close" href="#zoom-from"><span aria-hidden="true">×</span><span class="site-hide">{words.zoomClose}</span></a>
+                <img src={post.cover.src} alt={post.cover.alt} loading="lazy" decoding="async" />
+              </div>
+            {:else}<img class="post-cover" src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt={post.cover.alt} />{/if}
+          {/if}
           <EntryFields type={kind} {post} language={site.language} />
           {#if site.shop && kind.sells}<Buy shop={site.shop} {post} typeId={kind.id} language={site.language} />{/if}
         </div>
@@ -101,6 +116,7 @@ setEntry({ post, type: type ?? postsType(), language: site.language, editing: ed
       {#each post.blocks as block (block.id)}<BlockView {block} />{/each}
       {#if editing && post.blocks.length === 0}<div class="cms-empty" data-empty="page"></div>{/if}
     {/if}
+    {#if after}<div class="post-after" data-area="entry"><BlockView block={after} /></div>{/if}
     {#if !placed}<Related type={kind} {post} language={site.language} />{/if}
     {#if shareUrl && !editing}
       <aside class="b post-share" aria-label={words.share}>
@@ -131,4 +147,11 @@ setEntry({ post, type: type ?? postsType(), language: site.language, editing: ed
     {/if}
   </article>
   {#if kind.comments && !editing}<Comments {site} type={kind} {post} />{/if}
+  {#if forBar && site.shop}
+    <!-- Shown once the Buy part has scrolled away, while the style keeps "Add to cart" in view (ADR 0085 d8). -->
+    <div class="buy-bar" aria-hidden="true">
+      <p><strong>{post.title}</strong> <ShopPrice shop={site.shop} shown={forBar} language={site.language} tag="span" /></p>
+      <a class="button" href="#buy" tabindex="-1">{words.shopBuy}</a>
+    </div>
+  {/if}
 </Shell>

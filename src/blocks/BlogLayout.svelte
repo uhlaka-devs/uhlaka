@@ -1,10 +1,11 @@
 <script lang="ts">
 /** A list of entries: a type's front page, a later page of it, one category or tag, one person's (with who they are), or one period (ADR 0056). */
 import type { Byline, ContentType, Crumb, MenuLink, Post, Site } from '../core/index.ts';
-import { entryPath, listPath, pictureIn, postExcerpt, postsType } from '../core/index.ts';
+import { entryPath, listPath, pictureIn, postExcerpt, postsType, shownPrice } from '../core/index.ts';
 import Breadcrumbs from './Breadcrumbs.svelte';
 import PostMeta from './PostMeta.svelte';
 import Shell from './Shell.svelte';
+import ShopPrice from './ShopPrice.svelte';
 import { wordsFor } from './words.ts';
 
 let {
@@ -46,6 +47,8 @@ let {
 const kind = $derived(type ?? postsType());
 const typeOf = (i: number): ContentType => kinds[i] ?? kind;
 const words = $derived(wordsFor(site.language));
+/** A product's price and whether it is on sale or sold out, while the shop is on (ADR 0085 d8); null for any other entry. */
+const priced = (post: Post, i: number) => (site.shop && typeOf(i).sells && post.product ? shownPrice(site.shop, post.product, typeOf(i).id, post.of ?? post.slug) : null);
 /** The pages to number: the first, the last, and two on each side of this one; null where some are left out. */
 const shownNumbers = $derived.by(() => {
   const out: (number | null)[] = [];
@@ -75,10 +78,13 @@ const shownNumbers = $derived.by(() => {
       {#if posts.length === 0}<p class="lead">{words.noPosts}</p>{/if}
       <ul class="posts">
         {#each posts as post, i (`${typeOf(i).id}/${post.slug}`)}
+          {@const shown = priced(post, i)}
+          {@const badge = shown ? (!shown.left ? words.shopSoldOut : shown.sale !== null ? words.shopSale : '') : ''}
           <li class="post-card" class:has-picture={!!post.cover}>
-            {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'card')}<a class="post-picture" href={entryPath(typeOf(i), post.slug)} tabindex="-1" aria-hidden="true"><img src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt="" loading="lazy" decoding="async" /></a>{/if}
+            {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'card')}<a class="post-picture" href={entryPath(typeOf(i), post.slug)} tabindex="-1" aria-hidden="true">{#if badge}{@render tag(badge, !shown?.left)}{/if}<img src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt="" loading="lazy" decoding="async" /></a>{:else if badge}{@render tag(badge, !shown?.left)}{/if}
             <PostMeta type={typeOf(i)} {post} language={site.language} />
             <h2><a href={entryPath(typeOf(i), post.slug)}>{post.title}</a></h2>
+            {#if shown && site.shop}<ShopPrice shop={site.shop} {shown} language={site.language} />{/if}
             <p class="post-excerpt">{postExcerpt(post)}</p>
             <a class="post-more" href={entryPath(typeOf(i), post.slug)} aria-label={`${words.readMore}: ${post.title}`}>{words.readMore}</a>
           </li>
@@ -102,3 +108,5 @@ const shownNumbers = $derived.by(() => {
     </div>
   </section>
 </Shell>
+
+{#snippet tag(text: string, out: boolean)}<span class="shop-badge" data-out={out ? '' : undefined}>{text}</span>{/snippet}

@@ -52,6 +52,8 @@ style.textContent = `
 /* While editing blocks, a header that would stay on screen does not: it would cover the block being worked on.
    With the theme panel open it does, so that the setting can be seen. */
 :root:not([data-cms-theme]) .site-header{position:static!important}
+/* Nothing appears as the page scrolls in the editor (ADR 0085 d8): every block is there to be chosen. */
+.b{animation:none!important}
 [data-site]{cursor:pointer}
 [data-site]:hover{outline:1px dashed #6d5dfc;outline-offset:-1px}
 [data-edit],[data-edit-rich]{cursor:text;min-width:1ch}

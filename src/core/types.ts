@@ -98,6 +98,8 @@ export interface EntryExtras {
   nextPrev?: true;
   share?: true;
   contents?: true;
+  /** A section drawn after each entry's blocks (ADR 0085 d8): a sign-up, "Call us". Absent: none. */
+  section?: string;
 }
 export const ENTRY_EXTRAS = ['readingTime', 'author', 'nextPrev', 'share', 'contents'] as const;
 
@@ -107,6 +109,7 @@ export function cleanEntryExtras(raw: unknown): { entry?: EntryExtras } {
   const entry: EntryExtras = {};
   for (const key of ['readingTime', 'nextPrev', 'share', 'contents'] as const) if (raw[key] === true) entry[key] = true;
   if (raw.author === false) entry.author = false;
+  if (slugify(raw.section)) entry.section = slugify(raw.section);
   return Object.keys(entry).length ? { entry } : {};
 }
 

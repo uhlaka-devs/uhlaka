@@ -14,7 +14,7 @@
  */
 import { getContext, type Snippet } from 'svelte';
 import type { Alternate, MenuLink, Site } from '../core/index.ts';
-import { areaBlock, choicePath, holdsCurrent, isLink, isMega, layoutOf, measureFor, menuLeadsAway } from '../core/index.ts';
+import { areaBlock, choicePath, holdsCurrent, isLink, isMega, layoutOf, measureFor, menuLeadsAway, pictureIn } from '../core/index.ts';
 import BlockView from './BlockView.svelte';
 import { type EntryLists, marker, setEditing, setLists, setMeasure, setSite } from './editing.ts';
 import { ALTERNATES, wordsFor } from './words.ts';
@@ -68,6 +68,10 @@ const cart = $derived(site.header?.cart === true && site.shop !== undefined);
 const footerArea = $derived(frame.footer ? area(site.footerSection ?? '') : null);
 </script>
 
+{#if site.background}{@const pa = pictureIn(site, layout, site.background.src, 'full')}
+<!-- Shown only while the style puts the page in a box (ADR 0085 d8). -->
+<div class="site-backdrop" aria-hidden="true"><img src={site.background.src} srcset={pa.srcset} sizes="100vw" alt="" decoding="async" /></div>
+{/if}
 {#if bar && bar.children.length}
 <div class="site-bar" data-site={mark('header')}><BlockView block={bar} /></div>
 {/if}
@@ -75,7 +79,7 @@ const footerArea = $derived(frame.footer ? area(site.footerSection ?? '') : null
 <header class="site-header" data-site={mark('header')}>
   <div class="site-in">
     <a class="site-name" href={home}>
-      {#if site.logo}<img class="site-logo" src={site.logo.src} alt={site.logo.alt || site.name} />{:else}{site.name}{/if}
+      {#if site.logo}<img class="site-logo" class:logo-light={!!site.logoDark} src={site.logo.src} alt={site.logo.alt || site.name} />{#if site.logoDark}<img class="site-logo logo-dark" src={site.logoDark.src} alt={site.logoDark.alt || site.logo.alt || site.name} />{/if}{:else}{site.name}{/if}
     </a>
     {#if hasMenu || isLink(site.action)}
       <input class="menu-check" type="checkbox" id="site-menu" aria-label={words.menu} />

@@ -356,6 +356,8 @@ export async function buildSite(
   // Each person's picture, beside what they wrote and on their page (ADR 0056 d2).
   for (const post of posts) if (post.author?.picture) shown.push([`the picture of ${post.author.name}`, post.author.picture.src]);
   if (site.logo) shown.push(['the header', site.logo.src]);
+  if (site.logoDark) shown.push(['the header (logo for the dark)', site.logoDark.src]);
+  if (site.background) shown.push(['the picture around the page', site.background.src]);
   if (site.shareImage) shown.push(['the picture for sharing, in Settings', site.shareImage.src]);
   for (const [where, src] of shown) {
     const name = mediaNameOf(src);
