@@ -143,7 +143,7 @@ let design = $state<'' | DesignPart>('');
 /** The canvas shows the header as on the site, sticky included, while Design is open. */
 const themeMode = $derived(design !== '');
 /** The site's own words are being edited (Settings, or Design's header or footer): the admin keeps what is typed. */
-const siteMode = $derived(view === 'settings' || design === 'header' || design === 'footer');
+const siteMode = $derived(view === 'settings' || design === 'header' || design === 'blog' || design === 'footer');
 let past = $state.raw<Block[][]>([]);
 let future = $state.raw<Block[][]>([]);
 
@@ -891,6 +891,7 @@ onMount(() => {
         <span class="group">{t.nav.groups.design}</span>
         <button type="button" onclick={() => openDesign('style')} data-nav="theme"><Icon name="palette" />{t.look.parts.style}</button>
         <button type="button" onclick={() => openDesign('header')} data-nav="header"><Icon name="panel-top" />{t.look.parts.header}</button>
+        <button type="button" onclick={() => openDesign('blog')} data-nav="blog"><Icon name="newspaper" />{t.look.parts.blog}</button>
         <button type="button" onclick={() => openDesign('footer')} data-nav="footer"><Icon name="panel-bottom" />{t.look.parts.footer}</button>
         <button type="button" aria-current={view === 'layouts' ? 'page' : undefined} onclick={() => (view = 'layouts')} data-nav="layouts"><Icon name="layout-dashboard" />{t.nav.layouts}</button>
       {/if}

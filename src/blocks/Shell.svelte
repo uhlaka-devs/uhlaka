@@ -64,6 +64,8 @@ const bottom = $derived(area(frame.bottom));
 const bar = $derived(frame.header ? area(site.header?.bar ?? '') : null);
 const search = $derived(site.header?.search === true);
 const cart = $derived(site.header?.cart === true && site.shop !== undefined);
+/** The footer's section, above its line (ADR 0085 d7). */
+const footerArea = $derived(frame.footer ? area(site.footerSection ?? '') : null);
 </script>
 
 {#if bar && bar.children.length}
@@ -164,6 +166,7 @@ const cart = $derived(site.header?.cart === true && site.shop !== undefined);
 </div>
 {#if frame.footer}
 <footer class="site-footer" data-site={mark('footer')}>
+  {#if footerArea && footerArea.children.length}<div class="footer-area"><BlockView block={footerArea} /></div>{/if}
   <div class="site-in">
     <p>{site.footer || site.name}</p>
     {#if footerLinks.length}
@@ -171,6 +174,7 @@ const cart = $derived(site.header?.cart === true && site.shop !== undefined);
         {#each footerLinks as link}<a href={link.href}>{link.label}</a>{/each}
       </nav>
     {/if}
+    {#if site.backToTop}<a class="to-top" href="#top">{words.backToTop}<span aria-hidden="true"> ↑</span></a>{/if}
   </div>
 </footer>
 {/if}

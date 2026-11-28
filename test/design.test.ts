@@ -13,8 +13,8 @@ const parsed = (raw: unknown): Theme => {
 const ready = [atelier, plain, studio].map(parsed);
 
 describe('Design (ADR 0082)', () => {
-  test('has four parts beside the page: the style, the header, text and buttons (ADR 0085 d5), the footer', () => {
-    expect([...DESIGN_PARTS]).toEqual(['style', 'header', 'text', 'footer']);
+  test('has five parts beside the page: the style, the header, text and buttons (ADR 0085 d5), the blog and pages (d7), the footer', () => {
+    expect([...DESIGN_PARTS]).toEqual(['style', 'header', 'text', 'blog', 'footer']);
   });
 
   test('a ready-made style is known as itself, whatever the order of its keys', () => {

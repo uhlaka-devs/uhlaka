@@ -139,9 +139,11 @@ export function resultsPage(frame: string, language: string, query: string, hits
     `<form class="search-form" role="search" method="get" action="/_/search"><label class="search-label" for="search-q">${escape(said.search)}</label>` +
     `${asked ? `<input type="hidden" name="l" value="${escape(asked)}">` : ''}<input id="search-q" name="q" type="search" maxlength="${SEARCH_MAX_QUERY}" value="${q}" required> <button class="button" type="submit">${escape(said.search)}</button></form>` +
     `${list}</div></section>`;
+  // What the owner put under the results (ADR 0085 d7), carried by the frame.
+  const after = /<template data-search-after>([\s\S]*?)<\/template>/.exec(frame)?.[1] ?? '';
   return frame
     .replace(/<title>[^<]*?(( · [^<]*)?)<\/title>/, (_whole, rest: string) => `<title>${escape(said.search)}${rest}</title>`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${escape(said.search)}">`)
     .replace('</head>', '<meta name="robots" content="noindex">\n</head>')
-    .replace(/<main([^>]*)>[\s\S]*?<\/main>/, (_whole, attrs: string) => `<main${attrs}>${main}</main>`);
+    .replace(/<main([^>]*)>[\s\S]*?<\/main>/, (_whole, attrs: string) => `<main${attrs}>${main}${after}</main>`);
 }

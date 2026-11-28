@@ -296,7 +296,7 @@ export interface ListOptions {
 /** One page of a list of entries: a type's own, one category or tag of it, one person's or one period's. */
 export function renderBlogList(
   site: Site,
-  list: { heading: string; path: string; posts: Post[]; newer?: string; older?: string },
+  list: { heading: string; path: string; posts: Post[]; newer?: string; older?: string; numbers?: string[]; at?: number },
   menu: MenuItem[],
   type: ContentType = postsType(),
   alternates: Alternate[] = [],
@@ -305,7 +305,7 @@ export function renderBlogList(
   const trail = options.trail ?? listTrail(wordsFor(site.language).home, type, list.heading, list.path);
   const crumbs = crumbsOf(site, trail);
   const { person = null, kinds = [], current = null } = options;
-  const body = clean(render(BlogLayout, { props: { site, menu, heading: list.heading, posts: list.posts, newer: list.newer, older: list.older, type, crumbs, kinds, person, current }, context: withAlternates(alternates) }).body);
+  const body = clean(render(BlogLayout, { props: { site, menu, heading: list.heading, posts: list.posts, newer: list.newer, older: list.older, numbers: list.numbers ?? [], at: list.at ?? 1, type, crumbs, kinds, person, current }, context: withAlternates(alternates) }).body);
   // A person's page is about them (schema.org ProfilePage).
   const profile = person
     ? [{ '@type': 'ProfilePage', url: `${site.url}${list.path}`, mainEntity: { '@type': 'Person', name: person.name, ...(person.bio ? { description: person.bio } : {}), ...(person.picture ? { image: absolute(site, person.picture.src) } : {}) } }]

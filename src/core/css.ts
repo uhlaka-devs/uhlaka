@@ -132,6 +132,40 @@ const BUTTON_LOOK: Record<string, string> = {
   text: '.button:not(.quiet){background:transparent;color:var(--b-button-bg,var(--t-color-primary));padding-inline:0;text-decoration:underline;text-underline-offset:.25em}',
 };
 
+/** What each look of a list of entries writes (ADR 0085 d7). */
+const GRID = '.blog{--b-width:var(--t-width-content)}.posts{grid-template-columns:repeat(auto-fill,minmax(min(16rem,100%),1fr))}';
+const LIST_LOOK: Record<string, string> = {
+  side:
+    '@media (min-width:48.01rem){.post-card.has-picture{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);column-gap:var(--t-space-md);align-content:start}' +
+    '.post-card.has-picture>*{grid-column:2}.post-card.has-picture>.post-picture{grid-column:1;grid-row:1/span 5}.post-picture img{margin:0;aspect-ratio:4/3}}',
+  grid: GRID,
+  cards:
+    `${GRID}.post-card{display:flex;flex-direction:column;overflow:hidden;padding:var(--t-space-md);background-color:var(--t-color-surface);border:1px solid var(--t-color-border);border-radius:var(--t-radius-md)}` +
+    '.post-picture img{display:block;border-radius:0;width:calc(100% + 2*var(--t-space-md));max-width:none;margin:calc(-1*var(--t-space-md)) calc(-1*var(--t-space-md)) var(--t-space-sm)}.post-more{margin-top:auto}',
+};
+const CARD_HIDE: Record<string, string> = { picture: '.post-card>.post-picture', meta: '.post-card>.post-meta', excerpt: '.post-card>.post-excerpt' };
+const ENTRY_COVER: Record<string, string> = {
+  above: '.post-head>.b-in{display:flex;flex-direction:column}.post-head .post-cover{order:-1;margin:0 0 var(--t-space-md)}',
+  none: '.post-head .post-cover{display:none}',
+  // The picture covers the whole band, with the page's text colour over it and the words in its background colour, as a group's picture (d4).
+  behind:
+    '.post-head:has(.post-cover){position:relative;isolation:isolate;padding-block:var(--t-space-xl);color:var(--t-color-background);--t-color-link:currentColor;--t-color-muted:currentColor}' +
+    '.post-head:has(.post-cover)::before{content:"";position:absolute;inset:0;z-index:-1;background-color:var(--t-color-text);opacity:.55}' +
+    '.post-head .post-cover{position:absolute;inset:0;z-index:-2;width:100%;height:100%;max-width:none;margin:0;border-radius:0;object-fit:cover}',
+};
+
+/** A list of entries and an entry's head as the style has them (ADR 0085 d7); nothing when it has none. */
+function entriesCss(theme: Theme): string {
+  const { list, entry } = theme.layout;
+  let css = '';
+  if (list.look) css += `${LIST_LOOK[list.look]}\n`;
+  if (list.hide?.length) css += `${list.hide.map((part) => CARD_HIDE[part]).join(',')}{display:none}\n`;
+  if (list.excerpt) css += '.post-excerpt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}\n';
+  if (list.more) css += '.post-more{display:block}\n';
+  if (entry.cover) css += `${ENTRY_COVER[entry.cover]}\n`;
+  return css;
+}
+
 /** Headings, text, the menu, buttons and fields as the style has them (ADR 0085 d5); nothing when it has none. */
 function textCss(theme: Theme): string {
   const { text, button, field } = theme.layout;
@@ -206,6 +240,7 @@ export function themeCss(theme: Theme, options: { preview?: boolean } = {}): str
   if (menu.phone) css += MENU_PANEL(menu.phone === 'full');
   css += rule('.site-bar', declarations(bar.style, theme));
   css += textCss(theme);
+  css += entriesCss(theme);
   return css;
 }
 

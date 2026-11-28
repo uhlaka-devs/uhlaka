@@ -6,21 +6,33 @@
 import { type BlockStyle, FOOTER_ARRANGEMENTS, languageName, type LinkValue, type Site, type SiteText, type Theme } from '../core/index.ts';
 import { say, t } from './messages.ts';
 import StyleEditor from './StyleEditor.svelte';
+import type { SectionInfo } from './api.ts';
 import { tryTheme } from './themeEdit.ts';
 
 let {
   site,
   theme,
+  sections = [],
   onsite,
   ontheme,
 }: {
   site: Site;
   theme: Theme;
+  /** The sections the footer may show above its line (ADR 0085 d7). */
+  sections?: SectionInfo[];
   onsite: (site: Site) => void;
   ontheme: (theme: Theme) => void;
 } = $props();
 
 const set = (patch: Partial<Site>): void => onsite({ ...site, ...patch });
+/** The footer's section and "Back to top": absent when off, as a site written before has them. */
+const setPart = (key: 'footerSection' | 'backToTop', value: string | boolean): void => {
+  const next: Site = { ...site };
+  if (key === 'footerSection' && typeof value === 'string' && value) next.footerSection = value;
+  else if (key === 'backToTop' && value === true) next.backToTop = true;
+  else delete next[key];
+  onsite(next);
+};
 const link = (value: LinkValue | null, patch: Partial<LinkValue>): LinkValue => ({ label: value?.label ?? '', href: value?.href ?? '', ...patch });
 const setFooterLink = (i: number, patch: Partial<LinkValue>): void => set({ footerLinks: site.footerLinks.map((l, j) => (j === i ? link(l, patch) : l)) });
 const own = (language: string): SiteText => site.translations[language] ?? { footer: '', action: null, footerLinks: [] };
@@ -65,6 +77,20 @@ const setStyle = (style: BlockStyle): void =>
   {/if}
 </fieldset>
 
+<div class="field" data-footer-section>
+  <label><span>{t.site.footerSection}</span>
+    <select value={site.footerSection ?? ''} onchange={(e) => setPart('footerSection', e.currentTarget.value)} data-site-footer-section>
+      <option value="">{t.site.footerSectionNone}</option>
+      {#each sections as section (section.slug)}<option value={section.slug}>{section.title}</option>{/each}
+    </select>
+  </label>
+  <small>{t.site.footerSectionHint}</small>
+</div>
+<label class="check">
+  <input type="checkbox" checked={site.backToTop === true} onchange={(e) => setPart('backToTop', e.currentTarget.checked)} data-site-back-to-top />
+  <span>{t.site.backToTop}</span>
+</label>
+
 {#each site.languages as language (language)}
   <label class="field">
     <span>{say(t.look.footerIn, { language: languageName(language) })}</span>
@@ -102,6 +128,7 @@ const setStyle = (style: BlockStyle): void =>
   .choice.on { border: 2px solid var(--primary); padding: calc(var(--sp-2) - 1px); background: var(--secondary-container); color: var(--on-secondary-container); }
   .choice input { position: absolute; opacity: 0; pointer-events: none; }
   .choice:has(input:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-block: var(--sp-2); }
   details { margin: var(--sp-3) 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); padding: var(--sp-2) var(--sp-3); }
   summary { cursor: pointer; font: var(--title-s); min-height: var(--target-dense); display: flex; align-items: center; }
   details[open] > summary { margin-bottom: var(--sp-3); }

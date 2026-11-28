@@ -267,7 +267,7 @@ how it looked before, kept as an absence.
 | --- | --- | --- |
 | The list | style: `layout.list.look` | one under another, the picture above (`stack`, as before), the picture beside the words (`side`), a grid of two or three (`grid`), a grid of boxes (`cards`, in the style's surface colour, with its border and radius) |
 | What a card shows | style: `layout.list.hide` | any of `picture`, `meta` (date, author, categories), `excerpt`; absent: all of them, as before |
-| The excerpt's length | style: `layout.list.excerpt` | as before (`long`, the first 200 characters), `short` (the first 100), `none` |
+| The excerpt's length | style: `layout.list.excerpt` | as before (`long`, the first 200 characters), or `short`: two lines; leaving it out is `hide` |
 | "Read more" under each card | style: `layout.list.more` | on or off |
 | Numbered pages | none: always | the pages of a list as numbers (1 2 3 … 9) between "Newer" and "Older"; a choice nobody would turn off is not offered |
 | The picture of an entry | style: `layout.entry.cover` | under the title (`below`, as before), above it (`above`), behind it (`behind`: the whole band, with the style's colour over it, as a group's picture, d4), or `none` |
@@ -276,22 +276,25 @@ how it looked before, kept as an absence.
 | Previous and next | type: `entry.nextPrev` | on or off; the entries before and after in the type's own order, with their titles |
 | Sharing | type: `entry.share` | on or off; plain links (Facebook, X, LinkedIn, WhatsApp, e-mail) with icons the site carries, no script and no count, so no visitor's browser asks anyone before a click |
 | Contents | type: `entry.contents` | on or off; the entry's headings 2 and 3, linked, above its first block, when it has three or more |
-| The page for an address that does not exist | site: `pages.notFound`, a section's slug | a section, drawn under the heading "Page not found" and a search field; none: as before |
-| Search results | site: `pages.search`, a section's slug | a section drawn under the results (a few links, a form); none: as before |
-| The footer in columns | site: `footer.section`, a section's slug | a section drawn above the footer's line (its columns are a group's, d4); none: as before |
-| "Back to top" | site: `footer.top` | on or off: a link at the end of the footer's line to the top of the page, no script |
+| The page for an address that does not exist | site: `notFound`, a section's slug | a section, drawn under the heading "Page not found" and a search field (on a static host, which answers no search, a link home); none: only those |
+| Search results | site: `searchSection`, a section's slug | a section drawn under the results (a few links, a form); none: as before |
+| The footer in columns | site: `footerSection`, a section's slug | a section drawn above the footer's line (its columns are a group's, d4); none: as before |
+| "Back to top" | site: `backToTop` | on or off: a link at the end of the footer's line to the top of the page, no script |
 
 The ready-made blog type has reading time, the author's box and previous and
-next on; sharing and contents off. A new site gets the sections "404" and
-"Footer", made of ordinary blocks, chosen in its settings, so a beginner finds
-them in Sections and changes them by clicking them on the page.
+next on; sharing and contents off.
 
-The panels: a click on a list opens **The list** (its look, then under "More
-settings" what a card shows, the excerpt, "Read more"); a click on an entry's
-head opens **The entry** (where its picture sits; reading time, the author,
-previous and next, sharing, contents). The footer's panel gains its section
-and "Back to top". The 404 page and the results page are shown in the editor
-too, so their sections are changed where they are seen.
+The panels: Design gains a fifth part, **Blog and pages**: the list's look
+(four small pictures) and where an entry's picture sits; under "More
+settings" what a card shows, the shorter excerpt and "Read more"; then the
+sections of the 404 page and of the search results. What an entry shows
+besides its words is set with its type. The footer's panel gains its section
+and "Back to top".
+
+The 404 page was empty before (its title only); it now always has its heading
+and, on the site's own server, a search field. The section under the search
+results rides in the 404 page, inside a `<template>` nothing draws, because
+that page is the frame the server answers a search in.
 
 Everything works without script. A style or a site written before reads and
 draws as before.
