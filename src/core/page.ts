@@ -1,6 +1,7 @@
 /** A page and the site it belongs to, as documents. */
 import type { PublicBlock } from './extension.ts';
 import type { Form } from './form.ts';
+import type { FontFace } from './style.ts';
 import { type Block, cleanImage, describeBlocks, cleanLink, type ImageValue, type LinkValue, normalizeBlocks } from './blocks.ts';
 import { type Layout, normalizeLayouts } from './layout.ts';
 import { normalizeTranslations, type PageTranslation } from './localize.ts';
@@ -92,6 +93,8 @@ export interface Site {
   data?: false;
   /** The stored pictures' sizes and smaller copies (ADR 0005 d8): filled in to draw a page for export, never kept. */
   pictures?: Pictures;
+  /** The faces of the site's own fonts (ADR 0085 d6): Google families and uploaded faces. Filled in to draw a page, never kept. */
+  faces?: FontFace[];
   /** True while visitor accounts are on (ADR 0064 d8): the menu's "My account" is drawn only then. Filled in to draw a page, never kept. */
   accounts?: boolean;
   /** While the shop is on (ADR 0065 d3): its currency and what was in stock. Filled in to draw a page, never kept. */

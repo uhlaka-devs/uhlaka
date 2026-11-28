@@ -53,7 +53,7 @@ import {
   FONTS_PATH,
   facesUsed,
   fontFacesCss,
-  SHIPPED_FACES,
+  charsOf,
   alternates,
   pagesIn,
   fillSections,
@@ -73,7 +73,7 @@ import { lockedPage, membersPage } from './locks.ts';
 import { menuOf, pageSetting, renderBlogList, renderPage, renderPost, STYLESHEET, withScheme } from './document.ts';
 import { SCHEME_SCRIPT, SCHEME_SCRIPT_PATH } from './scheme.ts';
 import { checkRedirects, checkSeo, checkSite, describeCheck, type SiteCheck, serverOnly } from './check.ts';
-import { BASE_CSS, shippedFonts } from './shipped.ts';
+import { BASE_CSS, SHIPPED_FACES, shippedFont } from './shipped.ts';
 import { shopGate } from '../parts/shop/gate.ts';
 import { STATS, type Store } from './store.ts';
 import type { EditTarget } from './admin-bar.ts';
@@ -181,6 +181,8 @@ export async function buildSite(
   audiences: Audiences = NO_AUDIENCES,
   /** Filled with what each page and entry address is in the editor, for the admin bar of a served site (ADR 0075). */
   targets?: Map<string, EditTarget>,
+  /** The bytes of a file of the site's own fonts (ADR 0085 d6). */
+  fontFile: (name: string) => Promise<Uint8Array | null> = async () => null,
 ): Promise<Map<string, string | Uint8Array>> {
   const files = new Map<string, string | Uint8Array>();
   /** Each address for visitors signed in or for members, with who sees it: marked for the runtime at the end. */
@@ -411,12 +413,18 @@ export async function buildSite(
   }
   files.set('robots.txt', robotsFile(site));
   if (site.data !== false) writeData(files, site, data.filter((d) => !(d.path in locked) && !members.has(d.path)));
-  // The faces Uhlaka carries that the theme or a page names, and only those (ADR 0068 d1): declared first in the stylesheet, served beside it.
-  const used = facesUsed([...files.values()].filter((f): f is string => typeof f === 'string'));
-  if (used.size) {
-    const css = STYLESHEET.slice(1);
+  // The faces the stylesheet names (ADR 0068 d1, ADR 0085 d6), declared first in it and served beside it: only those that draw
+  // a letter of the site's pages, or of the words the served site answers with, so a Romanian site never carries Japanese.
+  const css = STYLESHEET.slice(1);
+  const texts = [...files.values()].filter((f): f is string => typeof f === 'string');
+  const words = site.languages.map((language) => JSON.stringify(wordsFor(language)));
+  const used = facesUsed(texts, [...SHIPPED_FACES, ...(site.faces ?? [])], charsOf([...texts, ...words]));
+  if (used.length && typeof files.get(css) === 'string') {
     files.set(css, `${fontFacesCss(used)}${files.get(css) as string}`);
-    for (const face of SHIPPED_FACES) if (used.has(face.family)) files.set(`${FONTS_PATH.slice(1)}${face.file}`, (await shippedFonts()).get(face.file) as Uint8Array);
+    for (const face of used) {
+      const bytes = (await shippedFont(face.file)) ?? (await fontFile(face.file));
+      if (bytes) files.set(`${FONTS_PATH.slice(1)}${face.file}`, bytes);
+    }
   }
   return files;
 }
@@ -597,7 +605,7 @@ export async function publishedSite(store: Store, served = false, targets?: Map<
   const accounts = ((await store.visitorSettings()) as { on?: unknown } | null)?.on === true;
   // A product's Buy part, only on a served site while the shop is on (ADR 0065 d3, d10): a static host has no cart.
   const shop = served ? await shopGate(store).shown() : null;
-  const site = { ...(await store.site()), formDefs: await store.formsByName(), extensionBlocks: await store.extensionBlocks(), accounts, ...(shop ? { shop } : {}), ...(served ? { served: true } : {}) };
+  const site = { ...(await store.site()), faces: await store.siteFaces(), formDefs: await store.formsByName(), extensionBlocks: await store.extensionBlocks(), accounts, ...(shop ? { shop } : {}), ...(served ? { served: true } : {}) };
   const entries: Record<string, Post[]> = {};
   const templates: Record<string, Block[] | null> = {};
   for (const type of contentTypes(site)) {
@@ -608,5 +616,5 @@ export async function publishedSite(store: Store, served = false, targets?: Map<
   const locked = Object.fromEntries(pages.filter((p) => locks.has(p.of)).map((p) => [pagePath(p.slug), p.of]));
   const media: MediaSource = async (name) =>
     served && mediaKindOf(name) !== 'image' ? ((await store.hasMedia(name)) ? new Uint8Array(0) : null) : ((await store.mediaFile(name))?.bytes ?? null);
-  return buildSite(site, theme, pages, media, entries, await store.redirects(), templates, await store.publishedSections(), await store.mediaSizes(), await store.shownComments(), locked, await store.bylines(), await store.publishedTimes(), await store.audiences(), targets);
+  return buildSite(site, theme, pages, media, entries, await store.redirects(), templates, await store.publishedSections(), await store.mediaSizes(), await store.shownComments(), locked, await store.bylines(), await store.publishedTimes(), await store.audiences(), targets, (name) => store.fontFile(name));
 }

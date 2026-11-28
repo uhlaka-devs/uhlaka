@@ -20,6 +20,10 @@
 import { SQL } from 'bun';
 import {
   authorPath,
+  cleanFontFace,
+  type FontFace,
+  isSiteFont,
+  siteFontFamily,
   type ExtensionBlockDef,
   authorSlugs,
   entrySlugProblem,
@@ -236,6 +240,8 @@ const SQLITE: Dialect = {
     'CREATE TABLE IF NOT EXISTS extension_unique (extension TEXT NOT NULL, collection TEXT NOT NULL, field TEXT NOT NULL, value TEXT NOT NULL, id TEXT NOT NULL, PRIMARY KEY (extension, collection, field, value))',
     'CREATE TABLE IF NOT EXISTS extension_later (id TEXT PRIMARY KEY, extension TEXT NOT NULL, action TEXT NOT NULL, input TEXT NOT NULL, due_at TEXT NOT NULL, tries INTEGER NOT NULL, made_at TEXT NOT NULL)',
     'CREATE TABLE IF NOT EXISTS extension_files (id TEXT PRIMARY KEY, extension TEXT NOT NULL, order_id TEXT NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, buyer INTEGER NOT NULL, size INTEGER NOT NULL, bytes BLOB NOT NULL, created_at TEXT NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS fonts (name TEXT PRIMARY KEY, label TEXT NOT NULL, faces TEXT NOT NULL, created_at TEXT NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS font_files (name TEXT PRIMARY KEY, bytes BLOB NOT NULL)',
   ],
   params: (query) => query,
   upsert: (table, columns, key, update) =>
@@ -279,6 +285,8 @@ const POSTGRES: Dialect = {
     'CREATE TABLE IF NOT EXISTS extension_unique (extension VARCHAR(64) NOT NULL, collection VARCHAR(64) NOT NULL, field VARCHAR(64) NOT NULL, value VARCHAR(255) NOT NULL, id VARCHAR(40) NOT NULL, PRIMARY KEY (extension, collection, field, value))',
     'CREATE TABLE IF NOT EXISTS extension_later (id VARCHAR(40) PRIMARY KEY, extension VARCHAR(64) NOT NULL, action VARCHAR(64) NOT NULL, input TEXT NOT NULL, due_at VARCHAR(40) NOT NULL, tries INTEGER NOT NULL, made_at VARCHAR(40) NOT NULL)',
     'CREATE TABLE IF NOT EXISTS extension_files (id VARCHAR(40) PRIMARY KEY, extension VARCHAR(64) NOT NULL, order_id VARCHAR(64) NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(100) NOT NULL, buyer INTEGER NOT NULL, size INTEGER NOT NULL, bytes BYTEA NOT NULL, created_at VARCHAR(40) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS fonts (name VARCHAR(64) PRIMARY KEY, label VARCHAR(255) NOT NULL, faces TEXT NOT NULL, created_at VARCHAR(40) NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS font_files (name VARCHAR(255) PRIMARY KEY, bytes BYTEA NOT NULL)',
   ],
   params: (query) => {
     let n = 0;
@@ -321,6 +329,8 @@ const MYSQL: Dialect = {
     `CREATE TABLE IF NOT EXISTS extension_unique (extension VARCHAR(64) NOT NULL, collection VARCHAR(64) NOT NULL, field VARCHAR(64) NOT NULL, value VARCHAR(255) NOT NULL, id VARCHAR(40) NOT NULL, PRIMARY KEY (extension, collection, field, value)) ${MYSQL_TABLE}`,
     `CREATE TABLE IF NOT EXISTS extension_later (id VARCHAR(40) PRIMARY KEY, extension VARCHAR(64) NOT NULL, action VARCHAR(64) NOT NULL, input LONGTEXT NOT NULL, due_at VARCHAR(40) NOT NULL, tries INTEGER NOT NULL, made_at VARCHAR(40) NOT NULL) ${MYSQL_TABLE}`,
     `CREATE TABLE IF NOT EXISTS extension_files (id VARCHAR(40) PRIMARY KEY, extension VARCHAR(64) NOT NULL, order_id VARCHAR(64) NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(100) NOT NULL, buyer INTEGER NOT NULL, size INTEGER NOT NULL, bytes LONGBLOB NOT NULL, created_at VARCHAR(40) NOT NULL) ${MYSQL_TABLE}`,
+    `CREATE TABLE IF NOT EXISTS fonts (name VARCHAR(64) PRIMARY KEY, label VARCHAR(255) NOT NULL, faces LONGTEXT NOT NULL, created_at VARCHAR(40) NOT NULL) ${MYSQL_TABLE}`,
+    `CREATE TABLE IF NOT EXISTS font_files (name VARCHAR(255) PRIMARY KEY, bytes LONGBLOB NOT NULL) ${MYSQL_TABLE}`,
   ],
   params: (query) => query,
   upsert: (table, columns, _key, update) =>
@@ -1856,6 +1866,65 @@ export class Store {
   }
 
   /** A stored file, or a smaller copy of a picture: its type, its bytes, and the name it was uploaded under. */
+  /**
+   * The fonts of the site's own (ADR 0085 d6): Google families it downloaded
+   * and faces the owner uploaded, each by its name (`google:…`, `own:…`).
+   */
+  async siteFonts(): Promise<SiteFont[]> {
+    const rows = await this.rows<{ name: string; label: string; faces: string; created_at: string }>('SELECT name, label, faces, created_at FROM fonts ORDER BY label');
+    return rows
+      .filter((r) => isSiteFont(r.name))
+      .map((r) => ({ name: r.name, label: r.label, faces: (JSON.parse(r.faces) as unknown[]).map(cleanFontFace).filter((f): f is FontFace => f !== null), at: r.created_at }));
+  }
+
+  /** Every face of the site's own fonts, for its stylesheet. */
+  async siteFaces(): Promise<FontFace[]> {
+    return (await this.siteFonts()).flatMap((f) => f.faces);
+  }
+
+  /**
+   * Keeps a font's files and faces. Given a name it has, its faces are added to
+   * the ones it had (an uploaded family is given one file at a time), a face of
+   * the same weight and style taking the old one's place.
+   */
+  async addSiteFont(name: string, label: string, faces: { face: Omit<FontFace, 'file' | 'family'>; bytes: Uint8Array }[]): Promise<SiteFont> {
+    if (!isSiteFont(name)) throw new Error('not a font name');
+    const family = siteFontFamily(name);
+    const kept: FontFace[] = [];
+    for (const { face, bytes } of faces) {
+      const file = `${new Bun.CryptoHasher('sha256').update(bytes).digest('hex').slice(0, 32)}.woff2`;
+      if (!(await this.row('SELECT name FROM font_files WHERE name = ?', [file]))) await this.run(this.dialect.insertNew('font_files', ['name', 'bytes']), [file, bytes]);
+      const clean = cleanFontFace({ ...face, family, file });
+      if (!clean) throw new Error('not a face this site can declare');
+      kept.push(clean);
+    }
+    const before = (await this.siteFonts()).find((f) => f.name === name);
+    const same = (a: FontFace, b: FontFace): boolean => a.weight === b.weight && a.style === b.style && a.range === b.range;
+    const all = [...(before?.faces ?? []).filter((old) => !kept.some((k) => same(k, old))), ...kept];
+    await this.run(this.dialect.upsert('fonts', ['name', 'label', 'faces', 'created_at'], ['name'], ['label', 'faces']), [name, str(label, 120).trim() || name, JSON.stringify(all), new Date().toISOString()]);
+    await this.forgetFontFiles();
+    return (await this.siteFonts()).find((f) => f.name === name) as SiteFont;
+  }
+
+  /** A font of the site's own taken away, with its files; a style naming it falls back to the next face of its stack. */
+  async deleteSiteFont(name: string): Promise<void> {
+    await this.run('DELETE FROM fonts WHERE name = ?', [name]);
+    await this.forgetFontFiles();
+  }
+
+  /** Takes away the files no font names any more. */
+  private async forgetFontFiles(): Promise<void> {
+    const used = new Set((await this.siteFaces()).map((f) => f.file));
+    for (const { name } of await this.rows<{ name: string }>('SELECT name FROM font_files')) if (!used.has(name)) await this.run('DELETE FROM font_files WHERE name = ?', [name]);
+  }
+
+  /** The bytes of a file of the site's own fonts, or null. */
+  async fontFile(name: string): Promise<Uint8Array | null> {
+    if (!/^[0-9a-f]{32}\.woff2$/.test(name)) return null;
+    const row = await this.row<{ bytes: Uint8Array }>('SELECT bytes FROM font_files WHERE name = ?', [name]);
+    return row ? new Uint8Array(row.bytes) : null;
+  }
+
   async mediaFile(name: string): Promise<{ type: string; bytes: Uint8Array; label: string } | null> {
     const variant = variantOf(name);
     if (variant) {
@@ -2727,7 +2796,7 @@ export class Store {
     for (const table of [...BACKUP_TABLES, ...optional]) {
       const key = TABLE_KEYS[table] as string[];
       const order = key.map((column) => (column === 'key' ? this.dialect.key : column)).join(', ');
-      const step = table === 'media' || table === 'media_variants' || table === 'extension_files' ? 20 : 500;
+      const step = table === 'media' || table === 'media_variants' || table === 'extension_files' || table === 'font_files' ? 20 : 500;
       for (let offset = 0; ; offset += step) {
         const rows = await this.rows(`SELECT * FROM ${table} ORDER BY ${order} LIMIT ${step} OFFSET ${offset}`);
         for (const row of rows) {
@@ -2879,6 +2948,8 @@ export const BACKUP_TABLES = [
   'user_bios',
   'user_pictures',
   'user_bar',
+  'fonts',
+  'font_files',
 ] as const;
 /** Each table's columns and key, read from the schema, which says them once. */
 const TABLE_COLUMNS: Record<string, string[]> = {};
@@ -2891,9 +2962,19 @@ for (const statement of [...SQLITE.schema, ...BACKED_UP_VISITOR_TABLES.map((t) =
   TABLE_KEYS[table as string] = key ? (key.match(/\((.*)\)/)?.[1] ?? '').split(', ') : parts.filter((p) => p.includes('PRIMARY KEY')).map((p) => p.split(' ')[0] as string);
 }
 
+/** A font of the site's own (ADR 0085 d6): its name, what the admin calls it, its faces. */
+export interface SiteFont {
+  name: string;
+  label: string;
+  faces: FontFace[];
+  at: string;
+}
+
 /** What changes what visitors see: each says so once it is done (ADR 0044). */
 const TOUCHING = [
   'setSite',
+  'addSiteFont',
+  'deleteSiteFont',
   'setForms',
   'setRedirects',
   'publishTheme',

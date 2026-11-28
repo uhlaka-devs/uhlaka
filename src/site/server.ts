@@ -27,7 +27,7 @@ const ADMIN_PATHS = new Set(['/admin', '/preview']);
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { compile } from 'svelte/compiler';
-import { prefixOf, typeIn, SECTION_KIND, type Block, cleanSeo, type Form, fillSections, takeWords, withAreas, type Site, siteIn, type PlacedPage, translatedPage, cleanRow, EXTENSION_MAX_BYTES, type ExtensionManifest, extensionAsks, extensionWord, isObject, languageOf, normalizeBlocks, shownRow, uniqueFields, str, type ContentType, DISPLAY_NAME, type LanguagePack, defaultTemplate, MEDIA_MAX_BYTES, MEDIA_PREFIX, UPLOAD_MAX_BYTES, EMBED_ORIGINS, normalizePage, type Page, type Post, contentTypes, listPath, type MenuList, normalizePost, parseTheme, pagesIn, POSTS_TYPE, reservedSlugs, slugProblem, type Theme, themeCss, FONTS_PATH, fontFacesCss } from '../core/index.ts';
+import { prefixOf, typeIn, SECTION_KIND, type Block, cleanSeo, type Form, fillSections, takeWords, withAreas, type Site, siteIn, type PlacedPage, translatedPage, cleanRow, EXTENSION_MAX_BYTES, type ExtensionManifest, extensionAsks, extensionWord, isObject, languageOf, normalizeBlocks, shownRow, uniqueFields, str, type ContentType, DISPLAY_NAME, type LanguagePack, defaultTemplate, MEDIA_MAX_BYTES, MEDIA_PREFIX, UPLOAD_MAX_BYTES, EMBED_ORIGINS, normalizePage, type Page, type Post, contentTypes, listPath, type MenuList, normalizePost, parseTheme, pagesIn, POSTS_TYPE, reservedSlugs, slugProblem, type Theme, themeCss, FONTS_PATH, fontFacesCss, fontSlug } from '../core/index.ts';
 import type { EntryLists } from '../blocks/editing.ts';
 import { type FetchImage, fetchImage as fetchOverNetwork, IMPORT_MAX_BYTES, type ImportReport, runImport } from '../import/run.ts';
 import { type ImportPlan, planImport } from '../import/wxr.ts';
@@ -41,7 +41,8 @@ import { backTo, barHtml, barLinks, barWords, SIGN_OUT_PATH, withBar } from './a
 import { shopGate } from '../parts/shop/gate.ts';
 import { extensionHost, type Spawn } from './extensions.ts';
 import { BUILT_ADMIN } from './built-admin.ts';
-import { ADMIN_ICON, ADMIN_TOKENS, BASE_CSS, SHIPPED_STATS, SHIPPED_THEMES, shippedFonts } from './shipped.ts';
+import { downloadGoogle, FONT_FILE_MAX_BYTES, GOOGLE_FAMILIES, googleFamily, isWoff2 } from './google-fonts.ts';
+import { ADMIN_ICON, ADMIN_TOKENS, BASE_CSS, SHIPPED_FACES, SHIPPED_STATS, SHIPPED_THEMES, shippedFont } from './shipped.ts';
 import { STATS, type Store, type User, writesAll } from './store.ts';
 import { reportsOf, rowWrites } from '../view/index.ts';
 import { newer } from './update.ts';
@@ -241,6 +242,8 @@ export async function startEditor(
     searchConsoleFetch?: (url: string, init: RequestInit) => Promise<Response>;
     /** How IndexNow is told; the tests give their own. */
     indexNowFetch?: (url: string, init: RequestInit) => Promise<Response>;
+    /** How Google Fonts is asked for a family's files (ADR 0085 d6); the tests give their own. */
+    fontsFetch?: (url: string, init?: RequestInit) => Promise<Response>;
   } = {},
 ): Promise<EditorServer> {
   const assets = BUILT_ADMIN ? new Map(Object.entries(BUILT_ADMIN)) : await buildAdmin();
@@ -729,6 +732,7 @@ export async function startEditor(
     const reading = method === 'GET';
     if (path === '/api/me' || path === '/api/state' || path === '/api/check' || path === '/api/render' || path === '/api/versions' || path === '/api/version' || path === '/api/forms') return reading || path === '/api/me' || path === '/api/render' ? null : no();
     if (path === '/api/media/used') return null;
+    if (path.startsWith('/api/fonts')) return reading ? null : no('only the owner chooses the typefaces');
     if (path === '/api/media' || path === '/api/media/variant') return method === 'DELETE' ? no('only the owner and the editors delete from the library') : method === 'PUT' ? no('only the owner and the editors rename files and describe pictures') : null;
     if (path.startsWith('/api/extensions')) return path.split('/')[4] === 'each' ? no() : null;
     if (path === '/api/locks') return reading ? null : no();
@@ -863,6 +867,49 @@ export async function startEditor(
     return json({ error: 'not found' }, 404);
   }
 
+  /**
+   * The site's own fonts (ADR 0085 d6). `GET /api/fonts`: the ones it has;
+   * `GET /api/fonts/google?q=`: families of the catalogue; `POST
+   * /api/fonts/google`: a family downloaded once from Google; `POST
+   * /api/fonts/own`: a `.woff2` the owner bought, its bytes the body;
+   * `DELETE /api/fonts?name=`: one taken away.
+   */
+  async function fontsApi(request: Request, url: URL): Promise<Response> {
+    const fonts = async () => json({ fonts: await store.siteFonts() });
+    const path = url.pathname;
+    if (path === '/api/fonts' && request.method === 'GET') return fonts();
+    if (path === '/api/fonts' && request.method === 'DELETE') {
+      await store.deleteSiteFont(url.searchParams.get('name') ?? '');
+      return fonts();
+    }
+    if (path === '/api/fonts/google' && request.method === 'GET') {
+      const q = (url.searchParams.get('q') ?? '').trim().toLowerCase();
+      const found = GOOGLE_FAMILIES.filter((f) => !q || f.family.toLowerCase().includes(q)).sort((a, b) => Number(!a.family.toLowerCase().startsWith(q)) - Number(!b.family.toLowerCase().startsWith(q)));
+      return json({ families: found.slice(0, 40).map(({ family, category, subsets }) => ({ family, category, subsets })), total: found.length });
+    }
+    if (path === '/api/fonts/google' && request.method === 'POST') {
+      const asked = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+      const family = googleFamily(String(asked.family ?? ''));
+      if (!family) return json({ error: 'no such family in the catalogue' }, 404);
+      const got = await downloadGoogle(family, options.fontsFetch);
+      const font = await store.addSiteFont(`google:${fontSlug(family.family)}`, family.family, got);
+      return json({ font, fonts: (await store.siteFonts()) });
+    }
+    if (path === '/api/fonts/own' && request.method === 'POST') {
+      if (Number(request.headers.get('content-length') ?? 0) > FONT_FILE_MAX_BYTES) return json({ error: `a font file is at most ${FONT_FILE_MAX_BYTES / 1024 / 1024} MB` }, 413);
+      const bytes = new Uint8Array(await request.arrayBuffer());
+      if (!isWoff2(bytes) || bytes.length > FONT_FILE_MAX_BYTES) return json({ error: 'not a font: a .woff2 file is asked for' }, 400);
+      const label = (url.searchParams.get('label') ?? '').trim();
+      const slug = fontSlug(label);
+      if (!slug) return json({ error: 'give the font a name' }, 400);
+      const weight = url.searchParams.get('weight') ?? '400';
+      const style = url.searchParams.get('style') === 'italic' ? 'italic' : 'normal';
+      const font = await store.addSiteFont(`own:${slug}`, label, [{ face: { weight, style, range: '' }, bytes }]);
+      return json({ font, fonts: (await store.siteFonts()) });
+    }
+    return json({ error: 'not found' }, 404);
+  }
+
   async function api(request: Request, url: URL, me: User): Promise<Response> {
     const refused = await refusedTo(request, url, me);
     if (refused) return refused;
@@ -915,6 +962,7 @@ export async function startEditor(
         return json({ item, media: await store.media() });
       }
     }
+    if (url.pathname === '/api/fonts' || url.pathname.startsWith('/api/fonts/')) return fontsApi(request, url);
     const body = request.method === 'GET' || request.method === 'DELETE' ? {} : ((await request.json()) as Record<string, unknown>);
     if (url.pathname === '/api/media' && request.method === 'PUT') {
       // A file renamed, a picture described (ADR 0072 d2, d3).
@@ -1336,7 +1384,9 @@ export async function startEditor(
     }
     if (url.pathname.startsWith(FONTS_PATH) && request.method === 'GET') {
       // The faces Uhlaka carries (ADR 0068 d1), for the canvas as for the site, published or not.
-      const bytes = (await shippedFonts()).get(url.pathname.slice(FONTS_PATH.length));
+      // And the site's own (ADR 0085 d6): a Google family it downloaded, a face the owner uploaded.
+      const name = url.pathname.slice(FONTS_PATH.length);
+      const bytes = (await shippedFont(name)) ?? (await store.fontFile(name));
       return bytes ? new Response(bytes as Uint8Array<ArrayBuffer>, { headers: { 'content-type': 'font/woff2', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' } }) : json({ error: 'not found' }, 404);
     }
     if (!ADMIN_PATHS.has(url.pathname) && !url.pathname.startsWith('/admin/') && !url.pathname.startsWith(MEDIA_PREFIX)) return barred(request, url, await site.fetch(request, ip));
@@ -1367,14 +1417,18 @@ export async function startEditor(
         return text(assets.get(url.pathname.slice(7)) ?? '', 'text/javascript');
       case '/admin/admin.css':
         // The admin's design tokens and its face (ADR 0084), before the admin's own styles.
-        return text(`${fontFacesCss(new Set(['Figtree']))}${ADMIN_TOKENS}`, 'text/css');
+        return text(`${fontFacesCss(SHIPPED_FACES.filter((f) => f.family === 'Figtree'))}${ADMIN_TOKENS}`, 'text/css');
+      case '/admin/fonts.css':
+        // Every face, for the admin's samples of a typeface (ADR 0085 d6).
+        return text(fontFacesCss([...SHIPPED_FACES, ...(await store.siteFaces())]), 'text/css');
       case '/admin/icon.svg':
         return text(ADMIN_ICON, 'image/svg+xml');
       case '/preview':
         return html(previewPage((await store.site()).language));
       case '/admin/site.css':
         // The canvas's: the theme as it is being built. The structure first, the theme after it: where both set the same thing, the theme wins.
-        return text(`${fontFacesCss()}${baseCss}${themeCss(await theme(), { preview: true })}`, 'text/css');
+        // Every face is declared, for a block may name any of them; a browser asks for a file only when a page has its letters.
+        return text(`${fontFacesCss([...SHIPPED_FACES, ...(await store.siteFaces())])}${baseCss}${themeCss(await theme(), { preview: true })}`, 'text/css');
       default:
         return json({ error: 'not found' }, 404);
     }

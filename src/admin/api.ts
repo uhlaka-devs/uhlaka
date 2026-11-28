@@ -349,6 +349,19 @@ async function send<T>(path: string, file: Blob): Promise<T> {
   return answer<T>(await fetch(path, { method: 'POST', headers: { ...who(), 'content-type': 'application/octet-stream' }, body: file }));
 }
 
+/** A typeface of the site's own: a Google family it keeps, or a face the owner uploaded. */
+export interface SiteFont {
+  name: string;
+  label: string;
+  faces: { family: string; file: string; weight: string; style: 'normal' | 'italic'; range: string }[];
+}
+/** A family of the Google Fonts catalogue, and the scripts it has. */
+export interface GoogleFamily {
+  family: string;
+  category: string;
+  subsets: string[];
+}
+
 export const api = {
   hasToken: token !== '',
   offerExtension: (file: Blob) => send<{ offer: ExtensionOffer }>('/api/extensions/offer', file),
@@ -390,6 +403,13 @@ export const api = {
   render: (page: Doc, kind: Kind = 'page') => call<{ body: string; css: string }>('POST', '/api/render', { page, kind }),
   setSite: (site: Site) => call<State>('PUT', '/api/site', { site }),
   setTheme: (theme: Theme) => call<State>('PUT', '/api/theme', { theme }),
+  /** The site's own typefaces (ADR 0085 d6): what it has, the Google catalogue, one added or taken away. */
+  fonts: () => call<{ fonts: SiteFont[] }>('GET', '/api/fonts'),
+  googleFonts: (q: string) => call<{ families: GoogleFamily[]; total: number }>('GET', `/api/fonts/google?q=${encodeURIComponent(q)}`),
+  addGoogleFont: (family: string) => call<{ font: SiteFont; fonts: SiteFont[] }>('POST', '/api/fonts/google', { family }),
+  uploadFont: (file: Blob, label: string, weight: string, style: string) =>
+    send<{ font: SiteFont; fonts: SiteFont[] }>(`/api/fonts/own?label=${encodeURIComponent(label)}&weight=${encodeURIComponent(weight)}&style=${encodeURIComponent(style)}`, file),
+  deleteFont: (name: string) => call<{ fonts: SiteFont[] }>('DELETE', `/api/fonts?name=${encodeURIComponent(name)}`),
   publishTheme: () => call<State>('POST', '/api/theme/publish', {}),
   media: () => call<{ media: MediaItem[] }>('GET', '/api/media'),
   messages: () => call<{ messages: Message[]; keep: number }>('GET', '/api/messages'),

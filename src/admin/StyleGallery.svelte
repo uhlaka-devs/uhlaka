@@ -6,9 +6,9 @@
  * to keep the changed one as a file.
  */
 import { onMount } from 'svelte';
-import { FONT_STACKS, fontFacesCss, type Theme } from '../core/index.ts';
+import { fontStack, type Theme } from '../core/index.ts';
 import { say, t } from './messages.ts';
-import { readyMade } from './themeEdit.ts';
+import { FACES_CSS, readyMade } from './themeEdit.ts';
 
 let {
   theme,
@@ -28,7 +28,7 @@ const untouched = $derived(readyMade(theme, ready));
 /** The style asked for while the site's own has changes: it waits for a yes. */
 let asking = $state<Theme | null>(null);
 
-const stack = (style: Theme, role: 'heading' | 'body'): string => FONT_STACKS[(style.tokens.font[role] ?? style.tokens.font.body ?? 'system') as keyof typeof FONT_STACKS] ?? FONT_STACKS.system;
+const stack = (style: Theme, role: 'heading' | 'body'): string => fontStack(style.tokens.font[role] ?? style.tokens.font.body ?? 'system');
 const color = (style: Theme, name: string, fallback: string): string => style.tokens.color[name] ?? fallback;
 /** A few colours that say the style: the page, the text, the main colour and what else it names. */
 const dots = (style: Theme): string[] => {
@@ -39,9 +39,10 @@ const dots = (style: Theme): string[] => {
 /** The typefaces that ship, so each card shows its own (the site serves them, ADR 0068). */
 onMount(() => {
   if (document.getElementById('uhlaka-faces')) return;
-  const sheet = document.createElement('style');
+  const sheet = document.createElement('link');
   sheet.id = 'uhlaka-faces';
-  sheet.textContent = fontFacesCss();
+  sheet.rel = 'stylesheet';
+  sheet.href = FACES_CSS;
   document.head.append(sheet);
 });
 
