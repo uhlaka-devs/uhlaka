@@ -421,3 +421,22 @@ export function couponProblem(coupon: Coupon, subtotal: number, now = new Date()
 /** What a coupon takes off products of this much: never more than they cost. */
 export const couponOff = (coupon: Pick<Coupon, 'kind' | 'value'>, subtotal: number): number =>
   Math.max(0, Math.min(subtotal, coupon.kind === 'percent' ? Math.round((subtotal * coupon.value) / 100) : coupon.value));
+
+/**
+ * What a product's card and the bar that keeps "Add to cart" in view say of
+ * its price (ADR 0085 d8): the lowest a combination costs, and whether they
+ * differ; the old price when the one shown is on sale; whether any is left.
+ * Null when it cannot be bought (no price).
+ */
+export function shownPrice(shop: ShopShown, product: Product, type: string, slug: string): { price: number; sale: number | null; from: boolean; left: boolean } | null {
+  if (!product.options.length) {
+    const own = priceOf(product);
+    return own.price === null ? null : { price: own.price, sale: own.sale, from: false, left: inStock(shop, product, stockKey(type, slug)) };
+  }
+  const offered = combinations(product.options)
+    .map((key) => ({ ...priceOf(product, key), left: inStock(shop, product, stockKey(type, slug, key)) }))
+    .filter((c): c is { price: number; sale: number | null; sku: string; left: boolean } => c.price !== null);
+  if (!offered.length) return null;
+  const cheapest = offered.reduce((a, b) => ((paid(b) as number) < (paid(a) as number) ? b : a));
+  return { price: cheapest.price, sale: cheapest.sale, from: new Set(offered.map((c) => paid(c))).size > 1, left: offered.some((c) => c.left) };
+}

@@ -1945,6 +1945,8 @@ export class Store {
   async mediaUsedBy(name: string): Promise<string[]> {
     const site = await this.site();
     const titles: string[] = mediaNameOf(site.logo?.src ?? '') === name ? ['the header (logo)'] : [];
+    if (mediaNameOf(site.logoDark?.src ?? '') === name) titles.push('the header (logo for the dark)');
+    if (mediaNameOf(site.background?.src ?? '') === name) titles.push('the picture around the page, in Design');
     if (mediaNameOf(site.shareImage?.src ?? '') === name) titles.push('the picture for sharing, in Settings');
     for (const row of await this.rows<{ draft: string; published: string | null }>('SELECT draft, published FROM pages ORDER BY position, slug')) {
       const copies = [row.draft, row.published].filter((c): c is string => c !== null).map((c) => normalizePage(JSON.parse(c)).page);

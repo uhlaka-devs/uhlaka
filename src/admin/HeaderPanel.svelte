@@ -94,6 +94,10 @@ onMount(() => {
 <div class="field">
   <ImageField label={t.site.logo} value={site.logo} named={false} onchange={(logo) => set({ logo: logo.src ? logo : null })} />
   <small>{t.site.logoHint}</small>
+  {#if site.logo || site.logoDark}
+    <ImageField label={t.site.logoDark} value={site.logoDark ?? null} named={false} onchange={(logo) => { const next: Site = { ...site }; if (logo.src) next.logoDark = logo; else delete next.logoDark; onsite(next); }} />
+    <small>{t.site.logoDarkHint}</small>
+  {/if}
 </div>
 
 <div class="field" data-menu-builder>

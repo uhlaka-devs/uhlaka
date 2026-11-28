@@ -14,12 +14,15 @@ let {
   site,
   theme,
   sections = [],
+  shop = false,
   onsite,
   ontheme,
 }: {
   site: Site;
   theme: Theme;
   sections?: SectionInfo[];
+  /** Whether the shop is on: its products' look is then offered (ADR 0085 d8). */
+  shop?: boolean;
   onsite: (site: Site) => void;
   ontheme: (theme: Theme) => void;
 } = $props();
@@ -53,6 +56,11 @@ const setCover = (name: string): void =>
   apply((d) => {
     if (name === ENTRY_COVERS[0]) delete d.layout.entry.cover;
     else d.layout.entry.cover = name as typeof d.layout.entry.cover;
+  });
+const setShop = (key: 'badge' | 'zoom' | 'bar', on: boolean): void =>
+  apply((d) => {
+    if (on) d.layout.shop[key] = true;
+    else delete d.layout.shop[key];
   });
 /** A section's slug, or none: the site's own choice. */
 const setSection = (key: 'notFound' | 'searchSection', slug: string): void => {
@@ -106,6 +114,16 @@ const setSection = (key: 'notFound' | 'searchSection', slug: string): void => {
     </label>
   </fieldset>
 </details>
+
+{#if shop}
+  <h3>{t.blogLook.shop}</h3>
+  {#each ['badge', 'zoom', 'bar'] as const as key (key)}
+    <label class="check">
+      <input type="checkbox" checked={theme.layout.shop[key] === true} onchange={(e) => setShop(key, e.currentTarget.checked)} data-shop-look={key} />
+      <span>{t.blogLook.shopLooks[key]}</span>
+    </label>
+  {/each}
+{/if}
 
 <h3>{t.blogLook.ownPages}</h3>
 {#each [['notFound', t.blogLook.notFound], ['searchSection', t.blogLook.search]] as const as [key, label] (key)}

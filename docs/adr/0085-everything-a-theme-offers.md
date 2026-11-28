@@ -315,8 +315,9 @@ what stages 4 and 5 bring.
 
 ### d8. Stage 5: finishing
 
-*Proposed (2026-11-28): the questions on motion, the site's background and the
-shop's bar are David's.*
+*Proposed (2026-11-28). David, on the decision cards: the site's background is a
+colour or a picture around the box; the bar that keeps "Add to cart" in view is
+on every screen. Whether motion is the style's or each block's is still his.*
 
 The same rule as d7: how a thing **looks and moves** is the style's, from
 closed lists; what a site **holds** (a picture, a section) is the site's or its
@@ -329,14 +330,14 @@ so a style or a site written before draws as before.
 | A change under the pointer | style: `layout.motion.hover` | none (absent, as before), `lift` (a card or a picture rises, with the style's shadow), `zoom` (a picture grows inside its frame) |
 | A logo for the dark | site: `logoDark` | a picture from the library, drawn instead of the logo while the site shows its dark colours; none: the one logo |
 | A boxed page | style: `layout.page.boxed` | off (absent, as before) or on: the header, the blocks and the footer in a box as wide as the style's wide width, with a margin around it |
-| The site's background | style: `layout.page.background` | a colour of the style, around the box; absent: the page's background colour |
+| The site's background | style: `layout.page.background` | a colour of the style, around the box; absent: its surface colour |
 | A picture around the box | site: `background` | a picture from the library, covering what is around the box, fixed as the page scrolls; drawn only while the page is boxed |
 | A sidebar that stays in view | style: `layout.page.stickySide` | off (absent, as before) or on: the sidebar of a layout stays at the top while the page scrolls past it, when it is shorter than the screen |
 | A section on every entry of a type | type: `entry.section`, a section's slug | a section drawn after each entry's blocks, before previous and next (a sign-up, "Call us"); none: as before |
 | The shop's list | always, while the shop is on | a list of a type that sells shows each product's price, the old price struck through when it is on sale |
 | The badge on a product | style: `layout.shop.badge` | on: "Sale" on a product on sale and "Sold out" on one with none left, in a corner of its picture; off (absent) |
-| Zoom on a product's picture | style: `layout.shop.zoom` | off (absent) or on: the picture grows under the pointer, and a click opens it whole over the page |
-| "Add to cart" kept in view | style: `layout.shop.bar` | off (absent) or on: once the product's Buy part has scrolled away, a bar at the bottom of the screen shows its name, price and "Add to cart" |
+| Zoom on a product's picture | style: `layout.shop.zoom` | off (absent) or on: the picture of a product's page grows under the pointer, and a click opens it whole over the page |
+| "Add to cart" kept in view | style: `layout.shop.bar` | off (absent) or on, on every screen: once the product's Buy part has scrolled away above, a bar at the bottom of the screen shows its name, price and "Add to cart", which leads back to the Buy part (where its options and quantity are) |
 
 **Without script**, as the rest: appearing uses the browser's view timelines
 (`animation-timeline: view()`), a browser without them shows every block at
@@ -351,11 +352,18 @@ appears or moves, so every block can be chosen.
 or the switch in the header. Both pictures are in the page; CSS shows one.
 
 **The badge's words** are the site's language pack's (`site.shopSale`,
-`site.shopSoldOut`); the badge takes the style's primary colour.
+`site.shopSoldOut`); "Sale" takes the style's primary colour, "Sold out" its
+text colour. A product sold out shows that badge, not "Sale".
 
-**The panels.** Design gains no new part: the motion and the page's box go
-into **Site** (the boxed page, its background, the picture around it; under
-"More settings" the motion and the sidebar that stays in view); the dark logo
+**The ready-made styles** give the new choices a value: Atelier rises and lifts,
+Studio fades in and zooms; both show the badge, zoom and keep the bar. Plain
+stays as it is, a style written before there was a layout, whose every choice
+is the first. None is boxed, so a site keeps its
+look until the owner boxes it.
+
+**The panels.** Design gains no new part: under the style, a group **The
+page** has the boxed page, the colour and the picture around it; under "More
+settings" the motion and the sidebar that stays in view; the dark logo
 sits under the logo in the header's panel; the shop's three choices go into
 **Blog and pages**, shown only while the shop is on; a type's section is under
 "Each entry also shows", in Content types.

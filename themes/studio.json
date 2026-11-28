@@ -88,6 +88,15 @@
     },
     "field": {
       "look": "underline"
+    },
+    "motion": {
+      "appear": "fade",
+      "hover": "zoom"
+    },
+    "shop": {
+      "badge": true,
+      "zoom": true,
+      "bar": true
     }
   },
   "light": {

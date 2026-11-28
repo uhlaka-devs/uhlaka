@@ -11,6 +11,7 @@ import type { PageInfo, SectionInfo } from './api.ts';
 import BlogPanel from './BlogPanel.svelte';
 import FooterPanel from './FooterPanel.svelte';
 import HeaderPanel from './HeaderPanel.svelte';
+import PagePanel from './PagePanel.svelte';
 import { t } from './messages.ts';
 import TextPanel from './TextPanel.svelte';
 import ThemeBuilder from './ThemeBuilder.svelte';
@@ -71,12 +72,13 @@ let {
   {#if part === 'style'}
     <p class="hint" data-panel-intro="theme">{t.look.styleIntro}</p>
     <ThemeBuilder {theme} onchange={ontheme} {handPicked} {ready} {onchoose} />
+    <PagePanel {site} {theme} {onsite} {ontheme} />
   {:else if part === 'text'}
     <TextPanel {theme} {ontheme} />
   {:else if part === 'header'}
     <HeaderPanel {site} {theme} {pages} {lists} {sections} {shop} {onsite} {ontheme} />
   {:else if part === 'blog'}
-    <BlogPanel {site} {theme} {sections} {onsite} {ontheme} />
+    <BlogPanel {site} {theme} {sections} {shop} {onsite} {ontheme} />
   {:else}
     <FooterPanel {site} {theme} {sections} {onsite} {ontheme} />
   {/if}

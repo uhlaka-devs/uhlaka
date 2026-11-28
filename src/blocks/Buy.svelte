@@ -27,7 +27,7 @@ const any = $derived(product?.options.length ? offered.some((c) => c.left) : (ow
 </script>
 
 {#if product && own && (product.options.length ? offered.length > 0 : own.price !== null)}
-  <form class="buy" method="post" action="/_/cart" data-product={`${typeId}/${slug}`}>
+  <form class="buy" id="buy" method="post" action="/_/cart" data-product={`${typeId}/${slug}`}>
     <input type="hidden" name="product" value={`${typeId}/${slug}`} />
     {#if language}<input type="hidden" name="language" value={language} />{/if}
     <p class="buy-price">

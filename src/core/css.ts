@@ -51,7 +51,11 @@ const colorVars = (colors: Record<string, string>): string[] =>
 
 /** The switch in the header offers the scheme the page is not in (ADR 0074 d4). */
 const switchRule = (selector: string, scheme: Scheme): string =>
-  `${selector} .scheme-to-${scheme}{display:none}${selector} .scheme-to-${scheme === 'light' ? 'dark' : 'light'}{display:inline-flex}\n`;
+  `${selector} .scheme-to-${scheme}{display:none}${selector} .scheme-to-${scheme === 'light' ? 'dark' : 'light'}{display:inline-flex}\n` + logoRule(selector, scheme);
+
+/** A site with a logo for the dark shows the one made for the scheme the page is in (ADR 0085 d8). */
+const logoRule = (selector: string, scheme: Scheme): string =>
+  `${selector} .logo-${scheme === 'light' ? 'dark' : 'light'}{display:none}${selector} .logo-${scheme}{display:block}\n`;
 
 /** One scheme's colours, under a selector. */
 const schemeRule = (selector: string, theme: Theme, scheme: Scheme): string =>
@@ -166,6 +170,42 @@ function entriesCss(theme: Theme): string {
   return css;
 }
 
+/** What a style's motion moves (ADR 0085 d8): a page's own blocks, and the cards and pictures under the pointer. */
+const MOVES = '@media (prefers-reduced-motion:no-preference)';
+const VIEWED = '@supports (animation-timeline:view())';
+const APPEAR: Record<string, string> = { fade: 'opacity:0', rise: 'opacity:0;translate:0 1.5rem' };
+const CARDS = '.post-card,.entry-card,.gallery>li';
+const PICTURES = '.post-picture,.entry-card,.gallery .figure,.b-image .figure,.post-zoom';
+const HOVER: Record<string, string> = {
+  lift: `:is(${CARDS}){transition:translate .2s ease,box-shadow .2s ease}:is(${CARDS}):hover{translate:0 -.25rem;box-shadow:0 4px 8px rgb(0 0 0 / .1),0 16px 40px rgb(0 0 0 / .18)}`,
+  zoom: `:is(${PICTURES}){overflow:hidden}:is(${PICTURES}) img{transition:scale .35s ease}:is(${PICTURES}):hover img{scale:1.06}`,
+};
+
+/** Motion, the page's box and the shop's products as the style has them (ADR 0085 d8); nothing when it has none. */
+function finishCss(theme: Theme): string {
+  const { motion, page, shop, header } = theme.layout;
+  let css = '';
+  if (motion.appear) {
+    css += `${MOVES}{${VIEWED}{main>.b:not(:first-child),.layout-body>main>.b:not(:first-child){animation:uh-appear linear both;animation-timeline:view();animation-range:entry 0% entry 60%}}}\n`;
+    css += `@keyframes uh-appear{from{${APPEAR[motion.appear]}}}\n`;
+  }
+  if (motion.hover) css += `${MOVES}{${HOVER[motion.hover]}}\n`;
+  if (page.boxed) {
+    const around = page.background && hasToken(theme, 'color', page.background) ? `var(${tokenVar('color', page.background)})` : 'var(--t-color-surface)';
+    css += `html{background-color:${around}}.site-backdrop{display:block}\n`;
+    css += `${WIDE}{body{max-width:var(--t-width-wide);margin:var(--t-space-lg) auto;box-shadow:0 1px 3px rgb(0 0 0 / .08),0 4px 12px rgb(0 0 0 / .08)}}\n`;
+  }
+  if (page.stickySide) {
+    const top = header.sticky ? `calc(${ONE_ROW} + var(--t-space-md))` : 'var(--t-space-md)';
+    css += `${WIDE}{.layout-aside{position:sticky;top:${top};align-self:start;max-height:calc(100vh - ${top});overflow-y:auto}}\n`;
+  }
+  if (shop.badge) css += '.shop-badge{display:inline-block}\n';
+  if (shop.zoom) css += `.post-zoom{cursor:zoom-in;pointer-events:auto}${MOVES}{.post-zoom{overflow:hidden}.post-zoom img{transition:scale .35s ease}.post-zoom:hover img{scale:1.15}}.zoom-whole:target{display:grid}\n`;
+  // The bar follows the Buy part's place on the screen: hidden while it is below or in view, shown once it has scrolled away above.
+  if (shop.bar) css += `${VIEWED}{body{timeline-scope:--buy}.buy{view-timeline:--buy block}body:has(.buy) .buy-bar{display:flex;animation:uh-bar linear both;animation-timeline:--buy;animation-range:exit 0% exit 100%}}@keyframes uh-bar{from{translate:0 100%;visibility:hidden}to{translate:0 0;visibility:visible}}\n`;
+  return css;
+}
+
 /** Headings, text, the menu, buttons and fields as the style has them (ADR 0085 d5); nothing when it has none. */
 function textCss(theme: Theme): string {
   const { text, button, field } = theme.layout;
@@ -206,6 +246,7 @@ export function themeCss(theme: Theme, options: { preview?: boolean } = {}): str
     }
   }
   let css = rule(':root', [...colorVars(colorsFor(theme, first)), ...vars, ...(otherPalette(theme) || first === 'dark' ? [`color-scheme:${first}`] : [])].join(';'));
+  if (!otherPalette(theme)) css += logoRule(':root', first);
   if (otherPalette(theme)) {
     css += switchRule(':root', first);
     const other = otherScheme(theme);
@@ -241,6 +282,7 @@ export function themeCss(theme: Theme, options: { preview?: boolean } = {}): str
   css += rule('.site-bar', declarations(bar.style, theme));
   css += textCss(theme);
   css += entriesCss(theme);
+  css += finishCss(theme);
   return css;
 }
 

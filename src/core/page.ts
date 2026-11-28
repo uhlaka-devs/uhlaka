@@ -44,6 +44,10 @@ export interface Site {
   url: string;
   /** Shown in the header in place of the name. What the header looks like is the theme's (ADR 0006). */
   logo: ImageValue | null;
+  /** Drawn in place of the logo while the site shows its dark colours (ADR 0085 d8). Absent: the one logo. */
+  logoDark?: ImageValue;
+  /** A picture around the page while the style puts it in a box (ADR 0085 d8). Absent: the style's colour only. */
+  background?: ImageValue;
   /** One button in the header: "Ask for a quote". */
   action: LinkValue | null;
   /** What the header shows besides the logo, the menu and the button (ADR 0085 d3). Absent: none of it. */
@@ -189,6 +193,8 @@ export function normalizeSite(input: unknown): Site {
     adminLanguage: typeof raw.adminLanguage === 'string' && LANGUAGE.test(raw.adminLanguage) ? raw.adminLanguage : '',
     url: /^https?:\/\//i.test(url) ? url.replace(/\/+$/, '') : '',
     logo: cleanImage(raw.logo),
+    ...(cleanImage(raw.logoDark) ? { logoDark: cleanImage(raw.logoDark) as ImageValue } : {}),
+    ...(cleanImage(raw.background) ? { background: cleanImage(raw.background) as ImageValue } : {}),
     action: cleanLink(raw.action),
     ...cleanSiteHeader(raw.header),
     footer: str(raw.footer, 300).trim(),

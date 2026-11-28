@@ -74,6 +74,10 @@ export const en = {
   shopWas: 'Was',
   shopFrom: 'From {price}',
   shopVat: 'VAT included',
+  shopSale: 'Sale',
+  shopSoldOut: 'Sold out',
+  zoomOpen: 'Open the picture whole',
+  zoomClose: 'Close the picture',
   // The cart, checkout and an order (ADR 0065 d4–d7).
   cart: 'Your cart',
   cartEmpty: 'Your cart is empty.',

@@ -150,6 +150,15 @@
     },
     "field": {
       "look": "filled"
+    },
+    "motion": {
+      "appear": "rise",
+      "hover": "lift"
+    },
+    "shop": {
+      "badge": true,
+      "zoom": true,
+      "bar": true
     }
   },
   "dark": {
