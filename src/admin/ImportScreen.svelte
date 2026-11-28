@@ -195,12 +195,12 @@ onMount(() =>
   h2 { margin: 0 0 0.3rem; font-size: 1.1rem; }
   h3 { margin: 1.2rem 0 0.3rem; font-size: 0.95rem; }
   .intro { max-width: 46rem; }
-  .card { max-width: 46rem; padding: 1.2rem 1.4rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .card { max-width: 46rem; padding: 1.2rem 1.4rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .counts { list-style: none; margin: 0.8rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; }
   .counts strong { font-size: 1.2rem; }
   .notes { margin: 0; padding-inline-start: 1.2rem; display: grid; gap: 0.4rem; white-space: pre-line; }
   .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
-  .quiet { color: #6a6880; }
+  .quiet { color: var(--on-surface-variant); }
   progress { width: min(100%, 30rem); }
   button.primary { margin-top: 1rem; }
 </style>

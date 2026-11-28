@@ -47,8 +47,8 @@ const restore = (at: string) => attempt(async () => onrestore((await api.version
 </div>
 
 <style>
-  .versions { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #e6e4ee; }
-  h3 { margin: 0; font-size: 0.85rem; color: #6a6880; text-transform: uppercase; letter-spacing: 0.04em; }
+  .versions { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--outline-variant); }
+  h3 { margin: 0; font-size: 0.85rem; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
   ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; max-height: 14rem; overflow: auto; }
   li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.9rem; }
   li button { white-space: nowrap; }

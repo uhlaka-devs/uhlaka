@@ -139,9 +139,9 @@ async function accept(): Promise<void> {
   h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
   h2 { margin: 2rem 0 0.5rem; font-size: 1.05rem; }
   .cards { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; max-width: 46rem; }
-  .cards li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.7rem 1rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .cards li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.7rem 1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .who { flex: 1 1 16rem; }
-  .who p { margin: 0.2rem 0 0; color: #4a4860; }
-  .who small { margin-inline-start: 0.5rem; color: #6a6880; }
+  .who p { margin: 0.2rem 0 0; color: var(--on-surface-variant); }
+  .who small { margin-inline-start: 0.5rem; color: var(--on-surface-variant); }
   .field { display: grid; gap: 0.3rem; max-width: 46rem; }
 </style>

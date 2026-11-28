@@ -118,12 +118,12 @@ onMount(() => void attempt(api.people));
   h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
   h2 { margin: 2rem 0 0.5rem; font-size: 1.05rem; }
   .people { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; max-width: 46rem; }
-  .people li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.7rem 1rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .people li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; padding: 0.7rem 1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .who { flex: 1 1 14rem; display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; align-items: baseline; }
   .people select { width: auto; }
   .row { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 46rem; }
   .row input { flex: 1 1 16rem; }
   .row select { width: auto; }
-  .made { max-width: 46rem; margin: 1rem 0; padding: 0.8rem 1rem; background: #f0eeff; border: 1px solid #c9c2ff; border-radius: 8px; }
+  .made { max-width: 46rem; margin: 1rem 0; padding: 0.8rem 1rem; background: var(--secondary-container); border: 1px solid var(--primary); border-radius: var(--shape-sm); }
   .made p { margin: 0 0 0.5rem; }
 </style>

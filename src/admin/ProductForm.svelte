@@ -110,7 +110,7 @@ async function saveStock(): Promise<void> {
 </fieldset>
 
 <style>
-  .product { min-width: 0; border: 1px solid #ddd; border-radius: 6px; padding: 0.6rem; margin: 0.8rem 0; display: grid; gap: 0.35rem; }
+  .product { min-width: 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); padding: 0.6rem; margin: 0.8rem 0; display: grid; gap: 0.35rem; }
   legend { font-weight: 600; font-size: 13px; padding: 0 0.3rem; }
   h4 { margin: 0.5rem 0 0; font-size: 12px; }
   .field { display: grid; gap: 0.15rem; font-size: 12px; }
@@ -125,5 +125,5 @@ async function saveStock(): Promise<void> {
   .variants input { width: 100%; min-width: 0; box-sizing: border-box; }
   .two input, .two select { width: 100%; box-sizing: border-box; }
   .row { display: flex; gap: 0.5rem; align-items: center; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

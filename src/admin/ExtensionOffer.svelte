@@ -45,9 +45,9 @@ let { offer, onaccept, oncancel }: { offer: ExtensionOffer; onaccept: () => void
 </div>
 
 <style>
-  .offer { max-width: 46rem; margin: 1rem 0; padding: 0.8rem 1rem; background: #f0eeff; border: 1px solid #c9c2ff; border-radius: 8px; }
+  .offer { max-width: 46rem; margin: 1rem 0; padding: 0.8rem 1rem; background: var(--secondary-container); border: 1px solid var(--primary); border-radius: var(--shape-sm); }
   .offer p { margin: 0 0 0.4rem; }
   .offer ul { margin: 0 0 0.6rem; }
-  .sum { display: block; margin-bottom: 0.6rem; color: #6a6880; overflow-wrap: anywhere; }
+  .sum { display: block; margin-bottom: 0.6rem; color: var(--on-surface-variant); overflow-wrap: anywhere; }
   .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 </style>

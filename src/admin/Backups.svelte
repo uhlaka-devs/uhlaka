@@ -201,18 +201,18 @@ const upload = () =>
   .backups { max-width: 760px; padding: 1.5rem 2rem; }
   h1 { font-size: 20px; margin: 0 0 0.4rem; }
   h2 { font-size: 14px; margin: 1.6rem 0 0.5rem; }
-  .hint { color: #555; font-size: 13px; }
-  .last { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 6px; }
+  .hint { color: var(--on-surface-variant); font-size: 13px; }
+  .last { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; padding: 0.8rem 1rem; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .last p { margin: 0; flex: 1 1 100%; font-size: 13px; }
   .files { list-style: none; padding: 0; margin: 0; }
-  .files li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+  .files li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; padding: 0.5rem 0; border-bottom: 1px solid var(--outline-variant); }
   .what { flex: 1; font-size: 13px; }
-  .confirm { flex: 1 1 100%; padding: 0.6rem 0.8rem; background: #fff7ed; border: 1px solid #fdba74; border-radius: 6px; }
+  .confirm { flex: 1 1 100%; padding: 0.6rem 0.8rem; background: var(--warning-container); border: 1px solid var(--warning); border-radius: var(--shape-sm); }
   .confirm p { margin: 0 0 0.5rem; font-size: 13px; }
   .row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; margin-top: 0.5rem; }
   .field { display: grid; gap: 0.15rem; font-size: 12px; }
   .check { display: flex; gap: 0.4rem; align-items: center; font-size: 13px; }
-  .good { color: #067647; font-size: 13px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .good { color: var(--success); font-size: 13px; }
+  .bad { color: var(--error); font-size: 13px; }
 </style>

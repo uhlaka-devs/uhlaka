@@ -377,22 +377,22 @@ const hex6 = (value: string): string => (/^#[0-9a-f]{6}$/i.test(value) ? value :
 </details>
 
 <style>
-  .problem { position: sticky; top: -0.9rem; z-index: 1; margin: 0 -0.9rem 0.6rem; padding: 0.5rem 0.9rem; background: #fdecea; }
-  .part { display: block; margin: 0 0 0.5rem; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #5b4cdb; }
-  .more { background: #faf9fd; }
-  details { margin-bottom: 0.6rem; border: 1px solid #e4e2ee; border-radius: 6px; padding: 0.5rem 0.6rem; }
+  .problem { position: sticky; top: -0.9rem; z-index: 1; margin: 0 -0.9rem 0.6rem; padding: 0.5rem 0.9rem; background: var(--error-container); }
+  .part { display: block; margin: 0 0 0.5rem; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); }
+  .more { background: var(--surface-low); }
+  details { margin-bottom: 0.6rem; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); padding: 0.5rem 0.6rem; }
   summary { cursor: pointer; font-weight: 600; }
   details[open] > summary { margin-bottom: 0.6rem; }
   .token { margin-bottom: 0.5rem; }
-  .token.add { padding-top: 0.5rem; border-top: 1px dashed #dddbe6; }
+  .token.add { padding-top: 0.5rem; border-top: 1px dashed var(--outline-variant); }
   .check { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; }
   .check span { margin: 0; }
   .shows { border: 0; padding: 0; margin: 0 0 0.4rem; }
   .shows legend { font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; }
   .shows .check { align-items: flex-start; margin-bottom: 0.4rem; }
   .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .unreadable { margin-top: 0.6rem; padding: 0.5rem 0.6rem; border-radius: 6px; background: #fff4e5; }
+  .unreadable { margin-top: 0.6rem; padding: 0.5rem 0.6rem; border-radius: var(--shape-sm); background: var(--warning-container); }
   .unreadable ul { margin: 0.3rem 0 0; padding-inline-start: 1.1rem; }
-  .good { color: #1f6b3a; }
+  .good { color: var(--success); }
   h3 { display: flex; align-items: center; justify-content: space-between; margin: 0.9rem 0 0.5rem; font-size: 13px; }
 </style>

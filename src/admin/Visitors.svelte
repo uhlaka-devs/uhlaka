@@ -184,5 +184,5 @@ async function download(id: string, address: string): Promise<void> {
   .held { display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
   .held label { display: flex; align-items: center; gap: 0.2rem; }
   p { font-size: 13px; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

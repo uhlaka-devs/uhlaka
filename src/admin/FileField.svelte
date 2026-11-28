@@ -107,6 +107,6 @@ function paste(address: string): void {
   .actions { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
   .list { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; gap: 0.25rem; max-height: 12rem; overflow: auto; }
   .pick { width: 100%; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .pick.current { border-color: #6d5dfc !important; box-shadow: 0 0 0 2px #6d5dfc; }
-  summary { cursor: pointer; font-size: 12.5px; color: #6a6880; margin-bottom: 0.4rem; }
+  .pick.current { border-color: var(--primary) !important; box-shadow: 0 0 0 2px var(--primary); }
+  summary { cursor: pointer; font-size: 12.5px; color: var(--on-surface-variant); margin-bottom: 0.4rem; }
 </style>

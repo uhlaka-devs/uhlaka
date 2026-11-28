@@ -56,6 +56,6 @@ const report = $derived(extension?.views?.find((v) => v.type === 'report') ?? nu
 <style>
   .stats { max-width: 920px; padding: 1.5rem 2rem; }
   h1 { font-size: 20px; margin: 0 0 0.4rem; }
-  .hint { color: #555; font-size: 13px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .hint { color: var(--on-surface-variant); font-size: 13px; }
+  .bad { color: var(--error); font-size: 13px; }
 </style>
