@@ -156,6 +156,64 @@ that changed them would rearrange the page, and "Reset to theme" would undo
 someone's layout. *Why a column is any block:* one image or one text beside
 another is the most common case, and it needs no extra box.
 
+### d5. Stage 3: type, buttons and forms
+
+All of it is the style's (`layout`), from closed lists, as the header's look is:
+
+| Choice | Kept in | Values |
+| --- | --- | --- |
+| The look of headings, text, the menu and buttons | `layout.text.heading`, `.body`, `.menu`, `.button` | `weight`: light, normal, medium, semibold, bold, black; `line` (headings and text): tight, normal, loose; `spacing`: tight, normal, wide; `case` (all but text): `upper` |
+| Headings on a phone | `layout.text.phone` | as on a wide screen (absent), `smaller`, `much-smaller` |
+| Buttons | `layout.button.look` | filled (absent, as before), `outline`, `text` |
+| A button under the pointer | `layout.button.hover` | a colour of the style; absent: as before, no change |
+| A form's fields | `layout.field.look` | boxed (absent, as before), `underline`, `filled` |
+| A shadow, a border | a block's (or the header's) style: `shadow`, `border` | `soft` or `deep`; `thin` or `thick`, in the style's border colour |
+
+The values each name stands for (a weight of 600, a line height of 1.15)
+are written once, in `css.ts`. Light and black need a typeface that has them;
+the faces Uhlaka carries do, a system typeface shows its nearest weight.
+
+The panel is a fourth part of Design, **Text and buttons**: first the
+headings' weight and case and the buttons' look; under "More settings" the
+rest. Its words are as short as the header's.
+
+A style written before reads and draws as before: every list's first value
+is how it looked, and is kept as an absence.
+
+*Shadows and borders as choices, not tokens:* a token would be a CSS value
+typed into the style (a shadow is four numbers and a colour), which d1 rules
+out; two names each cover what the themes offer by default.
+
+### d6. Typefaces: Uhlaka's own, Google Fonts and bought ones
+
+David (2026-11-28): "we must have our own fonts, and at the same time the
+user can use Google Fonts or fonts they bought: that is the most freedom."
+Three sources, one rule: **every face is served by the site** (ADR 0001 d3,
+ADR 0068), so no visitor's browser asks Google or anyone else.
+
+1. **Faces Uhlaka carries** (`fonts/`, SIL Open Font License): more families
+   than the two of today, a choice for headings and one for text in each
+   style.
+2. **Google Fonts**: the owner picks a family from the catalogue in the
+   admin; the site's server downloads its files once, keeps them with the
+   site's files and serves them as its own. Their licences (OFL, Apache)
+   allow it.
+3. **A face the owner bought**: a `.woff2` file uploaded in the admin,
+   checked to be a font and kept with the site's files. That the licence
+   allows a website is the owner's to know; the admin says so.
+
+**The faces Uhlaka carries cover all of Unicode's common scripts** (David,
+2026-11-28: "full UTF-8 support"). Each family is chosen for Latin with
+Latin Extended (ș and ț with the comma below), Cyrillic, Greek and
+Vietnamese; for the scripts it lacks (Arabic, Hebrew, Devanagari, Thai,
+Chinese, Japanese, Korean...) the stack falls back to the Noto family of the
+script, carried by Uhlaka too. Every file is cut by `unicode-range`, as the
+two faces of today are, so a page loads only the pieces its words need: a
+Romanian page never downloads Japanese.
+
+A style names a typeface by a name from these three lists, never by a CSS
+stack typed in. This is its own pull request, after the one for d5.
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as

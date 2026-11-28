@@ -4,7 +4,7 @@
  */
 import type { Block } from './blocks.ts';
 import { type BlockStyle, freeValueCss, isFree, isFreeValue, isOwnValue, STYLE_PROPS, type StyleProp, TOKEN_GROUPS, type TokenGroup, tokenVar } from './style.ts';
-import { colorsFor, type FooterArrangement, hasToken, type HeaderArrangement, otherPalette, otherScheme, ownScheme, type Scheme, shownBy, type Theme } from './theme.ts';
+import { colorsFor, type FooterArrangement, TEXT_PARTS, type TextPart, hasToken, type HeaderArrangement, otherPalette, otherScheme, ownScheme, type Scheme, shownBy, type Theme } from './theme.ts';
 import { isId } from './util.ts';
 
 /**
@@ -113,6 +113,52 @@ const STICKY = 'position:sticky;top:0;z-index:5';
 
 const join = (...parts: string[]): string => parts.filter(Boolean).join(';');
 
+/** What each name of ADR 0085 d5 stands for: written once, here. */
+const WEIGHT: Record<string, string> = { light: '300', medium: '500', semibold: '600', bold: '700', black: '800' };
+const LINE: Record<TextPart, Record<string, string>> = { heading: { tight: '1.05', loose: '1.3' }, body: { tight: '1.45', loose: '1.8' }, menu: {}, button: {} };
+const SPACING: Record<string, string> = { tight: '-.02em', wide: '.05em' };
+const TEXT_SELECTOR: Record<TextPart, string> = { heading: 'h1,h2,h3,h4', body: 'body', menu: '.menu a,.menu summary', button: '.button' };
+const PHONE_HEADINGS: Record<string, string> = {
+  smaller: 'h1{font-size:min(var(--t-size-2xl),9vw)}h2{font-size:min(var(--t-size-xl),7.5vw)}',
+  'much-smaller': 'h1{font-size:min(var(--t-size-xl),8vw)}h2{font-size:var(--t-size-lg)}h3{font-size:var(--t-size-base)}',
+};
+const FIELDS = '.form input:not([type=checkbox]):not([type=radio]):not([type=file]),.form select,.form textarea,.search-form input';
+const FIELD_LOOK: Record<string, string> = {
+  underline: `${FIELDS}{border-width:0 0 1px;border-radius:0;background:transparent;padding-inline:0}`,
+  filled: `${FIELDS}{background:var(--t-color-surface);border-color:transparent}`,
+};
+const BUTTON_LOOK: Record<string, string> = {
+  outline: '.button:not(.quiet){background:transparent;color:var(--b-button-bg,var(--t-color-primary));box-shadow:inset 0 0 0 2px currentColor}',
+  text: '.button:not(.quiet){background:transparent;color:var(--b-button-bg,var(--t-color-primary));padding-inline:0;text-decoration:underline;text-underline-offset:.25em}',
+};
+
+/** Headings, text, the menu, buttons and fields as the style has them (ADR 0085 d5); nothing when it has none. */
+function textCss(theme: Theme): string {
+  const { text, button, field } = theme.layout;
+  let css = '';
+  for (const part of TEXT_PARTS) {
+    const look = text[part];
+    if (!look) continue;
+    css += rule(
+      TEXT_SELECTOR[part],
+      join(
+        look.weight ? `font-weight:${WEIGHT[look.weight]}` : '',
+        look.line && LINE[part][look.line] ? `line-height:${LINE[part][look.line]}` : '',
+        look.spacing ? `letter-spacing:${SPACING[look.spacing]}` : '',
+        look.case ? 'text-transform:uppercase' : '',
+      ),
+    );
+  }
+  if (text.phone) css += `@media (max-width:48rem){${PHONE_HEADINGS[text.phone]}}\n`;
+  if (button.look) css += `${BUTTON_LOOK[button.look]}\n`;
+  if (button.hover && hasToken(theme, 'color', button.hover)) {
+    const colour = `var(${tokenVar('color', button.hover)})`;
+    css += button.look ? `.button:not(.quiet):hover{color:${colour}}\n` : `.button:not(.quiet):hover{background:${colour}}\n`;
+  }
+  if (field.look) css += `${FIELD_LOOK[field.look]}\n`;
+  return css;
+}
+
 /** The theme as a stylesheet: its tokens, each block type's default and variants, then the header and footer. */
 export function themeCss(theme: Theme, options: { preview?: boolean } = {}): string {
   const shows = shownBy(theme);
@@ -159,6 +205,7 @@ export function themeCss(theme: Theme, options: { preview?: boolean } = {}): str
   if (menu.current) css += `${MENU_CURRENT_CSS[menu.current]}\n`;
   if (menu.phone) css += MENU_PANEL(menu.phone === 'full');
   css += rule('.site-bar', declarations(bar.style, theme));
+  css += textCss(theme);
   return css;
 }
 

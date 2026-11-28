@@ -138,6 +138,18 @@
     "menu": {
       "current": "pill",
       "phone": "side"
+    },
+    "text": {
+      "heading": {
+        "weight": "bold",
+        "spacing": "tight"
+      }
+    },
+    "button": {
+      "hover": "deep"
+    },
+    "field": {
+      "look": "filled"
     }
   },
   "dark": {

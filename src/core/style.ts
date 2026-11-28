@@ -41,6 +41,9 @@ export const STYLE_PROPS = {
   gradientDirection: { kind: 'choice', css: '--b-gradient-dir' },
   height: { kind: 'choice', css: 'min-height' },
   alignY: { kind: 'choice', css: '--b-align-y' },
+  /** A shadow and a border (ADR 0085 d5): names, each written once below. */
+  shadow: { kind: 'choice', css: 'box-shadow' },
+  border: { kind: 'choice', css: 'border' },
   /** Drawn as a class of the block (`hide-phone`, `hide-wide`), not as a declaration. */
   hideOn: { kind: 'choice', css: '' },
 } as const satisfies Record<string, { kind: StyleKind; css: string }>;
@@ -61,6 +64,8 @@ export const STYLE_CHOICES: Partial<Record<StyleProp, Record<string, string>>> =
   height: { half: '50svh', screen: '100svh' },
   alignY: { start: 'start', center: 'center', end: 'end' },
   hideOn: { phone: '', wide: '' },
+  shadow: { soft: '0 1px 3px rgb(0 0 0 / .08),0 4px 12px rgb(0 0 0 / .08)', deep: '0 4px 8px rgb(0 0 0 / .1),0 16px 40px rgb(0 0 0 / .18)' },
+  border: { thin: '1px solid var(--t-color-border)', thick: '3px solid var(--t-color-border)' },
 };
 
 /** The properties of a band (ADR 0085 d4): offered for a block, not for the header, the menu or the footer. */

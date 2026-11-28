@@ -44,6 +44,31 @@ export type MenuCurrent = (typeof MENU_CURRENT)[number];
 export const MENU_PHONE = ['below', 'side', 'full'] as const;
 export type MenuPhone = (typeof MENU_PHONE)[number];
 
+/** The look of a kind of text (ADR 0085 d5), each from a closed list; absent: as before. */
+export const TEXT_WEIGHTS = ['light', 'normal', 'medium', 'semibold', 'bold', 'black'] as const;
+export const TEXT_LINES = ['tight', 'normal', 'loose'] as const;
+export const TEXT_SPACINGS = ['tight', 'normal', 'wide'] as const;
+export const TEXT_PARTS = ['heading', 'body', 'menu', 'button'] as const;
+export type TextPart = (typeof TEXT_PARTS)[number];
+export interface TextLook {
+  weight?: (typeof TEXT_WEIGHTS)[number];
+  line?: (typeof TEXT_LINES)[number];
+  spacing?: (typeof TEXT_SPACINGS)[number];
+  case?: 'upper';
+}
+/** Which of the four looks a kind of text takes: text has no capitals, the menu and buttons no line height. */
+export const TEXT_KEYS: Record<TextPart, readonly (keyof TextLook)[]> = {
+  heading: ['weight', 'line', 'spacing', 'case'],
+  body: ['weight', 'line', 'spacing'],
+  menu: ['weight', 'spacing', 'case'],
+  button: ['weight', 'spacing', 'case'],
+};
+/** Headings on a phone: as on a wide screen (absent), or smaller. */
+export const TEXT_PHONE = ['same', 'smaller', 'much-smaller'] as const;
+/** Buttons filled (as before), outlined, or as text; fields boxed (as before), underlined or filled. */
+export const BUTTON_LOOKS = ['filled', 'outline', 'text'] as const;
+export const FIELD_LOOKS = ['boxed', 'underline', 'filled'] as const;
+
 export interface ThemeLayout {
   header: {
     arrangement: HeaderArrangement;
@@ -60,12 +85,20 @@ export interface ThemeLayout {
   menu: { style?: BlockStyle; current?: MenuCurrent; phone?: MenuPhone };
   /** The bar above the header (ADR 0085 d3): what it shows is the site's, its look the style's. */
   bar: { style?: BlockStyle };
+  /** The look of headings, text, the menu and buttons, and headings on a phone (ADR 0085 d5). */
+  text: Partial<Record<TextPart, TextLook>> & { phone?: 'smaller' | 'much-smaller' };
+  /** Buttons: their look, and a colour of the style under the pointer. */
+  button: { look?: 'outline' | 'text'; hover?: string };
+  /** The fields of a form. */
+  field: { look?: 'underline' | 'filled' };
 }
 
 /** The parts of a style's layout. */
-export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar'] as const;
+export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar', 'text', 'button', 'field'] as const;
+/** The parts that have a style of their own. */
+const STYLED_PARTS = ['header', 'footer', 'menu', 'bar'] as const;
 
-export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {} };
+export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {}, text: {}, button: {}, field: {} };
 
 /** Light or dark: what a palette is made for (ADR 0074). */
 export const SCHEMES = ['light', 'dark'] as const;
@@ -236,6 +269,9 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
         if (typeof raw[flag] !== 'boolean') issues.push({ path: `${at}.${flag}`, message: 'true or false' });
         else if (raw[flag]) theme.layout.header[flag] = true;
       }
+    } else if (part === 'text' || part === 'button' || part === 'field') {
+      parseLook(part, raw, theme, issues);
+      continue;
     } else if (part === 'menu') {
       for (const [key, allowedValues] of [['current', MENU_CURRENT], ['phone', MENU_PHONE]] as const) {
         const value = raw[key];
@@ -250,11 +286,69 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
       const { style, issues: found } = normalizeStyle(raw.style, `${at}.style`);
       issues.push(...found);
       checkStyleTokens(theme, style, `${at}.style`, issues);
-      if (Object.keys(style).length) theme.layout[part].style = style;
+      if (Object.keys(style).length) theme.layout[part as (typeof STYLED_PARTS)[number]].style = style;
     }
   }
 
   return issues.length ? { theme: null, issues } : { theme, issues };
+}
+
+/** One of a list, the first kept as an absence (how it looked before); anything else is reported. */
+function pick<T extends string>(list: readonly T[], value: unknown, path: string, issues: Issue[]): T | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value === 'string' && (list as readonly string[]).includes(value)) return value === list[0] ? undefined : (value as T);
+  issues.push({ path, message: `one of: ${list.join(', ')}` });
+  return undefined;
+}
+
+/** The text, button and field looks of a style (ADR 0085 d5). */
+function parseLook(part: 'text' | 'button' | 'field', raw: Record<string, unknown>, theme: Theme, issues: Issue[]): void {
+  const at = `layout.${part}`;
+  if (part === 'field') {
+    for (const key of Object.keys(raw)) if (key !== 'look') issues.push({ path: `${at}.${key}`, message: 'a field has only a look' });
+    const look = pick(FIELD_LOOKS, raw.look, `${at}.look`, issues);
+    if (look) theme.layout.field.look = look as 'underline' | 'filled';
+    return;
+  }
+  if (part === 'button') {
+    for (const key of Object.keys(raw)) if (key !== 'look' && key !== 'hover') issues.push({ path: `${at}.${key}`, message: 'a button has a look and a hover colour' });
+    const look = pick(BUTTON_LOOKS, raw.look, `${at}.look`, issues);
+    if (look) theme.layout.button.look = look as 'outline' | 'text';
+    if (raw.hover !== undefined) {
+      if (typeof raw.hover === 'string' && hasToken(theme, 'color', raw.hover)) theme.layout.button.hover = raw.hover;
+      else issues.push({ path: `${at}.hover`, message: 'a colour of this theme' });
+    }
+    return;
+  }
+  for (const key of Object.keys(raw)) {
+    if (key === 'phone') {
+      const phone = pick(TEXT_PHONE, raw.phone, `${at}.phone`, issues);
+      if (phone) theme.layout.text.phone = phone as 'smaller' | 'much-smaller';
+      continue;
+    }
+    if (!(TEXT_PARTS as readonly string[]).includes(key)) {
+      issues.push({ path: `${at}.${key}`, message: `one of: ${[...TEXT_PARTS, 'phone'].join(', ')}` });
+      continue;
+    }
+    const textPart = key as TextPart;
+    const value = raw[key];
+    if (!isObject(value)) {
+      issues.push({ path: `${at}.${key}`, message: 'an object' });
+      continue;
+    }
+    const look: TextLook = {};
+    for (const [name, given] of Object.entries(value)) {
+      const where = `${at}.${key}.${name}`;
+      if (!(TEXT_KEYS[textPart] as readonly string[]).includes(name)) issues.push({ path: where, message: `one of: ${TEXT_KEYS[textPart].join(', ')}` });
+      else if (name === 'weight') look.weight = given === 'normal' ? undefined : pick(['', ...TEXT_WEIGHTS], given, where, issues) as TextLook['weight'];
+      else if (name === 'line') look.line = pick(['normal', 'tight', 'loose'], given, where, issues) as TextLook['line'];
+      else if (name === 'spacing') look.spacing = pick(['normal', 'tight', 'wide'], given, where, issues) as TextLook['spacing'];
+      else if (given === 'upper') look.case = 'upper';
+      else if (given !== 'none') issues.push({ path: where, message: 'upper or none' });
+    }
+    for (const k of Object.keys(look) as (keyof TextLook)[]) if (look[k] === undefined) delete look[k];
+    if (Object.keys(look).length) theme.layout.text[textPart] = look;
+  }
 }
 
 /** The scheme a theme's own colours are made for. */

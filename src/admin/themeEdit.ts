@@ -32,5 +32,5 @@ export const sameTheme = (a: Theme, b: Theme): boolean => JSON.stringify(sorted(
 export const readyMade = (theme: Theme, ready: Theme[]): Theme | null => ready.find((r) => r.name === theme.name && sameTheme(r, theme)) ?? null;
 
 /** The parts of Design, as the page shows them (ADR 0082 d2). */
-export const DESIGN_PARTS = ['style', 'header', 'footer'] as const;
+export const DESIGN_PARTS = ['style', 'header', 'text', 'footer'] as const;
 export type DesignPart = (typeof DESIGN_PARTS)[number];
