@@ -3,7 +3,7 @@
  * value written here has passed `isFreeValue` or names a token.
  */
 import type { Block } from './blocks.ts';
-import { type BlockStyle, freeValueCss, isFree, isFreeValue, STYLE_PROPS, type StyleProp, TOKEN_GROUPS, type TokenGroup, tokenVar } from './style.ts';
+import { type BlockStyle, freeValueCss, isFree, isFreeValue, isOwnValue, STYLE_PROPS, type StyleProp, TOKEN_GROUPS, type TokenGroup, tokenVar } from './style.ts';
 import { colorsFor, type FooterArrangement, hasToken, type HeaderArrangement, otherPalette, otherScheme, ownScheme, type Scheme, shownBy, type Theme } from './theme.ts';
 import { isId } from './util.ts';
 
@@ -19,11 +19,20 @@ export function declarations(style: BlockStyle | undefined, theme: Theme): strin
     const value = style[prop];
     if (!value) continue;
     const { kind, css } = STYLE_PROPS[prop];
+    if (!css) continue;
     if (isFree(value)) {
-      if (isFreeValue(kind, value.value)) out.push(`${css}:${freeValueCss(kind, value.value)}`);
-    } else if (kind !== 'align' && hasToken(theme, kind as TokenGroup, value.token)) {
+      if (isFreeValue(kind, value.value, prop)) out.push(`${css}:${freeValueCss(kind, value.value, prop)}`);
+    } else if (kind !== 'align' && kind !== 'choice' && hasToken(theme, kind as TokenGroup, value.token)) {
       out.push(`${css}:var(${tokenVar(kind as TokenGroup, value.token)})`);
     }
+  }
+  // A tall band holds its content in the middle unless it says otherwise (ADR 0085 d4).
+  if (out.some((d) => d.startsWith('min-height:'))) out.push('display:flex;flex-direction:column;justify-content:var(--b-align-y,center)');
+  // A gradient runs from the band's own background, or from nothing, to its second colour.
+  if (out.some((d) => d.startsWith('--b-gradient:'))) {
+    const background = out.find((d) => d.startsWith('background-color:'));
+    if (background) out.push(`--b-bg:${background.slice('background-color:'.length)}`);
+    out.push('background-image:linear-gradient(var(--b-gradient-dir,180deg),var(--b-bg,transparent),var(--b-gradient))');
   }
   // A band with its own background and text colour (a hero, a header) has its links and accents in that text colour:
   // the page's link colour is made for the page's background, not the band's (ADR 0074 d1).
@@ -58,7 +67,44 @@ const HEADER_LAYOUT: Record<HeaderArrangement, string> = {
   inline: '',
   centered: '--l-direction:column;--l-align:center;--l-justify:center;text-align:center',
   stacked: '--l-direction:column;--l-align:flex-start;--l-justify:flex-start',
+  'menu-centre': '',
+  'logo-centre': '',
 };
+/** What the two arrangements of ADR 0085 move, on a screen wide enough for the menu (a phone folds it, as under any other). */
+const WIDE = '@media (min-width:48.01rem)';
+const HEADER_WIDE: Partial<Record<HeaderArrangement, string>> = {
+  'menu-centre': '.site-header .site-nav{flex:1 1 auto}.site-header .site-nav>nav{margin-inline:auto}',
+  'logo-centre':
+    // The name is placed at the middle of the row itself, so what is on either side, however long, does not move it.
+    // The menu keeps to its half, short of the name, and wraps inside it when long.
+    '.site-header .site-in{flex-wrap:nowrap}.site-header .site-nav{display:contents}.site-header .site-nav>nav{order:-1;max-width:calc(50% - 7rem)}' +
+    '.site-header .site-name{position:absolute;left:50%;top:50%;translate:-50% -50%}' +
+    '.site-header .site-tools{order:1;margin-inline-start:auto}.site-header .site-nav>.button{order:2}',
+};
+/** How tall a header is on a wide screen, to leave room for it in the hero it lies over: one row, or the name above the menu. */
+const ONE_ROW = 'calc(2.5rem + 2 * var(--t-space-sm))';
+const TWO_ROWS = 'calc(4.5rem + 3 * var(--t-space-sm))';
+/** The header over a page whose first block is a hero, and that hero (ADR 0085 d3). */
+const OVER = '.site-header:has(+.layout>main:first-child>.b-hero:first-child)';
+const OVER_HERO = '.site-header+.layout>main:first-child>.b-hero:first-child';
+const SCROLLED = '@supports (animation-timeline:scroll())';
+/** How the menu marks the current item and the one under the pointer, past the colour of before. */
+const MENU_TOP = ['.menu>li>a', '.menu>li>details>summary'];
+const MENU_MARKED = ['.menu>li>a[aria-current]', '.menu>li>details>summary.current', '.menu>li>a:hover', '.menu>li>details>summary:hover'];
+const MENU_CURRENT_CSS: Record<string, string> = {
+  underline: `${MENU_MARKED.map((m) => `.site-header ${m}`).join(',')}{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.4em}`,
+  pill:
+    `${MENU_TOP.map((m) => `.site-header ${m}`).join(',')}{padding:.35em .85em;border-radius:999px}` +
+    `${MENU_MARKED.map((m) => `.site-header ${m}`).join(',')}{color:inherit;background-color:color-mix(in srgb,currentColor 14%,transparent)}`,
+};
+/** The menu on a phone, as a panel from the side or over the whole screen; its own label closes it. */
+const MENU_PANEL = (whole: boolean): string =>
+  '@media (max-width:48rem){' +
+  `.site-nav{position:fixed;z-index:20;inset-block:0;inset-inline-end:0;${whole ? 'inset-inline-start:0' : 'width:min(20rem,85vw)'};overflow-y:auto;` +
+  'padding:var(--t-space-md);background-color:var(--t-color-surface);color:var(--t-color-text);flex-basis:auto;justify-content:flex-start;box-shadow:0 0 2rem rgb(0 0 0 / .25)}' +
+  '.menu-close{display:block;align-self:flex-end;cursor:pointer;font-size:1.5rem;line-height:1;padding:.2em .4em}' +
+  (whole ? '' : '.menu-check:checked+.menu-button::before{content:"";position:fixed;inset:0;z-index:19;background:rgb(0 0 0 / .4)}') +
+  '}\n';
 const FOOTER_LAYOUT: Record<FooterArrangement, string> = {
   inline: '',
   centered: '--l-direction:column;--l-align:center;--l-justify:center;text-align:center',
@@ -99,11 +145,61 @@ export function themeCss(theme: Theme, options: { preview?: boolean } = {}): str
       css += rule(`.b-${type}.v-${variant}`, declarations(style, theme));
     }
   }
-  const { header, footer, menu } = theme.layout;
+  const { header, footer, menu, bar } = theme.layout;
   css += rule('.site-header', join(HEADER_LAYOUT[header.arrangement], header.sticky ? STICKY : '', declarations(header.style, theme)));
+  const wide = HEADER_WIDE[header.arrangement];
+  if (wide) css += `${WIDE}{${wide}}\n`;
+  if (header.over) css += overCss(theme);
+  if (header.sticky && header.shrink) {
+    css += `${SCROLLED}{.site-header{animation:uh-shrink linear both;animation-timeline:scroll();animation-range:0 6rem}.site-header .site-logo{animation:uh-shrink-logo linear both;animation-timeline:scroll();animation-range:0 6rem}}\n`;
+    css += '@keyframes uh-shrink{to{padding-block:var(--t-space-xs)}}@keyframes uh-shrink-logo{to{height:1.75rem}}\n';
+  }
   css += rule('.site-footer', join(FOOTER_LAYOUT[footer.arrangement], declarations(footer.style, theme)));
   css += rule('.site-header .sub', declarations(menu.style, theme));
+  if (menu.current) css += `${MENU_CURRENT_CSS[menu.current]}\n`;
+  if (menu.phone) css += MENU_PANEL(menu.phone === 'full');
+  css += rule('.site-bar', declarations(bar.style, theme));
   return css;
+}
+
+/**
+ * The header over a hero: no background of its own, in the hero's text colour
+ * (each variant's own when it sets one), the hero made taller by the header's
+ * height so nothing is covered. A header that also stays at the top fills its
+ * background in once the page has scrolled; a browser that cannot tie that to
+ * the scroll keeps such a header as it was, with its background.
+ */
+function overCss(theme: Theme): string {
+  const { header } = theme.layout;
+  const hero = theme.blocks.hero;
+  const colorOf = (style: BlockStyle | undefined): string => {
+    const value = style?.color;
+    if (!value) return '';
+    if (isFree(value)) return isFreeValue('color', value.value) ? freeValueCss('color', value.value) : '';
+    return hasToken(theme, 'color', value.token) ? `var(${tokenVar('color', value.token)})` : '';
+  };
+  const room = header.arrangement === 'centered' || header.arrangement === 'stacked' ? TWO_ROWS : ONE_ROW;
+  const own = colorOf(hero?.style);
+  let colours = own ? rule(OVER, `--over-color:${own}`) : '';
+  for (const [variant, style] of Object.entries(hero?.variants ?? {})) {
+    const c = colorOf(style);
+    if (c) colours += rule(OVER.replace('.b-hero:first-child', `.b-hero.v-${variant}:first-child`), `--over-color:${c}`);
+  }
+  const lies = `margin-block-end:calc(-1 * var(--over-room));position:${header.sticky ? 'sticky' : 'relative'};z-index:5`;
+  const clear = 'background-color:transparent;color:var(--over-color,inherit);--t-color-link:var(--over-color,currentColor)';
+  const heroRoom = `${OVER_HERO}{border-block-start:var(--over-room) solid transparent}`;
+  const roomVar = `${OVER}{--over-room:${room}}`;
+  // Only where the header is one known height: on a phone its parts may take two rows, and it keeps its background, as most themes do there.
+  if (!header.sticky) return `${WIDE}{${roomVar}\n${colours}${OVER}{${lies};${clear}}\n${heroRoom}}\n`;
+  // Getting smaller is a second animation of the same header: named here too, or this rule, which wins, would drop it.
+  const fill = header.shrink
+    ? 'animation:uh-fill linear both,uh-shrink linear both;animation-timeline:scroll(),scroll();animation-range:0 var(--over-room),0 6rem'
+    : 'animation:uh-fill linear both;animation-timeline:scroll();animation-range:0 var(--over-room)';
+  const filled = `background-color:${colorOf({ color: header.style?.background }) || 'var(--t-color-background)'};color:${colorOf(header.style) || 'var(--t-color-text)'}`;
+  return (
+    `${WIDE}{${SCROLLED}{${roomVar}\n${colours}${OVER}{${lies};${fill}}\n${heroRoom}}}\n` +
+    `@keyframes uh-fill{from{${clear}}to{${filled}}}\n`
+  );
 }
 
 /**
@@ -127,7 +223,7 @@ export function blocksCss(blocks: Block[], theme: Theme): string {
 export function countFreeValues(blocks: Block[]): number {
   let n = 0;
   for (const b of blocks) {
-    n += Object.values(b.style ?? {}).filter((v) => v && isFree(v)).length;
+    n += Object.entries(b.style ?? {}).filter(([prop, v]) => isOwnValue(prop, v)).length;
     if (b.children) n += countFreeValues(b.children);
   }
   return n;
@@ -146,7 +242,7 @@ export function countFreeColors(blocks: Block[]): number {
 /** "Reset to theme": the same blocks with every free value removed. Content is untouched. */
 export function resetToTheme(blocks: Block[]): Block[] {
   return blocks.map((b) => {
-    const kept = Object.fromEntries(Object.entries(b.style ?? {}).filter(([, v]) => v && !isFree(v))) as BlockStyle;
+    const kept = Object.fromEntries(Object.entries(b.style ?? {}).filter(([prop, v]) => v && !isOwnValue(prop, v))) as BlockStyle;
     const { style: _style, ...rest } = b;
     return {
       ...rest,

@@ -65,6 +65,7 @@ export function colorPairs(theme: Theme): ColorPair[] {
     theme.layout.header.style,
     theme.layout.footer.style,
     theme.layout.menu.style,
+    theme.layout.bar.style,
   ];
   for (const style of styles) {
     if (!style) continue;

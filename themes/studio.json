@@ -68,10 +68,15 @@
   "layout": {
     "header": {
       "arrangement": "inline",
-      "sticky": true
+      "sticky": true,
+      "shrink": true
     },
     "footer": {
       "arrangement": "centered"
+    },
+    "menu": {
+      "current": "underline",
+      "phone": "full"
     }
   },
   "light": {

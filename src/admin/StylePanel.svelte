@@ -1,6 +1,6 @@
 <script lang="ts">
 /** The style tab of a selected block: its variant, its own style, and how much of that is not the theme's. */
-import { type Block, type BlockStyle, isFree, type Theme, variantsOf } from '../core/index.ts';
+import { type Block, type BlockStyle, isOwnValue, stylePropsFor, type Theme, variantsOf } from '../core/index.ts';
 import { say, t } from './messages.ts';
 import StyleEditor from './StyleEditor.svelte';
 
@@ -12,7 +12,7 @@ let {
 }: { block: Block; theme: Theme; onstyle: (style: BlockStyle) => void; onvariant: (variant: string) => void } = $props();
 
 const variants = $derived(variantsOf(theme, block.type));
-const free = $derived(Object.values(block.style ?? {}).filter((v) => v && isFree(v)).length);
+const free = $derived(Object.entries(block.style ?? {}).filter(([prop, v]) => isOwnValue(prop, v)).length);
 /** Bumped by "reset", so the editor forgets values that were being typed. */
 let round = $state(0);
 </script>
@@ -27,7 +27,7 @@ let round = $state(0);
   </label>
 {/if}
 
-{#key round}<StyleEditor style={block.style} {theme} {onstyle} />{/key}
+{#key round}<StyleEditor style={block.style} {theme} {onstyle} props={stylePropsFor(block.type, true)} />{/key}
 
 {#if free > 0}
   <p class="hint">{say(t.style.free, { count: free })}</p>
@@ -35,6 +35,6 @@ let round = $state(0);
     type="button"
     onclick={() => {
       round += 1;
-      onstyle(Object.fromEntries(Object.entries(block.style ?? {}).filter(([, v]) => v && !isFree(v))) as BlockStyle);
+      onstyle(Object.fromEntries(Object.entries(block.style ?? {}).filter(([prop, v]) => v && !isOwnValue(prop, v))) as BlockStyle);
     }}>{t.style.reset}</button>
 {/if}

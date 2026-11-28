@@ -97,6 +97,7 @@ import SeoTable from './SeoTable.svelte';
 import SearchConsole from './SearchConsole.svelte';
 import SitePanel from './SitePanel.svelte';
 import StylePanel from './StylePanel.svelte';
+import GroupPanel from './GroupPanel.svelte';
 import DesignPanel from './DesignPanel.svelte';
 import { DESIGN_PARTS, type DesignPart } from './themeEdit.ts';
 
@@ -1085,6 +1086,8 @@ onMount(() => {
           changed={site.themeChanged}
           pages={pagesIn(site.site, site.site.language, site.pages)}
           lists={menuLists}
+          sections={site.sections}
+          shop={site.shop.on}
           handPicked={page ? countFreeColors(page.blocks) : 0}
           onpart={(part) => openDesign(part)}
           onsite={editSite}
@@ -1098,7 +1101,11 @@ onMount(() => {
           <button type="button" role="tab" aria-selected={tab === 'content'} onclick={() => (tab = 'content')}>{t.inspector.content}</button>
           <button type="button" role="tab" aria-selected={tab === 'style'} onclick={() => (tab = 'style')}>{t.inspector.style}</button>
         </div>
-        {#if tab === 'content'}
+        {#if tab === 'content' && block.type === 'group'}
+          {#key block.id}
+            <GroupPanel {block} theme={site.theme} onpatch={(change) => patch(block.id, change)} />
+          {/key}
+        {:else if tab === 'content'}
           {#key block.id}
             <Fields
               fields={def.fields}

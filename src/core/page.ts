@@ -45,6 +45,8 @@ export interface Site {
   logo: ImageValue | null;
   /** One button in the header: "Ask for a quote". */
   action: LinkValue | null;
+  /** What the header shows besides the logo, the menu and the button (ADR 0085 d3). Absent: none of it. */
+  header?: SiteHeader;
   footer: string;
   /** Links in the footer: a privacy page, a social profile. */
   footerLinks: LinkValue[];
@@ -150,6 +152,23 @@ export function normalizePage(input: unknown): { page: Page; issues: Issue[] } {
   };
 }
 
+/** The bar above the header (a section's slug), a search, and the cart. */
+export interface SiteHeader {
+  bar?: string;
+  search?: true;
+  cart?: true;
+}
+
+function cleanSiteHeader(raw: unknown): { header?: SiteHeader } {
+  if (!isObject(raw)) return {};
+  const header: SiteHeader = {
+    ...(slugify(raw.bar) ? { bar: slugify(raw.bar) } : {}),
+    ...(raw.search === true ? { search: true as const } : {}),
+    ...(raw.cart === true ? { cart: true as const } : {}),
+  };
+  return Object.keys(header).length ? { header } : {};
+}
+
 export function normalizeSite(input: unknown): Site {
   const raw = isObject(input) ? input : {};
   const url = safeHref(raw.url);
@@ -160,6 +179,7 @@ export function normalizeSite(input: unknown): Site {
     url: /^https?:\/\//i.test(url) ? url.replace(/\/+$/, '') : '',
     logo: cleanImage(raw.logo),
     action: cleanLink(raw.action),
+    ...cleanSiteHeader(raw.header),
     footer: str(raw.footer, 300).trim(),
     footerLinks: cleanFooterLinks(raw.footerLinks),
     menu: normalizeMenu(raw.menu),

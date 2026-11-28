@@ -134,6 +134,10 @@
           "token": "on-primary"
         }
       }
+    },
+    "menu": {
+      "current": "pill",
+      "phone": "side"
     }
   },
   "dark": {

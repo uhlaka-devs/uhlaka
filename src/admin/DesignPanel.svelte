@@ -6,7 +6,7 @@
  * or the footer in the canvas opens its part.
  */
 import type { MenuList, Site, Theme } from '../core/index.ts';
-import type { PageInfo } from './api.ts';
+import type { PageInfo, SectionInfo } from './api.ts';
 import FooterPanel from './FooterPanel.svelte';
 import HeaderPanel from './HeaderPanel.svelte';
 import { t } from './messages.ts';
@@ -21,6 +21,8 @@ let {
   changed,
   pages,
   lists,
+  sections = [],
+  shop = false,
   handPicked = 0,
   onpart,
   onsite,
@@ -36,6 +38,10 @@ let {
   changed: boolean;
   pages: PageInfo[];
   lists: MenuList[];
+  /** The sections the bar above the header may show (ADR 0085 d3). */
+  sections?: SectionInfo[];
+  /** Whether the shop is on: the header may then show the cart. */
+  shop?: boolean;
   handPicked?: number;
   onpart: (part: DesignPart) => void;
   onsite: (site: Site) => void;
@@ -63,7 +69,7 @@ let {
     <p class="hint" data-panel-intro="theme">{t.look.styleIntro}</p>
     <ThemeBuilder {theme} onchange={ontheme} {handPicked} {ready} {onchoose} />
   {:else if part === 'header'}
-    <HeaderPanel {site} {theme} {pages} {lists} {onsite} {ontheme} />
+    <HeaderPanel {site} {theme} {pages} {lists} {sections} {shop} {onsite} {ontheme} />
   {:else}
     <FooterPanel {site} {theme} {onsite} {ontheme} />
   {/if}

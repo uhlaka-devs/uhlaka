@@ -6,8 +6,8 @@
  * both are edited, opened by a click on the header.
  */
 import { onMount } from 'svelte';
-import { type BlockStyle, HEADER_ARRANGEMENTS, languageName, type LinkValue, type MenuList, type Site, type SiteText, type Theme } from '../core/index.ts';
-import { api, type PageInfo } from './api.ts';
+import { type BlockStyle, HEADER_ARRANGEMENTS, languageName, type LinkValue, MENU_CURRENT, MENU_PHONE, type MenuList, type Site, type SiteHeader, type SiteText, type Theme } from '../core/index.ts';
+import { api, type PageInfo, type SectionInfo } from './api.ts';
 import ImageField from './ImageField.svelte';
 import MenuBuilder from './MenuBuilder.svelte';
 import { say, t } from './messages.ts';
@@ -19,6 +19,8 @@ let {
   theme,
   pages,
   lists,
+  sections = [],
+  shop = false,
   onsite,
   ontheme,
 }: {
@@ -26,6 +28,8 @@ let {
   theme: Theme;
   pages: PageInfo[];
   lists: MenuList[];
+  sections?: SectionInfo[];
+  shop?: boolean;
   onsite: (site: Site) => void;
   ontheme: (theme: Theme) => void;
 } = $props();
@@ -41,7 +45,25 @@ function apply(mutate: (draft: Theme) => void): void {
   problem = tried.problem;
   if (tried.theme) ontheme(tried.theme);
 }
-const setStyle = (part: 'header' | 'menu', style: BlockStyle): void =>
+/** What else the header shows (ADR 0085 d3): kept with the site, an empty choice left out. */
+function setHeader(patch: Partial<Record<keyof SiteHeader, string | boolean>>): void {
+  const next: Record<string, unknown> = { ...site.header, ...patch };
+  for (const [key, value] of Object.entries(next)) if (!value) delete next[key];
+  const { header: _was, ...rest } = site;
+  onsite(Object.keys(next).length ? { ...rest, header: next as SiteHeader } : (rest as Site));
+}
+const setFlag = (flag: 'over' | 'shrink', on: boolean): void =>
+  apply((d) => {
+    if (on) d.layout.header[flag] = true;
+    else delete d.layout.header[flag];
+  });
+const setMenu = (key: 'current' | 'phone', value: string): void =>
+  apply((d) => {
+    // The first choice is how a menu looked before, kept as an absence.
+    if (value === (key === 'current' ? MENU_CURRENT[0] : MENU_PHONE[0])) delete d.layout.menu[key];
+    else (d.layout.menu as Record<string, string>)[key] = value;
+  });
+const setStyle = (part: 'header' | 'menu' | 'bar', style: BlockStyle): void =>
   apply((d) => {
     if (Object.keys(style).length) d.layout[part].style = style;
     else delete d.layout[part].style;
@@ -61,6 +83,12 @@ onMount(() => {
   <input type="checkbox" role="switch" checked={theme.layout.header.sticky} onchange={(e) => apply((d) => { d.layout.header.sticky = e.currentTarget.checked; })} data-layout-sticky />
   <span><strong>{t.layout.sticky}</strong><small>{t.layout.stickyHint}</small></span>
 </label>
+{#if theme.layout.header.sticky}
+  <label class="switch" data-header-shrink>
+    <input type="checkbox" role="switch" checked={theme.layout.header.shrink === true} onchange={(e) => setFlag('shrink', e.currentTarget.checked)} data-layout-shrink />
+    <span><strong>{t.layout.shrink}</strong><small>{t.layout.shrinkHint}</small></span>
+  </label>
+{/if}
 
 <h3>{t.look.says}</h3>
 <div class="field">
@@ -82,6 +110,25 @@ onMount(() => {
     <input type="text" value={site.action?.href ?? ''} oninput={(e) => set({ action: link(site.action, { href: e.currentTarget.value }) })} />
   </label>
 </fieldset>
+
+<div class="field" data-header-bar>
+  <label><span class="label">{t.layout.bar}</span>
+    <select value={site.header?.bar ?? ''} onchange={(e) => setHeader({ bar: e.currentTarget.value })} data-site-bar>
+      <option value="">{t.layout.barNone}</option>
+      {#each sections as section (section.slug)}<option value={section.slug}>{section.title}</option>{/each}
+    </select>
+  </label>
+  <small>{t.layout.barHint}</small>
+</div>
+
+<label class="switch" data-header-search>
+  <input type="checkbox" role="switch" checked={site.header?.search === true} onchange={(e) => setHeader({ search: e.currentTarget.checked })} data-site-search />
+  <span><strong>{t.layout.search}</strong><small>{t.layout.searchHint}</small></span>
+</label>
+<label class="switch" data-header-cart class:off={!shop}>
+  <input type="checkbox" role="switch" checked={site.header?.cart === true} disabled={!shop} onchange={(e) => setHeader({ cart: e.currentTarget.checked })} data-site-cart />
+  <span><strong>{t.layout.cart}</strong><small>{shop ? t.layout.cartHint : t.layout.cartOff}</small></span>
+</label>
 
 {#each site.languages as language (language)}
   <fieldset class="field" data-own-action={language}>
@@ -110,6 +157,25 @@ onMount(() => {
   </div>
 </fieldset>
 
+<label class="switch" data-header-over>
+  <input type="checkbox" role="switch" checked={theme.layout.header.over === true} onchange={(e) => setFlag('over', e.currentTarget.checked)} data-layout-over />
+  <span><strong>{t.layout.over}</strong><small>{t.layout.overHint}</small></span>
+</label>
+
+<details class="more" data-header-more>
+  <summary>{t.look.more}</summary>
+<fieldset class="field" data-menu-current>
+  <legend>{t.layout.current}</legend>
+  <select value={theme.layout.menu.current ?? MENU_CURRENT[0]} onchange={(e) => setMenu('current', e.currentTarget.value)} data-layout-current>
+    {#each MENU_CURRENT as name (name)}<option value={name}>{t.layout.currents[name] ?? name}</option>{/each}
+  </select>
+</fieldset>
+<fieldset class="field" data-menu-phone>
+  <legend>{t.layout.phone}</legend>
+  <select value={theme.layout.menu.phone ?? MENU_PHONE[0]} onchange={(e) => setMenu('phone', e.currentTarget.value)} data-layout-phone>
+    {#each MENU_PHONE as name (name)}<option value={name}>{t.layout.phones[name] ?? name}</option>{/each}
+  </select>
+</fieldset>
 <details>
   <summary>{t.look.headerColours}</summary>
   <div data-layout-style="header">
@@ -122,6 +188,13 @@ onMount(() => {
   <div data-layout-style="menu">
     <StyleEditor style={theme.layout.menu.style} {theme} onstyle={(style) => setStyle('menu', style)} defaultLabel={t.theme.unset} />
   </div>
+</details>
+<details>
+  <summary>{t.layout.barColours}</summary>
+  <div data-layout-style="bar">
+    <StyleEditor style={theme.layout.bar.style} {theme} onstyle={(style) => setStyle('bar', style)} defaultLabel={t.theme.unset} />
+  </div>
+</details>
 </details>
 
 <style>
@@ -138,6 +211,10 @@ onMount(() => {
   .switch input:checked::after { left: 22px; width: 24px; height: 24px; background: var(--on-primary); }
   .switch input:active::after { left: 2px; width: 28px; height: 28px; }
   .switch input:checked:active::after { left: 18px; }
+  .switch + .switch, .switch + .field, .field + .switch { margin-top: var(--sp-2); }
+  .switch.off { opacity: 0.65; cursor: default; }
+  select { width: 100%; }
+  .more > summary { color: var(--primary); }
   .choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
   .choice { display: grid; gap: var(--sp-1); justify-items: center; padding: var(--sp-2) var(--sp-1); border: 1px solid var(--outline-variant); border-radius: var(--shape-md); font: var(--label-m); text-align: center; cursor: pointer; background: var(--surface-lowest); transition: background-color var(--dur-short-2) var(--ease-standard); }
   .choice:hover { background: color-mix(in oklch, var(--on-surface) var(--state-hover), var(--surface-lowest)); }
@@ -153,6 +230,12 @@ onMount(() => {
   .pic.centered .logo, .pic.stacked .logo { flex-basis: 100%; max-width: 18px; margin: 0 calc(50% - 9px); }
   .pic.stacked { align-content: center; }
   .pic.stacked .logo { width: 24px; max-width: 24px; margin: 0 calc(50% - 12px); }
+  .pic.menu-centre .logo { margin-inline-end: auto; }
+  .pic.menu-centre .nav:nth-of-type(4) { margin-inline-start: auto; }
+  .pic.logo-centre { justify-content: center; }
+  .pic.logo-centre .logo { order: 2; margin: 0 6px; }
+  .pic.logo-centre .nav:nth-of-type(2), .pic.logo-centre .nav:nth-of-type(3) { order: 1; }
+  .pic.logo-centre .nav:nth-of-type(4) { order: 3; }
   details { margin: var(--sp-3) 0; border: 1px solid var(--outline-variant); border-radius: var(--shape-md); padding: var(--sp-2) var(--sp-3); }
   summary { cursor: pointer; font: var(--title-s); min-height: var(--target-dense); display: flex; align-items: center; }
   details[open] > summary { margin-bottom: var(--sp-3); }

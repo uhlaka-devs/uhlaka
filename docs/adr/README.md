@@ -86,3 +86,4 @@ work it decides. A new one that changes an old one says so at its top.
 - [ADR 0082 — Design and Settings: one style, the header where you click it](0082-design-and-settings.md)
 - [ADR 0083 — Colour palettes: light and dark that go together](0083-colour-palettes.md)
 - [ADR 0084 — The admin's design system: Material 3's principles, one file of tokens](0084-the-admins-design-system.md)
+- [ADR 0085 — Everything a theme offers, in one style: five stages, the header first](0085-everything-a-theme-offers.md)

@@ -104,13 +104,13 @@ export const areaBlock = (section: string): Block => ({ id: `l_${section.replace
  * What each section a layout shows holds, in a language, by its name: filled
  * in before a page is drawn, as a page's own section blocks are (ADR 0033).
  */
-export function layoutAreas(layouts: readonly Layout[], sections: readonly Page[], language: string): Record<string, Block[]> {
-  const names = layoutSections(layouts);
+export function layoutAreas(layouts: readonly Layout[], sections: readonly Page[], language: string, also: readonly string[] = []): Record<string, Block[]> {
+  const names = [...new Set([...layoutSections(layouts), ...also.filter(Boolean)])];
   return Object.fromEntries(names.map((name) => [name, fillSections([areaBlock(name)], sections, language)[0]?.children ?? []]));
 }
 
-/** The site, ready to draw a page in this language: what each of its layouts' sections holds. */
-export const withAreas = (site: Site, sections: readonly Page[], language: string): Site => ({ ...site, areas: layoutAreas(site.layouts ?? READY_LAYOUTS, sections, language) });
+/** The site, ready to draw a page in this language: what each of its layouts' sections holds, and the bar above its header (ADR 0085 d3). */
+export const withAreas = (site: Site, sections: readonly Page[], language: string): Site => ({ ...site, areas: layoutAreas(site.layouts ?? READY_LAYOUTS, sections, language, [site.header?.bar ?? '']) });
 
 /** A picture drawn straight in a page's layout, outside any block (an entry's cover): what fits there (ADR 0005 d8). */
 export const pictureIn = (site: Site, layout: string | undefined, src: string, share: Share): ReturnType<typeof pictureAttrs> =>

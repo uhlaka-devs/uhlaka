@@ -32,19 +32,40 @@ export interface BlockTheme {
  * How the parts of the header, and of the footer, sit beside each other. A
  * closed list: a theme picks one by name, and `css.ts` knows what each means.
  */
-export const HEADER_ARRANGEMENTS = ['inline', 'centered', 'stacked'] as const;
+export const HEADER_ARRANGEMENTS = ['inline', 'centered', 'stacked', 'menu-centre', 'logo-centre'] as const;
 export const FOOTER_ARRANGEMENTS = ['inline', 'centered'] as const;
 export type HeaderArrangement = (typeof HEADER_ARRANGEMENTS)[number];
 export type FooterArrangement = (typeof FOOTER_ARRANGEMENTS)[number];
 
+/** How the menu marks the page one is on, and the item under the pointer (ADR 0085 d3). */
+export const MENU_CURRENT = ['colour', 'underline', 'pill'] as const;
+export type MenuCurrent = (typeof MENU_CURRENT)[number];
+/** Where the menu opens on a phone: under the header, as a panel from the side, or over the whole screen. */
+export const MENU_PHONE = ['below', 'side', 'full'] as const;
+export type MenuPhone = (typeof MENU_PHONE)[number];
+
 export interface ThemeLayout {
-  header: { arrangement: HeaderArrangement; /** Stays at the top of the screen while the page scrolls. */ sticky: boolean; style?: BlockStyle };
+  header: {
+    arrangement: HeaderArrangement;
+    /** Stays at the top of the screen while the page scrolls. */
+    sticky: boolean;
+    /** Lies over a page's first block when that is a hero, without a background of its own (ADR 0085 d3). Absent: off. */
+    over?: true;
+    /** Gets smaller as the page scrolls, while it stays at the top. Absent: off. */
+    shrink?: true;
+    style?: BlockStyle;
+  };
   footer: { arrangement: FooterArrangement; style?: BlockStyle };
-  /** The panel a menu item opens (ADR 0008). */
-  menu: { style?: BlockStyle };
+  /** The panel a menu item opens (ADR 0008), how the current item is marked, and the menu on a phone. Absent: `colour`, `below`. */
+  menu: { style?: BlockStyle; current?: MenuCurrent; phone?: MenuPhone };
+  /** The bar above the header (ADR 0085 d3): what it shows is the site's, its look the style's. */
+  bar: { style?: BlockStyle };
 }
 
-export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {} };
+/** The parts of a style's layout. */
+export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar'] as const;
+
+export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {} };
 
 /** Light or dark: what a palette is made for (ADR 0074). */
 export const SCHEMES = ['light', 'dark'] as const;
@@ -190,9 +211,9 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
   if (input.layout !== undefined && !isObject(input.layout)) issues.push({ path: 'layout', message: 'a layout is an object' });
   const rawLayout = isObject(input.layout) ? input.layout : {};
   for (const key of Object.keys(rawLayout)) {
-    if (key !== 'header' && key !== 'footer' && key !== 'menu') issues.push({ path: `layout.${key}`, message: 'not a part of the layout (header, footer, menu)' });
+    if (!(LAYOUT_PARTS as readonly string[]).includes(key)) issues.push({ path: `layout.${key}`, message: `not a part of the layout (${LAYOUT_PARTS.join(', ')})` });
   }
-  for (const part of ['header', 'footer', 'menu'] as const) {
+  for (const part of LAYOUT_PARTS) {
     const raw = rawLayout[part];
     if (raw === undefined) continue;
     const at = `layout.${part}`;
@@ -202,12 +223,28 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
     }
     const allowed: readonly string[] = part === 'header' ? HEADER_ARRANGEMENTS : part === 'footer' ? FOOTER_ARRANGEMENTS : [];
     if (raw.arrangement !== undefined) {
-      if (part !== 'menu' && typeof raw.arrangement === 'string' && allowed.includes(raw.arrangement)) theme.layout[part].arrangement = raw.arrangement as never;
-      else issues.push({ path: `${at}.arrangement`, message: allowed.length ? `one of: ${allowed.join(', ')}` : 'the menu has no arrangement' });
+      if ((part === 'header' || part === 'footer') && typeof raw.arrangement === 'string' && allowed.includes(raw.arrangement)) theme.layout[part].arrangement = raw.arrangement as never;
+      else issues.push({ path: `${at}.arrangement`, message: allowed.length ? `one of: ${allowed.join(', ')}` : `the ${part} has no arrangement` });
     }
-    if (part === 'header' && raw.sticky !== undefined) {
-      if (typeof raw.sticky === 'boolean') theme.layout.header.sticky = raw.sticky;
-      else issues.push({ path: `${at}.sticky`, message: 'true or false' });
+    if (part === 'header') {
+      if (raw.sticky !== undefined) {
+        if (typeof raw.sticky === 'boolean') theme.layout.header.sticky = raw.sticky;
+        else issues.push({ path: `${at}.sticky`, message: 'true or false' });
+      }
+      for (const flag of ['over', 'shrink'] as const) {
+        if (raw[flag] === undefined) continue;
+        if (typeof raw[flag] !== 'boolean') issues.push({ path: `${at}.${flag}`, message: 'true or false' });
+        else if (raw[flag]) theme.layout.header[flag] = true;
+      }
+    } else if (part === 'menu') {
+      for (const [key, allowedValues] of [['current', MENU_CURRENT], ['phone', MENU_PHONE]] as const) {
+        const value = raw[key];
+        if (value === undefined) continue;
+        if (typeof value === 'string' && (allowedValues as readonly string[]).includes(value)) {
+          // The first of each list is how a menu looked before ADR 0085, and is kept as an absence.
+          if (value !== allowedValues[0]) (theme.layout.menu as Record<string, string>)[key] = value;
+        } else issues.push({ path: `${at}.${key}`, message: `one of: ${allowedValues.join(', ')}` });
+      }
     }
     if (raw.style !== undefined) {
       const { style, issues: found } = normalizeStyle(raw.style, `${at}.style`);

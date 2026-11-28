@@ -159,6 +159,7 @@ const assert = (condition, message) => {
     const before = await headerHtml();
     await page.locator('[data-design-part="header"]').click();
     await page.locator('[data-layout="header"] label', { hasText: 'Centred' }).click();
+    await page.locator('[data-header-more] > summary').click();
     await page.getByText('Colours and spacing of the header', { exact: true }).click();
     await page.locator('[data-layout-style="header"] select[data-style="background"]').selectOption('token:brand');
     await page.waitForFunction(() => {
@@ -328,6 +329,40 @@ const assert = (condition, message) => {
     await page.keyboard.press('ControlOrMeta+z');
     assert((await order()) === 'contact hero group(text,image)', 'one undo takes one drag back');
 
+    // Columns, height and where a block is hidden (ADR 0085 d4): the group's own panel.
+    const groupOf = async () => (await stored()).find((b) => b.type === 'group');
+    await canvas.locator('.b-group').click({ position: { x: 6, y: 6 } });
+    await page.locator('[data-group-columns]').waitFor();
+    await page.locator('[data-columns="1-1"]').check({ force: true });
+    await canvas.locator('.group.cols-1-1').waitFor();
+    assert((await order()) === 'contact hero group(text,image)', 'two halves: the two blocks of the group become its two columns, nothing added');
+    await page.locator('[data-columns="1-1-1"]').check({ force: true });
+    await canvas.locator('.group.cols-1-1-1 > .b-group .cms-empty').waitFor();
+    assert((await order()) === 'contact hero group(text,image,group)', `three columns: an empty box is added for the third, to drop blocks into: ${await order()}`);
+    await page.locator('[data-group-more] > summary').click();
+    await page.locator('[data-group-reverse]').check();
+    await page.locator('[data-group-style="height"]').selectOption('value:screen');
+    await page.locator('[data-group-style="gradient"]').selectOption('token:primary');
+    await page.locator('[data-group-style="gradientDirection"]').selectOption('value:across');
+    await page.locator('[data-group-style="hideOn"]').selectOption('value:wide');
+    await canvas.locator('.b-group.cms-hide-wide .group.reverse').waitFor();
+    if (shots) await page.screenshot({ path: join(shots, 'editor-columns.png') });
+    const columned = await groupOf();
+    assert(
+      columned.content.reverse === true && columned.style.height.value === 'screen' && columned.style.gradient.token === 'primary' && columned.style.hideOn.value === 'wide',
+      'the phone\'s order is the content; the height, the gradient and where it is hidden are the style',
+    );
+    const faded = await canvas.locator('.b-group.cms-hide-wide').evaluate((el) => getComputedStyle(el).opacity);
+    assert(faded === '0.35', `a block hidden on a wide screen is only faded in the editor (${faded})`);
+    await page.locator('[data-group-style="hideOn"]').selectOption('');
+    await page.locator('[data-columns="none"]').check({ force: true });
+    await canvas.locator('.b-group > .b-in > .group:not(.cols)').waitFor();
+    assert((await order()) === 'contact hero group(text,image,group)', 'one under another again: nothing is taken away');
+    await page.locator('aside.left h2').first().click();
+    for (let i = 0; i < 9; i += 1) await page.keyboard.press('ControlOrMeta+z');
+    await page.waitForFunction(() => !document.querySelector('iframe').contentDocument.querySelector('.b-group .b-group'));
+    assert((await order()) === 'contact hero group(text,image)' && !(await groupOf()).style, 'and undo takes all of it back');
+
     // Edit where you click (ADR 0082 d3): the footer opens the footer; change it, then give the header a logo.
     await canvas.locator('.site-footer').click();
     await page.locator('[data-design="footer"]').waitFor();
@@ -374,6 +409,55 @@ const assert = (condition, message) => {
     await canvas.locator('.site-header img.site-logo').waitFor();
     assert((await canvas.locator('.site-logo').getAttribute('alt')) === 'Atelier Nord', 'the logo takes the place of the name, and is read out as the name');
     if (shots) await page.screenshot({ path: join(shots, 'site-settings.png') });
+
+    // Everything a theme's header offers (ADR 0085 d3): a search and the bar, the logo in the middle, over the first block, the menu's looks.
+    const arrangementWas = await page.locator('[data-layout="header"] input:checked').getAttribute('value');
+    await page.locator('[data-site-search]').check();
+    await canvas.locator('.site-header details.site-search').waitFor();
+    assert((await page.locator('[data-site-cart]').isDisabled()), 'the cart waits for the shop');
+    const bars = await page.locator('[data-site-bar] option').count();
+    if (bars > 1) {
+      await page.locator('[data-site-bar]').selectOption({ index: 1 });
+      await canvas.locator('.site-bar').waitFor();
+      assert(true, 'a section shows in the bar above the header');
+    }
+    await page.locator('[data-layout="header"] label:has([data-layout-header="logo-centre"])').click();
+    await page.locator('[data-layout-over]').check();
+    const stickyWas = await page.locator('[data-layout-sticky]').isChecked();
+    if (!stickyWas) await page.locator('[data-layout-sticky]').check();
+    await page.locator('[data-layout-shrink]').check();
+    if (!(await page.locator('[data-header-more]').evaluate((d) => d.open))) await page.locator('[data-header-more] > summary').click();
+    await page.locator('[data-layout-current]').selectOption('pill');
+    await page.locator('[data-layout-phone]').selectOption('side');
+    await page.getByText('Colours and spacing of the bar', { exact: true }).click();
+    await page.locator('[data-layout-style="bar"] select[data-style="background"]').selectOption({ index: 2 });
+    await page.waitForFunction(() => {
+      const doc = document.querySelector('iframe').contentDocument;
+      const name = doc.querySelector('.site-header .site-name');
+      const nav = doc.querySelector('.site-header .site-nav');
+      return name && nav && getComputedStyle(name).position === 'absolute' && getComputedStyle(nav).display === 'contents';
+    });
+    assert(true, 'the logo moves to the middle of the header, the menu to its left');
+    if (shots) {
+      await page.evaluate(() => { window.scrollTo(0, 0); document.querySelector('aside.right').scrollTop = 0; });
+      await page.screenshot({ path: join(shots, 'header-more.png') });
+      await page.evaluate(() => { window.scrollTo(0, 0); document.querySelector('[data-header-over]').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); });
+      await page.screenshot({ path: join(shots, 'header-more-2.png') });
+    }
+    await page.locator('[data-layout-style="bar"] select[data-style="background"]').selectOption({ index: 0 });
+    await page.locator('[data-layout-current]').selectOption('colour');
+    await page.locator('[data-layout-phone]').selectOption('below');
+    await page.locator('[data-layout-shrink]').uncheck();
+    if (!stickyWas) await page.locator('[data-layout-sticky]').uncheck();
+    await page.locator('[data-layout-over]').uncheck();
+    await page.locator('[data-site-search]').uncheck();
+    if (bars > 1) await page.locator('[data-site-bar]').selectOption('');
+    await page.locator(`[data-layout="header"] label:has([data-layout-header="${arrangementWas}"])`).click();
+    await canvas.locator('.site-header details.site-search').waitFor({ state: 'detached' });
+    assert(true, 'and each is taken back');
+    // Some of these were kept as a draft of the style: publish it, as it was before.
+    if (await page.locator('[data-publish-theme]').count()) await page.locator('[data-publish-theme]').click();
+    await page.locator('[data-publish-theme]').waitFor({ state: 'detached' });
 
     // The menu builder: take the menu over, add an item that opens a wide panel of two columns, move it up.
     await page.locator('[data-menu-customise]').click();
