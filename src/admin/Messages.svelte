@@ -112,16 +112,16 @@ onMount(() => {
   h1 { margin: 0; font-size: 1.4rem; }
   h2 { margin: 2rem 0 0.3rem; font-size: 1.05rem; }
   .messages { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .messages li { padding: 1rem 1.2rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .messages li { padding: 1rem 1.2rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .from { margin: 0 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: baseline; }
-  .from small { color: #6a6880; }
+  .from small { color: var(--on-surface-variant); }
   .body { margin: 0 0 0.5rem; white-space: pre-line; }
   .by-form { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; margin-top: 1rem; }
   .by-form label { display: flex; gap: 0.5rem; align-items: center; }
   .answers { display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: 0.25rem 1rem; margin: 0 0 0.5rem; }
-  .answers dt { color: #6a6880; }
+  .answers dt { color: var(--on-surface-variant); }
   .answers dd { margin: 0; white-space: pre-line; }
-  details { font-size: 0.85rem; color: #6a6880; margin-bottom: 0.5rem; }
+  details { font-size: 0.85rem; color: var(--on-surface-variant); margin-bottom: 0.5rem; }
   .rights { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 46rem; }
   .rights input { flex: 1 1 16rem; }
 </style>

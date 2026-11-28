@@ -116,15 +116,15 @@ async function fill(what: 'title' | 'describe'): Promise<void> {
   .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0.6rem 0; }
   .check { display: flex; align-items: center; gap: 0.35rem; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: start; vertical-align: top; padding: 0.45rem 0.4rem; border-bottom: 1px solid #e6e4ee; }
+  th, td { text-align: start; vertical-align: top; padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--outline-variant); }
   th:first-child, td:first-child { width: 24%; }
   td input, td textarea { width: 100%; box-sizing: border-box; }
-  td small { display: block; color: #6a6880; font-size: 11.5px; margin-top: 0.15rem; overflow-wrap: anywhere; }
-  td small.long { color: #b42318; }
+  td small { display: block; color: var(--on-surface-variant); font-size: 11.5px; margin-top: 0.15rem; overflow-wrap: anywhere; }
+  td small.long { color: var(--error); }
   tr.hidden { opacity: 0.55; }
   .link { background: none; border: 0; padding: 0; color: inherit; font-weight: 600; text-align: start; cursor: pointer; }
   .link:hover { text-decoration: underline; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
   @media (max-width: 700px) {
     table, tbody, tr, td { display: block; }
     thead { display: none; }

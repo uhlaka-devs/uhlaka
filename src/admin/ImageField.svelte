@@ -115,13 +115,13 @@ async function remove(name: string): Promise<void> {
 </fieldset>
 
 <style>
-  .preview { display: block; width: 100%; max-height: 9rem; object-fit: contain; margin-bottom: 0.5rem; border-radius: 4px; background: #f3f2f7; }
+  .preview { display: block; width: 100%; max-height: 9rem; object-fit: contain; margin-bottom: 0.5rem; border-radius: var(--shape-xs); background: var(--surface-container); }
   .actions { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
   .grid { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
   .grid li { position: relative; }
   .pick { display: block; width: 100%; aspect-ratio: 1; padding: 2px !important; overflow: hidden; }
-  .pick.current { border-color: #6d5dfc !important; box-shadow: 0 0 0 2px #6d5dfc; }
-  .pick img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; }
-  .drop { position: absolute; top: 2px; inset-inline-end: 2px; padding: 0 0.3rem !important; background: rgb(255 255 255 / 0.85) !important; line-height: 1.4; }
-  summary { cursor: pointer; font-size: 12.5px; color: #6a6880; margin-bottom: 0.4rem; }
+  .pick.current { border-color: var(--primary) !important; box-shadow: 0 0 0 2px var(--primary); }
+  .pick img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--shape-xs); }
+  .drop { position: absolute; top: 2px; inset-inline-end: 2px; padding: 0 0.3rem !important; background: color-mix(in oklch, var(--surface-lowest) 85%, transparent) !important; line-height: 1.4; }
+  summary { cursor: pointer; font-size: 12.5px; color: var(--on-surface-variant); margin-bottom: 0.4rem; }
 </style>

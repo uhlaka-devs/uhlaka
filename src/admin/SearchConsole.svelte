@@ -112,12 +112,12 @@ const path = (url: string): string => url.replace(/^https?:\/\/[^/]+/, '') || '/
   .search-console { padding: 0 1.25rem 1.5rem; max-width: 1100px; }
   .lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: end; padding: 0.3rem 0.35rem; border-bottom: 1px solid #e6e4ee; }
+  th, td { text-align: end; padding: 0.3rem 0.35rem; border-bottom: 1px solid var(--outline-variant); }
   th:first-child, td:first-child { text-align: start; overflow-wrap: anywhere; }
   h3 { font-size: 13px; margin: 0.6rem 0 0.3rem; }
   .steps { font-size: 13px; padding-inline-start: 1.2rem; }
   .connect { display: grid; gap: 0.5rem; max-width: 560px; }
   .connect label { display: grid; gap: 0.15rem; font-size: 12px; }
   .tools { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

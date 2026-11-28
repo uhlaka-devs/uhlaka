@@ -66,11 +66,11 @@ onMount(() => void attempt(api.comments));
   header { margin-bottom: 0.5rem; }
   h1 { margin: 0; font-size: 1.4rem; }
   .comments { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .comments li { padding: 1rem 1.2rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .comments li { padding: 1rem 1.2rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .from { margin: 0 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; align-items: baseline; }
-  .from small { color: #6a6880; }
-  .state { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 999px; background: #e6f4ea; color: #1e6b34; }
-  .state.waiting { background: #fdf3dc; color: #7a5300; }
+  .from small { color: var(--on-surface-variant); }
+  .state { font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: var(--shape-full); background: var(--success-container); color: var(--success); }
+  .state.waiting { background: var(--warning-container); color: var(--warning); }
   .body { margin: 0 0 0.5rem; white-space: pre-line; }
   .actions { display: flex; gap: 0.5rem; }
 </style>

@@ -117,8 +117,8 @@ function lead(path: string): void {
   .redirects li { display: flex; align-items: center; gap: 0.35rem; overflow-wrap: anywhere; }
   .redirects button { margin-inline-start: auto; padding: 0 0.4rem !important; }
   .missing { flex: 1; display: grid; gap: 0.1rem; }
-  .missing small { color: #667085; font-size: 11px; }
+  .missing small { color: var(--on-surface-variant); font-size: 11px; }
   .add { display: grid; gap: 0.4rem; }
   .add label { display: grid; gap: 0.15rem; font-size: 12px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .bad { color: var(--error); font-size: 13px; }
 </style>

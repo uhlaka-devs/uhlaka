@@ -70,5 +70,5 @@ async function save(): Promise<void> {
   .field { display: grid; gap: 0.15rem; font-size: 12px; }
   .row { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
   p { font-size: 13px; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

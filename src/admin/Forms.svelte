@@ -267,9 +267,9 @@ const lines = (value: string): string[] => value.split('\n');
   h1 { margin: 0; font-size: 1.4rem; }
   h2 { margin: 1.5rem 0 0.5rem; font-size: 1.05rem; }
   .forms { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.8rem; max-width: 46rem; }
-  .forms li, .fields li { padding: 0.9rem 1.1rem; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; }
+  .forms li, .fields li { padding: 0.9rem 1.1rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
   .forms p { margin: 0 0 0.3rem; }
-  .forms small { color: #6a6880; margin-inline-start: 0.5rem; }
+  .forms small { color: var(--on-surface-variant); margin-inline-start: 0.5rem; }
   .form-editor { max-width: 46rem; display: grid; gap: 0.8rem; }
   .form-editor label { display: grid; gap: 0.25rem; }
   .form-editor label > span { font-weight: 600; font-size: 0.9rem; }

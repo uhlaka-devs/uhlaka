@@ -119,12 +119,12 @@ onMount(() => void attempt(async () => void (coupons = (await api.coupons()).cou
   .coupons { max-width: 56rem; margin: 0 auto; padding: 1rem; }
   .write { display: grid; gap: 0.6rem; max-width: 28rem; margin: 0.6rem 0 1rem; }
   .field { display: grid; gap: 0.2rem; border: 0; padding: 0; margin: 0; }
-  .field small { color: #6a6880; }
+  .field small { color: var(--on-surface-variant); }
   fieldset.field label { display: inline-flex; gap: 0.3rem; margin-inline-end: 1rem; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: start; padding: 0.35rem 0.4rem; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  th, td { text-align: start; padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--outline-variant); vertical-align: top; }
   .n { text-align: end; white-space: nowrap; }
   .row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; margin-inline-start: 0.5rem; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

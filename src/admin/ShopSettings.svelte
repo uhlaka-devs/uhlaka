@@ -121,11 +121,11 @@ const rates = (typed: string): number[] => typed.split(/[;,\s]+/).filter(Boolean
 <style>
   h3 { margin: 1.1rem 0 0.5rem; font-size: 13px; }
   h4 { margin: 0.8rem 0 0.3rem; font-size: 12px; }
-  .method { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.4rem; border-top: 1px solid #e5e7eb; padding-top: 0.3rem; margin-top: 0.4rem; }
+  .method { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.4rem; border-top: 1px solid var(--outline-variant); padding-top: 0.3rem; margin-top: 0.4rem; }
   .method .wide { grid-column: 1 / -1; }
   .field { display: grid; gap: 0.15rem; font-size: 12px; margin-top: 0.5rem; }
   .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
   .check span { margin: 0; }
   p { font-size: 13px; }
-  .bad { color: #b42318; }
+  .bad { color: var(--error); }
 </style>

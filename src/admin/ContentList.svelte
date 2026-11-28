@@ -157,17 +157,17 @@ const nameOf = (item: PageInfo | PostInfo): string => people.find((p) => 'author
   h1 { margin: 0; font-size: 1.4rem; flex: 1; }
   form { display: flex; gap: 0.4rem; }
   form input { width: 16rem; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dddbe6; border-radius: 8px; overflow: hidden; }
-  th, td { padding: 0.55rem 0.8rem; text-align: start; border-bottom: 1px solid #eceaf3; }
-  th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #6a6880; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); overflow: hidden; }
+  th, td { padding: 0.55rem 0.8rem; text-align: start; border-bottom: 1px solid var(--outline-variant); }
+  th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--on-surface-variant); font-weight: 600; }
   tr:last-child td { border-bottom: 0; }
-  td.quiet { color: #6a6880; }
-  td.live { color: #1b7a43; }
-  .open { border: 0 !important; padding: 0 !important; background: none !important; font-weight: 600 !important; color: #4a3bd6 !important; text-align: start; }
+  td.quiet { color: var(--on-surface-variant); }
+  td.live { color: var(--success); }
+  .open { border: 0 !important; padding: 0 !important; background: none !important; font-weight: 600 !important; color: var(--primary) !important; text-align: start; }
   .open:hover { text-decoration: underline; }
   .translations { display: flex; gap: 0.3rem; flex-wrap: wrap; }
   .chip { padding: 0.1rem 0.45rem !important; font-size: 12px; text-transform: uppercase; }
   .chip.partial { border-style: dashed; }
   .address { color: inherit; text-decoration: none; }
-  .address:hover { color: #4b3fd6; text-decoration: underline; }
+  .address:hover { color: var(--primary); text-decoration: underline; }
 </style>

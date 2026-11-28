@@ -108,11 +108,11 @@ const files = () => attempt('files', async () => save(await api.exportFile('file
   .export { max-width: 760px; padding: 1.5rem 2rem; }
   h1 { font-size: 20px; margin: 0 0 0.4rem; }
   h2 { font-size: 14px; margin: 1.8rem 0 0.4rem; }
-  .hint { color: #555; font-size: 13px; }
+  .hint { color: var(--on-surface-variant); font-size: 13px; }
   .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.2rem 0.8rem; margin: 0.3rem 0 0.8rem 1.4rem; }
   .apart { margin: 0.1rem 0 0.8rem 1.4rem; }
   .check { display: flex; gap: 0.4rem; align-items: center; font-size: 13px; }
   ul { font-size: 13px; margin: 0.2rem 0 0.8rem; }
-  .good { color: #067647; font-size: 13px; }
-  .bad { color: #b42318; font-size: 13px; }
+  .good { color: var(--success); font-size: 13px; }
+  .bad { color: var(--error); font-size: 13px; }
 </style>

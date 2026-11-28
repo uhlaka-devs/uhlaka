@@ -78,15 +78,16 @@ letters. The admin used the system's font until now.
 
 First the tokens, the shared controls in `App.svelte` (the side menu,
 buttons, fields, tabs, the builder's bars) and the panels of ADR 0082
-(Design, Header, Footer, the style gallery, Settings). Then the rest, a
-screen at a time. `test/admin-tokens.test.ts` holds the screens already
-moved to no colour by hand, and the others to a count that may only go
-down.
+(Design, Header, Footer, the style gallery, Settings); then every other
+screen's colours and corners. `test/admin-tokens.test.ts` holds every
+screen to no colour by hand. The one exception is the search preview,
+which shows a result in the search engine's own colours.
 
-Fields keep their label above them until a field component draws the label
-on the border for every screen at once; dark turns on (`data-scheme` on the
-admin's page, from the device and the Profile) when the last screen has
-moved, so no screen shows light boxes on a dark admin.
+With every screen on the tokens, the admin follows the device's light or
+dark (d4). Still to come, a screen at a time: sizes of text and space on
+the scale, the choice in the Profile, and a field component that draws
+the label on the border for every screen at once (until then a field's
+label stays above it).
 
 ### d7. Icons: Lucide, copied in
 

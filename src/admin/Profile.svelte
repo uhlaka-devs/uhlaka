@@ -68,5 +68,5 @@ async function save(event: SubmitEvent): Promise<void> {
   .check { display: flex; gap: 0.6rem; align-items: flex-start; }
   .check input { margin-top: 0.2rem; }
   .check span { display: grid; gap: 0.2rem; }
-  .check small { color: var(--muted, #555); }
+  .check small { color: var(--muted, var(--on-surface-variant)); }
 </style>

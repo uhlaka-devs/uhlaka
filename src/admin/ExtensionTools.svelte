@@ -88,11 +88,11 @@ async function run(extension: string, action: string, ask: Record<string, string
 {/if}
 
 <style>
-  .tools { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #e6e4ee; }
-  h3 { margin: 0; font-size: 0.85rem; color: #6a6880; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tools { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--outline-variant); }
+  h3 { margin: 0; font-size: 0.85rem; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
   .tools > button { text-align: start; }
-  .ask { display: grid; gap: 0.5rem; padding: 0.6rem; background: #f0eeff; border-radius: 6px; }
+  .ask { display: grid; gap: 0.5rem; padding: 0.6rem; background: var(--secondary-container); border-radius: var(--shape-sm); }
   .field { display: grid; gap: 0.2rem; }
   .row { display: flex; gap: 0.4rem; }
-  .said { margin: 0; font-size: 13px; color: #1b7a43; }
+  .said { margin: 0; font-size: 13px; color: var(--success); }
 </style>

@@ -46,8 +46,8 @@ $effect(() => {
 </div>
 
 <style>
-  .schedule { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #e6e4ee; }
-  h3 { margin: 0; font-size: 0.85rem; color: #6a6880; text-transform: uppercase; letter-spacing: 0.04em; }
+  .schedule { display: grid; gap: 0.4rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--outline-variant); }
+  h3 { margin: 0; font-size: 0.85rem; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
   p { margin: 0; }
   .row { display: flex; gap: 0.4rem; }
   .row input { min-width: 0; flex: 1; }
