@@ -173,23 +173,31 @@ function entriesCss(theme: Theme): string {
 /** What a style's motion moves (ADR 0085 d8): a page's own blocks, and the cards and pictures under the pointer. */
 const MOVES = '@media (prefers-reduced-motion:no-preference)';
 const VIEWED = '@supports (animation-timeline:view())';
-const APPEAR: Record<string, string> = { fade: 'opacity:0', rise: 'opacity:0;translate:0 1.5rem' };
-const CARDS = '.post-card,.entry-card,.gallery>li';
-const PICTURES = '.post-picture,.entry-card,.gallery .figure,.b-image .figure,.post-zoom';
-const HOVER: Record<string, string> = {
-  lift: `:is(${CARDS}){transition:translate .2s ease,box-shadow .2s ease}:is(${CARDS}):hover{translate:0 -.25rem;box-shadow:0 4px 8px rgb(0 0 0 / .1),0 16px 40px rgb(0 0 0 / .18)}`,
-  zoom: `:is(${PICTURES}){overflow:hidden}:is(${PICTURES}) img{transition:scale .35s ease}:is(${PICTURES}):hover img{scale:1.06}`,
+const APPEARING = 'animation-timeline:view();animation-range:entry 0% entry 60%;animation-fill-mode:both;animation-timing-function:linear';
+const CARDS = ':is(.post-card,.entry-card,.gallery>li)';
+const PICTURES = ':is(.post-picture,.entry-card,.gallery .figure,.b-image .figure)';
+const HOVER: Record<string, (scope: string) => string> = {
+  lift: (scope) => `${scope}${CARDS}{transition:translate .2s ease,box-shadow .2s ease}${scope}${CARDS}:hover{translate:0 -.25rem;box-shadow:0 4px 8px rgb(0 0 0 / .1),0 16px 40px rgb(0 0 0 / .18)}`,
+  zoom: (scope) => `${scope}${PICTURES}{overflow:hidden}${scope}${PICTURES} img{transition:scale .35s ease}${scope}${PICTURES}:hover img{scale:1.06}`,
 };
+/**
+ * A block's own motion, over the style's (ADR 0085 d8): written for every
+ * style, since a block may choose motion its style has none of. The style's
+ * own leaves out a block that chose, so "none" on a block needs no rule.
+ */
+const BLOCK_MOTION =
+  `${MOVES}{${VIEWED}{.b[data-appear=fade]{animation-name:uh-fade;${APPEARING}}.b[data-appear=rise]{animation-name:uh-rise;${APPEARING}}}` +
+  `${HOVER.lift?.('[data-hover=lift] ')}${HOVER.zoom?.('[data-hover=zoom] ')}}` +
+  '@keyframes uh-fade{from{opacity:0}}@keyframes uh-rise{from{opacity:0;translate:0 1.5rem}}\n';
+/** Cards and pictures not in a block that chose its own. */
+const UNCHOSEN = ':not([data-hover] *)';
 
-/** Motion, the page's box and the shop's products as the style has them (ADR 0085 d8); nothing when it has none. */
+/** Motion, the page's box and the shop's products as the style has them (ADR 0085 d8); only a block's own motion when it has none. */
 function finishCss(theme: Theme): string {
   const { motion, page, shop, header } = theme.layout;
-  let css = '';
-  if (motion.appear) {
-    css += `${MOVES}{${VIEWED}{main>.b:not(:first-child),.layout-body>main>.b:not(:first-child){animation:uh-appear linear both;animation-timeline:view();animation-range:entry 0% entry 60%}}}\n`;
-    css += `@keyframes uh-appear{from{${APPEAR[motion.appear]}}}\n`;
-  }
-  if (motion.hover) css += `${MOVES}{${HOVER[motion.hover]}}\n`;
+  let css = BLOCK_MOTION;
+  if (motion.appear) css += `${MOVES}{${VIEWED}{main>.b:not(:first-child):not([data-appear]),.layout-body>main>.b:not(:first-child):not([data-appear]){animation-name:uh-${motion.appear};${APPEARING}}}}\n`;
+  if (motion.hover) css += `${MOVES}{${HOVER[motion.hover]?.(UNCHOSEN)}}\n`;
   if (page.boxed) {
     const around = page.background && hasToken(theme, 'color', page.background) ? `var(${tokenVar('color', page.background)})` : 'var(--t-color-surface)';
     css += `html{background-color:${around}}.site-backdrop{display:block}\n`;

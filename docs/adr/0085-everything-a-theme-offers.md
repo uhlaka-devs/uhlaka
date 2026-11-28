@@ -315,9 +315,11 @@ what stages 4 and 5 bring.
 
 ### d8. Stage 5: finishing
 
-*Proposed (2026-11-28). David, on the decision cards: the site's background is a
+*Accepted (David, 2026-11-28, on the decision cards: the site's background is a
 colour or a picture around the box; the bar that keeps "Add to cart" in view is
-on every screen. Whether motion is the style's or each block's is still his.*
+on every screen; and in the project: "on each block, with a setting for the whole
+site: by default you set it for everything, with the option to change it on a
+block").*
 
 The same rule as d7: how a thing **looks and moves** is the style's, from
 closed lists; what a site **holds** (a picture, a section) is the site's or its
@@ -327,7 +329,8 @@ so a style or a site written before draws as before.
 | Choice | Kept in | Values |
 | --- | --- | --- |
 | Appearing as the page scrolls | style: `layout.motion.appear` | none (absent, as before), `fade`, `rise` (fades in, coming up a little): each block of a page's own, once it comes into view |
-| A change under the pointer | style: `layout.motion.hover` | none (absent, as before), `lift` (a card or a picture rises, with the style's shadow), `zoom` (a picture grows inside its frame) |
+| A change under the pointer | style: `layout.motion.hover` | none (absent, as before), `lift` (a card rises, with the style's deep shadow), `zoom` (a picture grows inside its frame) |
+| A block's own motion | a block's style: `appear`, `hover` | the same names and `none`: over the style's, for that block and what it holds; absent: the style's |
 | A logo for the dark | site: `logoDark` | a picture from the library, drawn instead of the logo while the site shows its dark colours; none: the one logo |
 | A boxed page | style: `layout.page.boxed` | off (absent, as before) or on: the header, the blocks and the footer in a box as wide as the style's wide width, with a margin around it |
 | The site's background | style: `layout.page.background` | a colour of the style, around the box; absent: its surface colour |
@@ -368,10 +371,10 @@ sits under the logo in the header's panel; the shop's three choices go into
 **Blog and pages**, shown only while the shop is on; a type's section is under
 "Each entry also shows", in Content types.
 
-*Why the motion is the style's and not each block's:* a site that moves its
-blocks in five different ways looks broken, and one choice for the whole site
-is what a beginner can make; a block that must not move is rare enough to wait
-for someone to ask. *Why a section on a type and not a system of places:* the
+*Why the motion is the style's first and the block's second:* one choice for
+the whole site is what a beginner makes, and keeps a site from moving in five
+ways at once; a block that must stand still, or the one that should move on a
+still site, chooses in its own style panel (David's decision). *Why a section on a type and not a system of places:* the
 layouts' bands (ADR 0035) already put a section above and below the blocks of
 any kind of page; what they lack is the place inside an entry, after its words,
 which is where the themes' "hooks" are used most.
@@ -390,7 +393,7 @@ look; nothing new is on).
 - A second header for the phone, built apart: the phone's menu panel covers
   what people ask for most; a whole other header waits for someone to ask.
 - "Over the first block" chosen page by page, in a layout.
-- Motion chosen block by block, and a picture behind a page that is not boxed (d8).
+- A picture behind a page that is not boxed (d8).
 - Han characters in Japanese or Korean forms on a page in those languages: the
   stack names the Chinese Noto first, so a Japanese page draws Han and kana in
   Noto Sans SC until the stack follows the page's language.

@@ -46,6 +46,9 @@ export const STYLE_PROPS = {
   border: { kind: 'choice', css: 'border' },
   /** Drawn as a class of the block (`hide-phone`, `hide-wide`), not as a declaration. */
   hideOn: { kind: 'choice', css: '' },
+  /** A block's own motion (ADR 0085 d8): the style's for the whole site unless the block chooses; drawn by the attributes BlockView writes. */
+  appear: { kind: 'choice', css: '' },
+  hover: { kind: 'choice', css: '' },
 } as const satisfies Record<string, { kind: StyleKind; css: string }>;
 
 export type StyleProp = keyof typeof STYLE_PROPS;
@@ -64,17 +67,21 @@ export const STYLE_CHOICES: Partial<Record<StyleProp, Record<string, string>>> =
   height: { half: '50svh', screen: '100svh' },
   alignY: { start: 'start', center: 'center', end: 'end' },
   hideOn: { phone: '', wide: '' },
+  appear: { none: '', fade: '', rise: '' },
+  hover: { none: '', lift: '', zoom: '' },
   shadow: { soft: '0 1px 3px rgb(0 0 0 / .08),0 4px 12px rgb(0 0 0 / .08)', deep: '0 4px 8px rgb(0 0 0 / .1),0 16px 40px rgb(0 0 0 / .18)' },
   border: { thin: '1px solid var(--t-color-border)', thick: '3px solid var(--t-color-border)' },
 };
 
 /** The properties of a band (ADR 0085 d4): offered for a block, not for the header, the menu or the footer. */
 export const BAND_PROPS: readonly StyleProp[] = ['overlay', 'overlayStrength', 'gradient', 'gradientDirection', 'height', 'alignY', 'hideOn'];
+/** What only a block's own style chooses, never a style's default for a type. */
+const OWN_PROPS: readonly StyleProp[] = ['hideOn', 'appear', 'hover'];
 /** Only a group has a picture behind it, so only a group has a colour over it. */
 export const PICTURE_PROPS: readonly StyleProp[] = ['overlay', 'overlayStrength'];
 /** The properties a block of this type offers: in the block's own style (`own`), or in a theme's default for the type. */
 export const stylePropsFor = (type: string, own: boolean): StyleProp[] =>
-  (Object.keys(STYLE_PROPS) as StyleProp[]).filter((prop) => (type === 'group' || !PICTURE_PROPS.includes(prop)) && (own || prop !== 'hideOn'));
+  (Object.keys(STYLE_PROPS) as StyleProp[]).filter((prop) => (type === 'group' || !PICTURE_PROPS.includes(prop)) && (own || !OWN_PROPS.includes(prop)));
 
 /** The CSS of a choice, or null when the name is not one of the property's. */
 export const choiceCss = (prop: StyleProp, name: unknown): string | null => {

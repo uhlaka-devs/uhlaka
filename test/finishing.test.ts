@@ -1,7 +1,7 @@
 /** ADR 0085 d8: motion, the page in a box, a logo for the dark, a section on a type, and the shop's products. */
 import { describe, expect, test } from 'bun:test';
-import { cleanEntryExtras, type ContentType, normalizeProduct, normalizeSite, normalizeTypes, parseTheme, type Post, shownPrice, type Theme, themeCss, withAreas } from '../src/core/index.ts';
-import { renderBlogList, renderPost } from '../src/site/document.ts';
+import { cleanEntryExtras, type ContentType, normalizePage, normalizeProduct, normalizeSite, normalizeTypes, parseTheme, type Post, shownPrice, type Theme, themeCss, withAreas } from '../src/core/index.ts';
+import { renderBlogList, renderParts, renderPost } from '../src/site/document.ts';
 import atelier from '../themes/atelier.json';
 import plain from '../themes/plain.json';
 
@@ -33,17 +33,33 @@ describe('the finishing in the style', () => {
 
   test('a style without them writes none of it', () => {
     const none = css({});
-    for (const absent of ['uh-appear', ':hover img{scale', 'html{background-color', '.layout-aside{position:sticky', '.shop-badge{display', '.post-zoom{cursor', 'uh-bar']) expect(none).not.toContain(absent);
+    for (const absent of ['main>.b:not(:first-child)', ':not([data-hover] *)', 'html{background-color', '.layout-aside{position:sticky', '.shop-badge{display', '.post-zoom{cursor', 'uh-bar']) expect(none).not.toContain(absent);
   });
 
   test('motion is only for a visitor who did not ask for less, and appearing only where the browser ties it to the view', () => {
     const rise = css({ motion: { appear: 'rise', hover: 'lift' } });
-    expect(rise).toContain('@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){main>.b:not(:first-child)');
-    expect(rise).toContain('@keyframes uh-appear{from{opacity:0;translate:0 1.5rem}}');
-    expect(rise).toContain('@media (prefers-reduced-motion:no-preference){:is(.post-card,.entry-card,.gallery>li){transition');
-    expect(rise).toContain(':hover{translate:0 -.25rem');
-    expect(css({ motion: { appear: 'fade' } })).toContain('@keyframes uh-appear{from{opacity:0}}');
-    expect(css({ motion: { hover: 'zoom' } })).toContain(':hover img{scale:1.06}');
+    expect(rise).toContain('@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){main>.b:not(:first-child):not([data-appear])');
+    expect(rise).toContain('{animation-name:uh-rise;');
+    expect(rise).toContain('@keyframes uh-rise{from{opacity:0;translate:0 1.5rem}}');
+    expect(rise).toContain('@media (prefers-reduced-motion:no-preference){:not([data-hover] *):is(.post-card,.entry-card,.gallery>li){transition');
+    expect(css({ motion: { appear: 'fade' } })).toContain('{animation-name:uh-fade;');
+    expect(css({ motion: { hover: 'zoom' } })).toContain(':not([data-hover] *):is(.post-picture,.entry-card,.gallery .figure,.b-image .figure):hover img{scale:1.06}');
+  });
+
+  test("a block's own motion is over the style's, both ways (David, 2026-11-28)", () => {
+    // Written under every style, since a block may move under a style that does not.
+    const none = css({});
+    expect(none).toContain('.b[data-appear=rise]{animation-name:uh-rise;');
+    expect(none).toContain('[data-hover=lift] :is(.post-card,.entry-card,.gallery>li):hover{translate:0 -.25rem');
+    expect(none).not.toContain('.b[data-appear=none]');
+    const html = renderParts(normalizeSite({ name: 'S' }), plainTheme, normalizePage({ slug: 'p', title: 'P', blocks: [
+      { id: 'b_still', type: 'text', content: {}, style: { appear: { value: 'none' }, hover: { value: 'lift' } } },
+      { id: 'b_plain', type: 'text', content: {} },
+      { id: 'b_odd', type: 'text', content: {}, style: { appear: { value: 'spin' } } },
+    ] }).page, []).body;
+    expect(html).toMatch(/data-b="b_still"[^>]*data-appear="none" data-hover="lift"/);
+    expect(html).not.toMatch(/data-b="b_plain"[^>]*data-appear/);
+    expect(html).not.toMatch(/data-b="b_odd"[^>]*data-appear/);
   });
 
   test('the box, the colour around it and the sidebar that stays', () => {
