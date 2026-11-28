@@ -14,6 +14,8 @@ let {
   posts,
   newer = '',
   older = '',
+  numbers = [],
+  at = 1,
   type,
   crumbs = [],
   kinds = [],
@@ -27,6 +29,10 @@ let {
   /** The address of the page with newer posts, when there is one. */
   newer?: string;
   older?: string;
+  /** The address of each page of the list, the first first (ADR 0085 d7); fewer than two: no numbers. */
+  numbers?: string[];
+  /** Which of them this is, from 1. */
+  at?: number;
   type?: ContentType;
   /** Where the list is, shown above it (ADR 0050 d4); empty: none. */
   crumbs?: Crumb[];
@@ -40,6 +46,15 @@ let {
 const kind = $derived(type ?? postsType());
 const typeOf = (i: number): ContentType => kinds[i] ?? kind;
 const words = $derived(wordsFor(site.language));
+/** The pages to number: the first, the last, and two on each side of this one; null where some are left out. */
+const shownNumbers = $derived.by(() => {
+  const out: (number | null)[] = [];
+  for (let n = 1; n <= numbers.length; n++) {
+    if (n === 1 || n === numbers.length || Math.abs(n - at) <= 2) out.push(n);
+    else if (out.at(-1) !== null) out.push(null);
+  }
+  return out;
+});
 </script>
 
 <Shell {site} {menu} current={current ?? listPath(kind)} layout={kind.layout}>
@@ -60,17 +75,27 @@ const words = $derived(wordsFor(site.language));
       {#if posts.length === 0}<p class="lead">{words.noPosts}</p>{/if}
       <ul class="posts">
         {#each posts as post, i (`${typeOf(i).id}/${post.slug}`)}
-          <li class="post-card">
-            {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'card')}<a href={entryPath(typeOf(i), post.slug)} tabindex="-1" aria-hidden="true"><img src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt="" loading="lazy" decoding="async" /></a>{/if}
+          <li class="post-card" class:has-picture={!!post.cover}>
+            {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'card')}<a class="post-picture" href={entryPath(typeOf(i), post.slug)} tabindex="-1" aria-hidden="true"><img src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt="" loading="lazy" decoding="async" /></a>{/if}
             <PostMeta type={typeOf(i)} {post} language={site.language} />
             <h2><a href={entryPath(typeOf(i), post.slug)}>{post.title}</a></h2>
-            <p>{postExcerpt(post)}</p>
+            <p class="post-excerpt">{postExcerpt(post)}</p>
+            <a class="post-more" href={entryPath(typeOf(i), post.slug)} aria-label={`${words.readMore}: ${post.title}`}>{words.readMore}</a>
           </li>
         {/each}
       </ul>
       {#if newer || older}
         <nav class="pager" aria-label={words.pages}>
           {#if newer}<a rel="prev" href={newer}>{words.newer}</a>{/if}
+          {#if numbers.length > 1}
+            <ol class="pager-numbers">
+              {#each shownNumbers as n}
+                {#if n === null}<li aria-hidden="true">…</li>
+                {:else if n === at}<li><span aria-current="page" aria-label={words.pageNumber.replace('{n}', String(n))}>{n}</span></li>
+                {:else}<li><a href={numbers[n - 1]} aria-label={words.pageNumber.replace('{n}', String(n))}>{n}</a></li>{/if}
+              {/each}
+            </ol>
+          {/if}
           {#if older}<a rel="next" href={older}>{words.older}</a>{/if}
         </nav>
       {/if}

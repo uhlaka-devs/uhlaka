@@ -197,6 +197,29 @@ const assert = (condition, message) => {
     await page.waitForFunction(() => getComputedStyle(document.querySelector('iframe').contentDocument.querySelector('h1')).textTransform === 'none');
     assert(true, 'and back as it was, each name of before kept as an absence');
 
+    // The blog and the pages of their own (ADR 0085 d7): the list's look and an entry's picture are the style's.
+    // The style reaches the canvas as its stylesheet, asked again whenever the style changes.
+    const canvasCss = () => page.evaluate(async () => { const link = document.querySelector('iframe').contentDocument.querySelector('link[href^="/admin/site.css"]'); return link ? (await fetch(link.href)).text() : ''; });
+    const cssHas = async (test) => { for (let i = 0; i < 60; i++) { if (test(await canvasCss())) return true; await page.waitForTimeout(250); } return false; };
+    await page.locator('[data-design-part="blog"]').click();
+    await page.locator('[data-list="cards"]').check({ force: true });
+    await page.locator('[data-entry-cover]').selectOption('behind');
+    await page.locator('[data-blog-more] > summary').click();
+    await page.locator('[data-card-part="meta"]').uncheck();
+    await page.locator('[data-list-short]').check();
+    await page.locator('[data-list-more]').check();
+    await page.locator('[data-site-section="notFound"]').selectOption('');
+    await cssHas((css) => css.includes('.post-head:has(.post-cover)::before') && css.includes('.post-more{display:block}'));
+    const blogCss = await canvasCss();
+    assert(blogCss.includes('.post-card>.post-meta{display:none}') && blogCss.includes('line-clamp:2') && blogCss.includes('.post-head:has(.post-cover)::before'), 'cards, a shorter excerpt, "Read more" and the picture behind the title, from the Blog panel');
+    await page.locator('[data-list="stack"]').check({ force: true });
+    await page.locator('[data-entry-cover]').selectOption('below');
+    await page.locator('[data-card-part="meta"]').check();
+    await page.locator('[data-list-short]').uncheck();
+    await page.locator('[data-list-more]').uncheck();
+    assert(await cssHas((css) => !css.includes('.post-more{display:block}') && !css.includes('line-clamp') && !css.includes('.post-cover)::before')), 'and back as it was');
+    await page.locator('[data-design-part="text"]').click();
+
     // Typefaces (ADR 0085 d6): Uhlaka's own, a Google family the site keeps, one the owner bought; each served by the site.
     const headingFace = await page.locator('[data-font="heading"]').inputValue();
     const bodyFace = await page.locator('[data-font="body"]').inputValue();
@@ -451,6 +474,13 @@ const assert = (condition, message) => {
     await page.locator('[data-site-footer-links]').getByRole('button', { name: 'Add' }).click();
     await links.last().getByRole('button', { name: 'Remove' }).click();
     assert((await links.count()) === linkCount, 'a footer link can be taken off again');
+    // "Back to top" (ADR 0085 d7): the site's choice, at the end of the footer's line.
+    await page.locator('[data-site-back-to-top]').check();
+    await canvas.locator('.site-footer .to-top').waitFor();
+    await page.locator('[data-site-footer-section]').selectOption('');
+    await page.locator('[data-site-back-to-top]').uncheck();
+    await canvas.locator('.site-footer .to-top').waitFor({ state: 'detached' });
+    assert(true, 'the footer gains a "Back to top" link, and loses it again');
     // How the footer looks is the style's: centre it, colour it, then put both back.
     const footerAlign = () => canvas.locator('.site-footer').evaluate((el) => getComputedStyle(el).textAlign);
     await page.locator('[data-layout="footer"] label', { hasText: 'Centred' }).click();
@@ -612,6 +642,13 @@ const assert = (condition, message) => {
     await page.locator('[data-type-singular]').fill('Project');
     await page.locator('[data-type-add-field]').click();
     await page.locator('[data-type-field] input').fill('Client');
+    // What each entry shows besides its words (ADR 0085 d7): the type's choice, the author's box on as before.
+    await page.locator('[data-type-extra="readingTime"]').check();
+    await page.locator('[data-type-extra="nextPrev"]').check();
+    await page.locator('[data-type-extra="nextPrev"]').uncheck();
+    await page.locator('[data-type-extra="author"]').uncheck();
+    await page.locator('[data-type-extra="author"]').check();
+    assert(await page.locator('[data-type-extra="author"]').isChecked() && await page.locator('[data-type-extra="readingTime"]').isChecked(), 'a type chooses what its entries show: the reading time on, the author as before');
     await page.locator('[data-type-save]').click();
     await page.locator('[data-type="projects"]').waitFor();
     assert((await page.locator('[data-type="projects"]').innerText()).includes('/projects/'), 'a content type is made from a name and gets an address');
@@ -754,7 +791,7 @@ const assert = (condition, message) => {
   const blog = readFileSync(join(out, 'blog/index.html'), 'utf8');
   const titles = [...blog.matchAll(/<h2><a href="\/blog\/([a-z-]+)\/">/g)].map((m) => m[1]);
   assert(titles.join(' ') === 'winter-opening-hours a-table-for-twelve how-we-choose-wood', `the blog lists the posts newest first (${titles.join(' ')})`);
-  assert(blog.includes('<p>Saturdays too, from December.</p>') && home.includes('<a href="/blog/">Blog</a>'), 'the list shows the summary, and the menu leads to the blog');
+  assert(blog.includes('<p class="post-excerpt">Saturdays too, from December.</p>') && home.includes('<a href="/blog/">Blog</a>'), 'the list shows the summary, and the menu leads to the blog');
   const category = readFileSync(join(out, 'blog/category/workshop/index.html'), 'utf8');
   assert(category.includes('winter-opening-hours') && category.includes('how-we-choose-wood') && !category.includes('a-table-for-twelve'), 'a category page lists the posts of that category only');
   const feed = readFileSync(join(out, 'blog/feed.xml'), 'utf8');

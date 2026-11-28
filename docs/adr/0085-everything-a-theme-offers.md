@@ -253,6 +253,66 @@ stack typed in. This is its own pull request, after the one for d5.
   with a sample in its face (`Ag Ăă Șș Țț Жж Ωω Ạạ`); adding a typeface is
   under "Add a typeface".
 
+### d7. Stage 4: the blog, an entry, and the pages of their own
+
+*Accepted (David, 2026-11-28, on the decision cards: what an entry shows is its type's; starter sites are a separate work, after stage 5).*
+
+How a list and an entry **look** is the style's (`layout.list`, `layout.entry`),
+from closed lists, so a ready-made style gives a blog a finished look; what an
+entry **shows besides its words** is its type's, because a blog wants a reading
+time and a list of projects does not. Every list's first value is
+how it looked before, kept as an absence.
+
+| Choice | Kept in | Values |
+| --- | --- | --- |
+| The list | style: `layout.list.look` | one under another, the picture above (`stack`, as before), the picture beside the words (`side`), a grid of two or three (`grid`), a grid of boxes (`cards`, in the style's surface colour, with its border and radius) |
+| What a card shows | style: `layout.list.hide` | any of `picture`, `meta` (date, author, categories), `excerpt`; absent: all of them, as before |
+| The excerpt's length | style: `layout.list.excerpt` | as before (`long`, the first 200 characters), or `short`: two lines; leaving it out is `hide` |
+| "Read more" under each card | style: `layout.list.more` | on or off |
+| Numbered pages | none: always | the pages of a list as numbers (1 2 3 … 9) between "Newer" and "Older"; a choice nobody would turn off is not offered |
+| The picture of an entry | style: `layout.entry.cover` | under the title (`below`, as before), above it (`above`), behind it (`behind`: the whole band, with the style's colour over it, as a group's picture, d4), or `none` |
+| Reading time | type: `entry.readingTime` | on or off; minutes at 200 words a minute, after the date |
+| The author's box | type: `entry.author` | on (as before, when the author has a picture or a few words) or off |
+| Previous and next | type: `entry.nextPrev` | on or off; the entries before and after in the type's own order, with their titles |
+| Sharing | type: `entry.share` | on or off; plain links in words (Facebook, X, LinkedIn, WhatsApp, e-mail), no script, no icon and no count, so no visitor's browser asks anyone before a click; only once the site has its address |
+| Contents | type: `entry.contents` | on or off; the headings 2 and 3 of the entry's text blocks, linked, above its first block, when it has three or more; the headings then carry anchors (`h-<words>`) |
+| The page for an address that does not exist | site: `notFound`, a section's slug | a section, drawn under the heading "Page not found" and a search field (on a static host, which answers no search, a link home); none: only those |
+| Search results | site: `searchSection`, a section's slug | a section drawn under the results (a few links, a form); none: as before |
+| The footer in columns | site: `footerSection`, a section's slug | a section drawn above the footer's line (its columns are a group's, d4); none: as before |
+| "Back to top" | site: `backToTop` | on or off: a link at the end of the footer's line to the top of the page, no script |
+
+Every extra is off until a type turns it on, except the author's box, which
+was there before and stays on until turned off; a site written before draws
+its entries as before. They are chosen with the type, in Content types, under
+"Each entry also shows". Reading time, contents and sharing are drawn on the
+entry's own page; a type with a page of its own (ADR 0015) gets sharing,
+previous and next and the author's box after it.
+
+The panels: Design gains a fifth part, **Blog and pages**: the list's look
+(four small pictures) and where an entry's picture sits; under "More
+settings" what a card shows, the shorter excerpt and "Read more"; then the
+sections of the 404 page and of the search results. What an entry shows
+besides its words is set with its type. The footer's panel gains its section
+and "Back to top".
+
+The 404 page was empty before (its title only); it now always has its heading
+and, on the site's own server, a search field. The section under the search
+results rides in the 404 page, inside a `<template>` nothing draws, because
+that page is the frame the server answers a search in.
+
+Everything works without script. A style or a site written before reads and
+draws as before.
+
+*Why the list's look is the style's and an entry's extras the type's:* a grid
+or cards is how a site looks and moves with another style, as the header's
+arrangement does; whether a project shows a reading time is what that type of
+entry is, and a new style must not switch it on.
+
+**Starter sites** (a restaurant, a shop, a blog, each a whole site to import
+from the first screen) are not part of this plan: David, 2026-11-28, a
+separate work after stage 5, made of content files (`.uhlaka.json`) that use
+what stages 4 and 5 bring.
+
 ## Not changed
 
 The format of a style otherwise; a style written before this one reads as

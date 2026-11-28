@@ -4,7 +4,7 @@
  * besides pages. A type is made here from a name and a few choices; nothing
  * about it is code.
  */
-import { type ContentType, contentTypes, ENTRY_SCHEMAS, type EntrySchema, type FieldMeaning, meaningsFor, languageName, prefixOf, READY_LAYOUTS, type TypeTranslation, STANDARD, type Site, slugify, TYPE_FIELD_KINDS, type TypeField, type TypeFieldKind } from '../core/index.ts';
+import { type ContentType, contentTypes, ENTRY_EXTRAS, ENTRY_SCHEMAS, type EntrySchema, type FieldMeaning, meaningsFor, languageName, prefixOf, READY_LAYOUTS, type TypeTranslation, STANDARD, type Site, slugify, TYPE_FIELD_KINDS, type TypeField, type TypeFieldKind } from '../core/index.ts';
 import Audience from './Audience.svelte';
 import { layoutName } from './layouts.ts';
 import { say, t } from './messages.ts';
@@ -52,6 +52,16 @@ const targets = $derived(contentTypes(site).map((type) => (type.id === editing &
 /** A field of another kind: a choice starts with two choices to change, a link with the first type to link to. */
 const kindChange = (kind: TypeFieldKind): Partial<TypeField> =>
   kind === 'choice' ? { kind, options: ['1', '2'] } : kind === 'entries' ? { kind, to: targets[0]?.id ?? '' } : { kind };
+/** One extra of an entry (ADR 0085 d7): kept only while it differs from before (the author's box on, the rest off). */
+const setExtra = (key: (typeof ENTRY_EXTRAS)[number], on: boolean): void => {
+  const entry: Record<string, boolean> = { ...(draft?.entry ?? {}) };
+  if (key === 'author') {
+    if (on) delete entry.author;
+    else entry.author = false;
+  } else if (on) entry[key] = true;
+  else delete entry[key];
+  patch({ entry: Object.keys(entry).length ? (entry as ContentType['entry']) : undefined });
+};
 const patchField = (i: number, change: Partial<TypeField>): void => patch({ fields: (draft?.fields ?? []).map((f, j) => (j === i ? { ...f, ...change } : f)) });
 
 /** A type's name, address and words in a language, as typed (ADR 0054 d3). */
@@ -125,6 +135,12 @@ async function remove(): Promise<void> {
       <label class="check"><input type="checkbox" checked={draft.categories} onchange={(e) => patch({ categories: e.currentTarget.checked })} data-type-categories /><span>{t.ctypes.categories}</span></label>
       <label class="check" class:off={!draft.dated}><input type="checkbox" disabled={!draft.dated} checked={draft.feed} onchange={(e) => patch({ feed: e.currentTarget.checked })} /><span>{t.ctypes.feed}</span></label>
       <label class="check"><input type="checkbox" checked={draft.comments === true} onchange={(e) => patch({ comments: e.currentTarget.checked ? true : undefined })} data-type-comments /><span>{t.ctypes.comments}</span></label>
+      <fieldset class="field" data-type-entry>
+        <legend>{t.ctypes.entryShows}</legend>
+        {#each ENTRY_EXTRAS as key (key)}
+          <label class="check"><input type="checkbox" checked={key === 'author' ? draft.entry?.author !== false : draft.entry?.[key] === true} onchange={(e) => setExtra(key, e.currentTarget.checked)} data-type-extra={key} /><span>{t.ctypes.extras[key]}</span></label>
+        {/each}
+      </fieldset>
       {#if editing}{#key editing}<Audience kind="type" key={editing} />{/key}{/if}
 
       <label class="field">

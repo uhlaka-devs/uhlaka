@@ -316,7 +316,7 @@ export async function buildSite(
         const cut = paginate(one.posts);
         cut.forEach((some, i) => {
           const path = one.path(i + 1);
-          const html = renderBlogList(frame, { heading: one.heading, path, posts: some, newer: i > 0 ? one.path(i) : '', older: i < cut.length - 1 ? one.path(i + 2) : '' }, localMenu, type, i === 0 ? one.alternates : here, {
+          const html = renderBlogList(frame, { heading: one.heading, path, posts: some, newer: i > 0 ? one.path(i) : '', older: i < cut.length - 1 ? one.path(i + 2) : '', numbers: cut.map((_, j) => one.path(j + 1)), at: i + 1 }, localMenu, type, i === 0 ? one.alternates : here, {
             person: one.person ?? null,
             noindex: one.noindex,
           });
@@ -341,7 +341,7 @@ export async function buildSite(
       ];
       cut.forEach((some, i) => {
         const path = at(i + 1);
-        const list = { heading: person.name, path, posts: some.map((one) => one.post), newer: i > 0 ? at(i) : '', older: i < cut.length - 1 ? at(i + 2) : '' };
+        const list = { heading: person.name, path, posts: some.map((one) => one.post), newer: i > 0 ? at(i) : '', older: i < cut.length - 1 ? at(i + 2) : '', numbers: cut.map((_, j) => at(j + 1)), at: i + 1 };
         page(path, renderBlogList(frame, list, localMenu, some[0]?.type, here, { person, kinds: some.map((one) => one.type), trail, current: '' }));
       });
     }
@@ -392,14 +392,11 @@ export async function buildSite(
     files.set('_redirects', redirectsFile(written));
     files.set('.htaccess', htaccessFile(written));
   }
-  files.set(
-    '404.html',
-    renderPage(framed, theme, { slug: '404', title: wordsFor(site.language).notFound, description: '', inMenu: false, blocks: [] }, menu),
-  );
+  files.set('404.html', notFoundPage(framed, theme, sections, site.language, menu));
   // Each other language's frame, for what the runtime answers in it, such as search (ADR 0054).
   for (const { language, lists: own } of languages.slice(1)) {
     const local = siteIn(site, language, pages);
-    files.set(`${prefixOf(language)}/404.html`, renderPage(withAreas(local, sections, language), theme, { slug: '404', title: wordsFor(language).notFound, description: '', inMenu: false, blocks: [] }, menuOf(local, pagesIn(site, language, pages), own)));
+    files.set(`${prefixOf(language)}/404.html`, notFoundPage(withAreas(local, sections, language), theme, sections, language, menuOf(local, pagesIn(site, language, pages), own)));
   }
   // A page for members says so to the runtime, which asks who opens it; search engines are asked to keep none of it (ADR 0064 d4).
   for (const [path, audience] of members) {
@@ -552,6 +549,28 @@ export async function exportSite(store: Store, outDir: string, warn: (line: stri
     await Bun.write(target, contents);
   }
   return [...files.keys()].sort();
+}
+
+/**
+ * The page for an address that does not exist, also the frame the server draws
+ * its own pages in (ADR 0085 d7): its heading and a search field (a link home
+ * on a static host), then the
+ * section the owner chose for it. The section shown under search results rides
+ * along in a `<template>`, which nothing draws, for the server to take.
+ */
+function notFoundPage(site: Site, theme: Theme, sections: Page[], language: string, menu: Parameters<typeof renderPage>[3]): string {
+  const said = wordsFor(language);
+  const section = (slug: string, id: string): Block[] => fillSections([{ id, type: 'section', content: { section: slug } }], sections, language);
+  // A static host answers no search, so there the heading leads home instead (ADR 0044).
+  const head: Block = site.served
+    ? { id: 'not_found', type: 'search', content: { title: said.notFound, placeholder: '', button: said.search } }
+    : { id: 'not_found', type: 'hero', content: { title: said.notFound, action: { label: said.home, href: '/' } } };
+  const blocks: Block[] = [head, ...(site.notFound ? section(site.notFound, 'not_found_more') : [])];
+  const page = (blocks: Block[]): Page => ({ slug: '404', title: said.notFound, description: '', inMenu: false, blocks });
+  const html = renderPage(site, theme, page(blocks), menu);
+  if (!site.searchSection) return html;
+  const after = /<main[^>]*>([\s\S]*?)<\/main>/.exec(renderPage(site, theme, page(section(site.searchSection, 'search_more')), menu))?.[1] ?? '';
+  return after.trim() ? html.replace('</main>', `<template data-search-after>${after}</template></main>`) : html;
 }
 
 /**

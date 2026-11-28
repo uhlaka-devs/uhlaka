@@ -6,7 +6,7 @@
  * the page puts them.
  */
 import type { Block, ContentType, Crumb, MenuLink, Post, Site } from '../core/index.ts';
-import { listPath, pictureIn, placesRelated, postsType, typeAuthorPath } from '../core/index.ts';
+import { entryContents, entryPath, listPath, neighbours, pictureIn, placesRelated, postsType, readingMinutes, typeAuthorPath } from '../core/index.ts';
 import EntryFields from './EntryFields.svelte';
 import { type EntryLists, setEntry } from './editing.ts';
 import BlockView from './BlockView.svelte';
@@ -17,6 +17,7 @@ import Frozen from './Frozen.svelte';
 import PostMeta from './PostMeta.svelte';
 import Related from './Related.svelte';
 import Shell from './Shell.svelte';
+import { wordsFor } from './words.ts';
 
 let {
   site,
@@ -45,6 +46,24 @@ let {
 const kind = $derived(type ?? postsType());
 // The entries linked to this one are drawn after it, unless its type's page puts them somewhere (ADR 0052 d3).
 const placed = $derived(!!template && placesRelated(template));
+// What the entry shows besides its words, as its type says (ADR 0085 d7).
+const extras = $derived(kind.entry ?? {});
+const words = $derived(wordsFor(site.language));
+const contents = $derived(extras.contents ? entryContents(post.blocks) : []);
+const around = $derived(extras.nextPrev ? neighbours(lists[kind.id]?.entries ?? [], post.slug) : { previous: null, next: null });
+/** Where the entry is shared from: its whole address, so only once the site has one. */
+const shareUrl = $derived(extras.share && site.url ? `${site.url}${entryPath(kind, post.slug)}` : '');
+const shares = $derived.by(() => {
+  const u = encodeURIComponent(shareUrl);
+  const title = encodeURIComponent(post.title);
+  return [
+    ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${u}`],
+    ['X', `https://x.com/intent/post?url=${u}&text=${title}`],
+    ['LinkedIn', `https://www.linkedin.com/sharing/share-offsite/?url=${u}`],
+    ['WhatsApp', `https://wa.me/?text=${title}%20${u}`],
+    [words.shareEmail, `mailto:?subject=${title}&body=${u}`],
+  ] as const;
+});
 // Read once: a page is drawn for one entry and one type.
 // svelte-ignore state_referenced_locally
 setEntry({ post, type: type ?? postsType(), language: site.language, editing: editing ? (designing ? 'template' : 'entry') : null });
@@ -64,17 +83,34 @@ setEntry({ post, type: type ?? postsType(), language: site.language, editing: ed
       <header class="b post-head">
         <div class="b-in">
           <PostMeta type={kind} {post} language={site.language} />
+          {#if extras.readingTime}<p class="post-reading">{words.readingTime.replace('{n}', String(readingMinutes(post)))}</p>{/if}
           <h1>{post.title}</h1>
           {#if post.cover}{@const pa = pictureIn(site, kind.layout, post.cover.src, 'full')}<img class="post-cover" src={post.cover.src} srcset={pa.srcset} sizes={pa.sizes} width={pa.width} height={pa.height} alt={post.cover.alt} />{/if}
           <EntryFields type={kind} {post} language={site.language} />
           {#if site.shop && kind.sells}<Buy shop={site.shop} {post} typeId={kind.id} language={site.language} />{/if}
         </div>
       </header>
+      {#if contents.length}
+        <nav class="b post-contents" aria-label={words.contents}>
+          <div class="b-in">
+            <p class="post-contents-title">{words.contents}</p>
+            <ol>{#each contents as item (item.id)}<li class:sub={item.level === 3}><a href={`#${item.id}`}>{item.text}</a></li>{/each}</ol>
+          </div>
+        </nav>
+      {/if}
       {#each post.blocks as block (block.id)}<BlockView {block} />{/each}
       {#if editing && post.blocks.length === 0}<div class="cms-empty" data-empty="page"></div>{/if}
     {/if}
     {#if !placed}<Related type={kind} {post} language={site.language} />{/if}
-    {#if kind.dated && post.author && (post.author.bio || post.author.picture)}
+    {#if shareUrl && !editing}
+      <aside class="b post-share" aria-label={words.share}>
+        <div class="b-in">
+          <span>{words.share}</span>
+          {#each shares as [name, href] (name)}<a {href} rel="noopener nofollow" target="_blank">{name}</a>{/each}
+        </div>
+      </aside>
+    {/if}
+    {#if extras.author !== false && kind.dated && post.author && (post.author.bio || post.author.picture)}
       <aside class="b post-bio" data-author>
         <div class="b-in">
           {#if post.author.picture}<img class="author-picture" src={post.author.picture.src} alt="" width="64" height="64" loading="lazy" />{/if}
@@ -84,6 +120,14 @@ setEntry({ post, type: type ?? postsType(), language: site.language, editing: ed
           </div>
         </div>
       </aside>
+    {/if}
+    {#if around.previous || around.next}
+      <nav class="b post-around" aria-label={`${words.previousEntry} / ${words.nextEntry}`}>
+        <div class="b-in">
+          {#if around.previous}<a rel="prev" href={entryPath(kind, around.previous.slug)}><small>{words.previousEntry}</small>{around.previous.title}</a>{/if}
+          {#if around.next}<a rel="next" href={entryPath(kind, around.next.slug)}><small>{words.nextEntry}</small>{around.next.title}</a>{/if}
+        </div>
+      </nav>
     {/if}
   </article>
   {#if kind.comments && !editing}<Comments {site} type={kind} {post} />{/if}

@@ -69,6 +69,18 @@ export const TEXT_PHONE = ['same', 'smaller', 'much-smaller'] as const;
 export const BUTTON_LOOKS = ['filled', 'outline', 'text'] as const;
 export const FIELD_LOOKS = ['boxed', 'underline', 'filled'] as const;
 
+/** A list of entries (ADR 0085 d7): one under another (as before), the picture beside, a grid, a grid of boxes. */
+export const LIST_LOOKS = ['stack', 'side', 'grid', 'cards'] as const;
+export type ListLook = (typeof LIST_LOOKS)[number];
+/** What a card may leave out; absent: it shows all of them. */
+export const CARD_PARTS = ['picture', 'meta', 'excerpt'] as const;
+export type CardPart = (typeof CARD_PARTS)[number];
+/** The excerpt's length: as before, or two lines. */
+export const EXCERPT_LENGTHS = ['long', 'short'] as const;
+/** Where an entry's picture sits: under its title (as before), above it, behind it, or not at all. */
+export const ENTRY_COVERS = ['below', 'above', 'behind', 'none'] as const;
+export type EntryCover = (typeof ENTRY_COVERS)[number];
+
 export interface ThemeLayout {
   header: {
     arrangement: HeaderArrangement;
@@ -91,14 +103,18 @@ export interface ThemeLayout {
   button: { look?: 'outline' | 'text'; hover?: string };
   /** The fields of a form. */
   field: { look?: 'underline' | 'filled' };
+  /** A list of entries (ADR 0085 d7): its look, what a card leaves out, the excerpt's length, a "Read more". */
+  list: { look?: Exclude<ListLook, 'stack'>; hide?: CardPart[]; excerpt?: 'short'; more?: true };
+  /** An entry's head: where its picture sits. */
+  entry: { cover?: Exclude<EntryCover, 'below'> };
 }
 
 /** The parts of a style's layout. */
-export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar', 'text', 'button', 'field'] as const;
+export const LAYOUT_PARTS = ['header', 'footer', 'menu', 'bar', 'text', 'button', 'field', 'list', 'entry'] as const;
 /** The parts that have a style of their own. */
 const STYLED_PARTS = ['header', 'footer', 'menu', 'bar'] as const;
 
-export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {}, text: {}, button: {}, field: {} };
+export const DEFAULT_LAYOUT: ThemeLayout = { header: { arrangement: 'inline', sticky: false }, footer: { arrangement: 'inline' }, menu: {}, bar: {}, text: {}, button: {}, field: {}, list: {}, entry: {} };
 
 /** Light or dark: what a palette is made for (ADR 0074). */
 export const SCHEMES = ['light', 'dark'] as const;
@@ -272,6 +288,9 @@ export function parseTheme(input: unknown): { theme: Theme | null; issues: Issue
     } else if (part === 'text' || part === 'button' || part === 'field') {
       parseLook(part, raw, theme, issues);
       continue;
+    } else if (part === 'list' || part === 'entry') {
+      parseEntries(part, raw, theme, issues);
+      continue;
     } else if (part === 'menu') {
       for (const [key, allowedValues] of [['current', MENU_CURRENT], ['phone', MENU_PHONE]] as const) {
         const value = raw[key];
@@ -299,6 +318,32 @@ function pick<T extends string>(list: readonly T[], value: unknown, path: string
   if (typeof value === 'string' && (list as readonly string[]).includes(value)) return value === list[0] ? undefined : (value as T);
   issues.push({ path, message: `one of: ${list.join(', ')}` });
   return undefined;
+}
+
+/** How a style draws a list of entries and an entry's head (ADR 0085 d7). */
+function parseEntries(part: 'list' | 'entry', raw: Record<string, unknown>, theme: Theme, issues: Issue[]): void {
+  const at = `layout.${part}`;
+  if (part === 'entry') {
+    for (const key of Object.keys(raw)) if (key !== 'cover') issues.push({ path: `${at}.${key}`, message: 'an entry has only a cover' });
+    const cover = pick(ENTRY_COVERS, raw.cover, `${at}.cover`, issues);
+    if (cover) theme.layout.entry.cover = cover as Exclude<EntryCover, 'below'>;
+    return;
+  }
+  const list = theme.layout.list;
+  for (const key of Object.keys(raw)) if (!['look', 'hide', 'excerpt', 'more'].includes(key)) issues.push({ path: `${at}.${key}`, message: 'one of: look, hide, excerpt, more' });
+  const look = pick(LIST_LOOKS, raw.look, `${at}.look`, issues);
+  if (look) list.look = look as Exclude<ListLook, 'stack'>;
+  if (raw.hide !== undefined) {
+    if (Array.isArray(raw.hide) && raw.hide.every((h) => (CARD_PARTS as readonly unknown[]).includes(h))) {
+      const hide = CARD_PARTS.filter((p) => (raw.hide as unknown[]).includes(p));
+      if (hide.length) list.hide = hide;
+    } else issues.push({ path: `${at}.hide`, message: `a list of: ${CARD_PARTS.join(', ')}` });
+  }
+  if (pick(EXCERPT_LENGTHS, raw.excerpt, `${at}.excerpt`, issues)) list.excerpt = 'short';
+  if (raw.more !== undefined) {
+    if (typeof raw.more !== 'boolean') issues.push({ path: `${at}.more`, message: 'true or false' });
+    else if (raw.more) list.more = true;
+  }
 }
 
 /** The text, button and field looks of a style (ADR 0085 d5). */

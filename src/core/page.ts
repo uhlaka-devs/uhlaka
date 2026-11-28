@@ -49,6 +49,14 @@ export interface Site {
   /** What the header shows besides the logo, the menu and the button (ADR 0085 d3). Absent: none of it. */
   header?: SiteHeader;
   footer: string;
+  /** A section drawn above the footer's line (ADR 0085 d7), in columns when it is a group of them; absent: none. */
+  footerSection?: string;
+  /** A link to the top of the page at the end of the footer's line. */
+  backToTop?: true;
+  /** A section shown on the page for an address that does not exist, under its heading and a search field; absent: only those. */
+  notFound?: string;
+  /** A section shown under the results of a search. */
+  searchSection?: string;
   /** Links in the footer: a privacy page, a social profile. */
   footerLinks: LinkValue[];
   /** The menu as the owner arranged it; null while the site makes one from its pages (ADR 0008). */
@@ -184,6 +192,10 @@ export function normalizeSite(input: unknown): Site {
     action: cleanLink(raw.action),
     ...cleanSiteHeader(raw.header),
     footer: str(raw.footer, 300).trim(),
+    ...(slugify(raw.footerSection) ? { footerSection: slugify(raw.footerSection) } : {}),
+    ...(raw.backToTop === true ? { backToTop: true as const } : {}),
+    ...(slugify(raw.notFound) ? { notFound: slugify(raw.notFound) } : {}),
+    ...(slugify(raw.searchSection) ? { searchSection: slugify(raw.searchSection) } : {}),
     footerLinks: cleanFooterLinks(raw.footerLinks),
     menu: normalizeMenu(raw.menu),
     types: siteTypes(raw),
