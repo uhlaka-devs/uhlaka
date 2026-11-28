@@ -13,7 +13,7 @@ import { downloadGoogle, GOOGLE_CATALOGUE_DATE, GOOGLE_FAMILIES, googleCssUrl, g
 import { startEditor } from '../src/site/server.ts';
 import { SHIPPED_FACES, shippedFont } from '../src/site/shipped.ts';
 import { Store } from '../src/site/store.ts';
-import { catalogueRows, CARRIED, fileName, makeFonts, shippedFontsModule } from '../tools/fonts.ts';
+import { catalogueRows, CARRIED, fileName, makeFonts, shippedFontsModule, withoutCommon } from '../tools/fonts.ts';
 import atelier from '../themes/atelier.json';
 
 const dir = await mkdtemp(join(tmpdir(), 'uhlaka-typefaces-'));
@@ -260,7 +260,10 @@ describe('tools/fonts.ts', () => {
     await writeFile(join(meta, 'variable.json'), JSON.stringify({ lora: { axes: { wght: { min: '400', max: '700' } } } }));
     const lines: string[] = [];
     const { faces } = await makeFonts(out, { metadata: meta, catalogue: meta, fetch: fakeGoogle(), log: (l) => lines.push(l) });
-    expect(faces).toHaveLength(CARRIED.length * 2);
+    // A script's Noto keeps only its script: the Latin and Cyrillic Google gives with it are left out.
+    expect(faces).toHaveLength(CARRIED.filter((c) => !/^Noto Sans ./.test(c.family)).length * 2);
+    expect(withoutCommon('U+0000-00FF, U+0400-0600, U+0E01, U+0??')).toBe('U+530-600, U+e01');
+    expect(withoutCommon('U+0041')).toBe('');
     expect(faces[0]?.file).toBe('bricolage-grotesque-cyrillic.woff2');
     expect(await readFile(join(out, 'fonts', 'OFL-inter.txt'), 'utf8')).toBe('Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)\n\nSIL OPEN FONT LICENSE Version 1.1\n');
     expect(await readFile(join(out, 'fonts', 'OFL-noto-sans-jp.txt'), 'utf8')).toStartWith('Copyright 2014-2021 Adobe');

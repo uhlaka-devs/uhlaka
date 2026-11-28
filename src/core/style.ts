@@ -97,13 +97,15 @@ export const choiceCss = (prop: StyleProp, name: unknown): string | null => {
  */
 const SANS_SCRIPTS = '"Noto Sans", "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Thai", "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR"';
 const SERIF_SCRIPTS = SANS_SCRIPTS.replace('"Noto Sans", ', '"Noto Serif", ');
+/** After the device's typefaces, which draw Latin, Greek and Cyrillic themselves: only the other scripts. */
+const OTHER_SCRIPTS = SANS_SCRIPTS.replace('"Noto Sans", ', '');
 export const FONT_STACKS = {
-  system: `system-ui, -apple-system, "Segoe UI", Roboto, ${SANS_SCRIPTS}, sans-serif`,
-  humanist: `Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", ${SANS_SCRIPTS}, sans-serif`,
-  geometric: `Avenir, Montserrat, Corbel, "URW Gothic", ${SANS_SCRIPTS}, sans-serif`,
-  serif: `Charter, "Bitstream Charter", "Sitka Text", Cambria, ${SERIF_SCRIPTS}, serif`,
-  oldstyle: `"Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052, ${SERIF_SCRIPTS}, serif`,
-  mono: `ui-monospace, "Cascadia Code", Menlo, Consolas, ${SANS_SCRIPTS}, monospace`,
+  system: `system-ui, -apple-system, "Segoe UI", Roboto, ${OTHER_SCRIPTS}, sans-serif`,
+  humanist: `Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", ${OTHER_SCRIPTS}, sans-serif`,
+  geometric: `Avenir, Montserrat, Corbel, "URW Gothic", ${OTHER_SCRIPTS}, sans-serif`,
+  serif: `Charter, "Bitstream Charter", "Sitka Text", Cambria, ${OTHER_SCRIPTS}, serif`,
+  oldstyle: `"Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052, ${OTHER_SCRIPTS}, serif`,
+  mono: `ui-monospace, "Cascadia Code", Menlo, Consolas, ${OTHER_SCRIPTS}, monospace`,
   bricolage: `"Bricolage Grotesque", Avenir, Montserrat, Corbel, ${SANS_SCRIPTS}, sans-serif`,
   figtree: `Figtree, Seravek, "Gill Sans Nova", Ubuntu, Calibri, ${SANS_SCRIPTS}, sans-serif`,
   inter: `Inter, ${SANS_SCRIPTS}, system-ui, sans-serif`,

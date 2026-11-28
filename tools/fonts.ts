@@ -39,6 +39,29 @@ export const CARRIED: readonly { family: string; axes: string }[] = [
   { family: 'Noto Sans KR', axes: 'wght@100..900' },
 ];
 
+/**
+ * The Noto of one script (`Noto Sans Arabic`, `Noto Sans JP`) draws only that
+ * script: Latin, Greek and Cyrillic are drawn by the face before it, or by Noto
+ * Sans, or by the device. So a site in Romanian on a device without its own
+ * typeface never downloads Arabic for its letters.
+ */
+const scriptOnly = (family: string): boolean => /^Noto Sans ./.test(family) && family !== 'Noto Sans Mono';
+const COMMON_SUBSETS = new Set(['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext', 'vietnamese']);
+/** A `unicode-range` without Latin, Greek and Cyrillic (U+0000–U+052F); empty when nothing is left. */
+export function withoutCommon(range: string): string {
+  const out: string[] = [];
+  for (const part of range.split(',')) {
+    const [from, to] = part.trim().slice(2).split('-') as [string, string | undefined];
+    if (from.includes('?')) continue;
+    const a = parseInt(from, 16);
+    const b = parseInt(to ?? from, 16);
+    if (b <= 0x52f) continue;
+    const start = Math.max(a, 0x530);
+    out.push(start === b ? `U+${start.toString(16)}` : `U+${start.toString(16)}-${b.toString(16)}`);
+  }
+  return out.join(', ');
+}
+
 /** A file's name: the family, `italic` for an italic, and the script it is cut for. */
 export const fileName = (family: string, style: string, subset: string): string => `${fontSlug(family)}${style === 'italic' ? '-italic' : ''}-${subset}.woff2`;
 
@@ -102,9 +125,11 @@ export async function makeFonts(root: string, options: { metadata?: string; cata
   for (const { family, axes } of CARRIED) {
     const got = await downloadGoogle({ family, axes, category: '', subsets: [] }, options.fetch);
     for (const { face, subset, bytes } of got) {
+      const kept = scriptOnly(family) ? { ...face, range: withoutCommon(face.range) } : face;
+      if (scriptOnly(family) && (COMMON_SUBSETS.has(subset) || !kept.range)) continue;
       const file = fileName(family, face.style, subset);
       writeFileSync(join(root, 'fonts', file), bytes);
-      faces.push({ ...face, file });
+      faces.push({ ...kept, file });
     }
     const copyright = copyrightOf(licences, family);
     if (copyright) writeFileSync(join(root, 'fonts', `OFL-${fontSlug(family)}.txt`), `${copyright}${body}`);

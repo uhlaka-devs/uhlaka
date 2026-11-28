@@ -101,32 +101,14 @@ import font_noto_serif_latin from '../../fonts/noto-serif-latin.woff2' with { ty
 import font_noto_sans_arabic_arabic from '../../fonts/noto-sans-arabic-arabic.woff2' with { type: 'file' };
 import font_noto_sans_arabic_math from '../../fonts/noto-sans-arabic-math.woff2' with { type: 'file' };
 import font_noto_sans_arabic_symbols from '../../fonts/noto-sans-arabic-symbols.woff2' with { type: 'file' };
-import font_noto_sans_arabic_latin_ext from '../../fonts/noto-sans-arabic-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_arabic_latin from '../../fonts/noto-sans-arabic-latin.woff2' with { type: 'file' };
-import font_noto_sans_hebrew_cyrillic_ext from '../../fonts/noto-sans-hebrew-cyrillic-ext.woff2' with { type: 'file' };
-import font_noto_sans_hebrew_greek_ext from '../../fonts/noto-sans-hebrew-greek-ext.woff2' with { type: 'file' };
 import font_noto_sans_hebrew_hebrew from '../../fonts/noto-sans-hebrew-hebrew.woff2' with { type: 'file' };
-import font_noto_sans_hebrew_latin_ext from '../../fonts/noto-sans-hebrew-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_hebrew_latin from '../../fonts/noto-sans-hebrew-latin.woff2' with { type: 'file' };
 import font_noto_sans_bengali_bengali from '../../fonts/noto-sans-bengali-bengali.woff2' with { type: 'file' };
-import font_noto_sans_bengali_latin_ext from '../../fonts/noto-sans-bengali-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_bengali_latin from '../../fonts/noto-sans-bengali-latin.woff2' with { type: 'file' };
 import font_noto_sans_tamil_tamil from '../../fonts/noto-sans-tamil-tamil.woff2' with { type: 'file' };
-import font_noto_sans_tamil_latin_ext from '../../fonts/noto-sans-tamil-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_tamil_latin from '../../fonts/noto-sans-tamil-latin.woff2' with { type: 'file' };
 import font_noto_sans_thai_thai from '../../fonts/noto-sans-thai-thai.woff2' with { type: 'file' };
-import font_noto_sans_thai_latin_ext from '../../fonts/noto-sans-thai-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_thai_latin from '../../fonts/noto-sans-thai-latin.woff2' with { type: 'file' };
-import font_noto_sans_georgian_cyrillic_ext from '../../fonts/noto-sans-georgian-cyrillic-ext.woff2' with { type: 'file' };
 import font_noto_sans_georgian_georgian from '../../fonts/noto-sans-georgian-georgian.woff2' with { type: 'file' };
-import font_noto_sans_georgian_greek_ext from '../../fonts/noto-sans-georgian-greek-ext.woff2' with { type: 'file' };
 import font_noto_sans_georgian_math from '../../fonts/noto-sans-georgian-math.woff2' with { type: 'file' };
 import font_noto_sans_georgian_symbols from '../../fonts/noto-sans-georgian-symbols.woff2' with { type: 'file' };
-import font_noto_sans_georgian_latin_ext from '../../fonts/noto-sans-georgian-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_georgian_latin from '../../fonts/noto-sans-georgian-latin.woff2' with { type: 'file' };
 import font_noto_sans_armenian_armenian from '../../fonts/noto-sans-armenian-armenian.woff2' with { type: 'file' };
-import font_noto_sans_armenian_latin_ext from '../../fonts/noto-sans-armenian-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_armenian_latin from '../../fonts/noto-sans-armenian-latin.woff2' with { type: 'file' };
 import font_noto_sans_sc_0 from '../../fonts/noto-sans-sc-0.woff2' with { type: 'file' };
 import font_noto_sans_sc_1 from '../../fonts/noto-sans-sc-1.woff2' with { type: 'file' };
 import font_noto_sans_sc_2 from '../../fonts/noto-sans-sc-2.woff2' with { type: 'file' };
@@ -202,8 +184,6 @@ import font_noto_sans_sc_71 from '../../fonts/noto-sans-sc-71.woff2' with { type
 import font_noto_sans_sc_72 from '../../fonts/noto-sans-sc-72.woff2' with { type: 'file' };
 import font_noto_sans_sc_73 from '../../fonts/noto-sans-sc-73.woff2' with { type: 'file' };
 import font_noto_sans_sc_74 from '../../fonts/noto-sans-sc-74.woff2' with { type: 'file' };
-import font_noto_sans_sc_75 from '../../fonts/noto-sans-sc-75.woff2' with { type: 'file' };
-import font_noto_sans_sc_76 from '../../fonts/noto-sans-sc-76.woff2' with { type: 'file' };
 import font_noto_sans_sc_77 from '../../fonts/noto-sans-sc-77.woff2' with { type: 'file' };
 import font_noto_sans_sc_78 from '../../fonts/noto-sans-sc-78.woff2' with { type: 'file' };
 import font_noto_sans_sc_79 from '../../fonts/noto-sans-sc-79.woff2' with { type: 'file' };
@@ -224,10 +204,6 @@ import font_noto_sans_sc_93 from '../../fonts/noto-sans-sc-93.woff2' with { type
 import font_noto_sans_sc_94 from '../../fonts/noto-sans-sc-94.woff2' with { type: 'file' };
 import font_noto_sans_sc_95 from '../../fonts/noto-sans-sc-95.woff2' with { type: 'file' };
 import font_noto_sans_sc_96 from '../../fonts/noto-sans-sc-96.woff2' with { type: 'file' };
-import font_noto_sans_sc_cyrillic from '../../fonts/noto-sans-sc-cyrillic.woff2' with { type: 'file' };
-import font_noto_sans_sc_vietnamese from '../../fonts/noto-sans-sc-vietnamese.woff2' with { type: 'file' };
-import font_noto_sans_sc_latin_ext from '../../fonts/noto-sans-sc-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_sc_latin from '../../fonts/noto-sans-sc-latin.woff2' with { type: 'file' };
 import font_noto_sans_tc_0 from '../../fonts/noto-sans-tc-0.woff2' with { type: 'file' };
 import font_noto_sans_tc_1 from '../../fonts/noto-sans-tc-1.woff2' with { type: 'file' };
 import font_noto_sans_tc_2 from '../../fonts/noto-sans-tc-2.woff2' with { type: 'file' };
@@ -310,8 +286,6 @@ import font_noto_sans_tc_78 from '../../fonts/noto-sans-tc-78.woff2' with { type
 import font_noto_sans_tc_79 from '../../fonts/noto-sans-tc-79.woff2' with { type: 'file' };
 import font_noto_sans_tc_80 from '../../fonts/noto-sans-tc-80.woff2' with { type: 'file' };
 import font_noto_sans_tc_81 from '../../fonts/noto-sans-tc-81.woff2' with { type: 'file' };
-import font_noto_sans_tc_82 from '../../fonts/noto-sans-tc-82.woff2' with { type: 'file' };
-import font_noto_sans_tc_83 from '../../fonts/noto-sans-tc-83.woff2' with { type: 'file' };
 import font_noto_sans_tc_84 from '../../fonts/noto-sans-tc-84.woff2' with { type: 'file' };
 import font_noto_sans_tc_85 from '../../fonts/noto-sans-tc-85.woff2' with { type: 'file' };
 import font_noto_sans_tc_86 from '../../fonts/noto-sans-tc-86.woff2' with { type: 'file' };
@@ -332,10 +306,6 @@ import font_noto_sans_tc_100 from '../../fonts/noto-sans-tc-100.woff2' with { ty
 import font_noto_sans_tc_101 from '../../fonts/noto-sans-tc-101.woff2' with { type: 'file' };
 import font_noto_sans_tc_102 from '../../fonts/noto-sans-tc-102.woff2' with { type: 'file' };
 import font_noto_sans_tc_103 from '../../fonts/noto-sans-tc-103.woff2' with { type: 'file' };
-import font_noto_sans_tc_cyrillic from '../../fonts/noto-sans-tc-cyrillic.woff2' with { type: 'file' };
-import font_noto_sans_tc_vietnamese from '../../fonts/noto-sans-tc-vietnamese.woff2' with { type: 'file' };
-import font_noto_sans_tc_latin_ext from '../../fonts/noto-sans-tc-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_tc_latin from '../../fonts/noto-sans-tc-latin.woff2' with { type: 'file' };
 import font_noto_sans_jp_0 from '../../fonts/noto-sans-jp-0.woff2' with { type: 'file' };
 import font_noto_sans_jp_1 from '../../fonts/noto-sans-jp-1.woff2' with { type: 'file' };
 import font_noto_sans_jp_2 from '../../fonts/noto-sans-jp-2.woff2' with { type: 'file' };
@@ -456,10 +426,6 @@ import font_noto_sans_jp_116 from '../../fonts/noto-sans-jp-116.woff2' with { ty
 import font_noto_sans_jp_117 from '../../fonts/noto-sans-jp-117.woff2' with { type: 'file' };
 import font_noto_sans_jp_118 from '../../fonts/noto-sans-jp-118.woff2' with { type: 'file' };
 import font_noto_sans_jp_119 from '../../fonts/noto-sans-jp-119.woff2' with { type: 'file' };
-import font_noto_sans_jp_cyrillic from '../../fonts/noto-sans-jp-cyrillic.woff2' with { type: 'file' };
-import font_noto_sans_jp_vietnamese from '../../fonts/noto-sans-jp-vietnamese.woff2' with { type: 'file' };
-import font_noto_sans_jp_latin_ext from '../../fonts/noto-sans-jp-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_jp_latin from '../../fonts/noto-sans-jp-latin.woff2' with { type: 'file' };
 import font_noto_sans_kr_0 from '../../fonts/noto-sans-kr-0.woff2' with { type: 'file' };
 import font_noto_sans_kr_1 from '../../fonts/noto-sans-kr-1.woff2' with { type: 'file' };
 import font_noto_sans_kr_2 from '../../fonts/noto-sans-kr-2.woff2' with { type: 'file' };
@@ -580,10 +546,6 @@ import font_noto_sans_kr_116 from '../../fonts/noto-sans-kr-116.woff2' with { ty
 import font_noto_sans_kr_117 from '../../fonts/noto-sans-kr-117.woff2' with { type: 'file' };
 import font_noto_sans_kr_118 from '../../fonts/noto-sans-kr-118.woff2' with { type: 'file' };
 import font_noto_sans_kr_119 from '../../fonts/noto-sans-kr-119.woff2' with { type: 'file' };
-import font_noto_sans_kr_cyrillic from '../../fonts/noto-sans-kr-cyrillic.woff2' with { type: 'file' };
-import font_noto_sans_kr_vietnamese from '../../fonts/noto-sans-kr-vietnamese.woff2' with { type: 'file' };
-import font_noto_sans_kr_latin_ext from '../../fonts/noto-sans-kr-latin-ext.woff2' with { type: 'file' };
-import font_noto_sans_kr_latin from '../../fonts/noto-sans-kr-latin.woff2' with { type: 'file' };
 
 export const FONT_FILES: Record<string, string> = {
   'bricolage-grotesque-vietnamese.woff2': font_bricolage_grotesque_vietnamese,
@@ -688,32 +650,14 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-arabic-arabic.woff2': font_noto_sans_arabic_arabic,
   'noto-sans-arabic-math.woff2': font_noto_sans_arabic_math,
   'noto-sans-arabic-symbols.woff2': font_noto_sans_arabic_symbols,
-  'noto-sans-arabic-latin-ext.woff2': font_noto_sans_arabic_latin_ext,
-  'noto-sans-arabic-latin.woff2': font_noto_sans_arabic_latin,
-  'noto-sans-hebrew-cyrillic-ext.woff2': font_noto_sans_hebrew_cyrillic_ext,
-  'noto-sans-hebrew-greek-ext.woff2': font_noto_sans_hebrew_greek_ext,
   'noto-sans-hebrew-hebrew.woff2': font_noto_sans_hebrew_hebrew,
-  'noto-sans-hebrew-latin-ext.woff2': font_noto_sans_hebrew_latin_ext,
-  'noto-sans-hebrew-latin.woff2': font_noto_sans_hebrew_latin,
   'noto-sans-bengali-bengali.woff2': font_noto_sans_bengali_bengali,
-  'noto-sans-bengali-latin-ext.woff2': font_noto_sans_bengali_latin_ext,
-  'noto-sans-bengali-latin.woff2': font_noto_sans_bengali_latin,
   'noto-sans-tamil-tamil.woff2': font_noto_sans_tamil_tamil,
-  'noto-sans-tamil-latin-ext.woff2': font_noto_sans_tamil_latin_ext,
-  'noto-sans-tamil-latin.woff2': font_noto_sans_tamil_latin,
   'noto-sans-thai-thai.woff2': font_noto_sans_thai_thai,
-  'noto-sans-thai-latin-ext.woff2': font_noto_sans_thai_latin_ext,
-  'noto-sans-thai-latin.woff2': font_noto_sans_thai_latin,
-  'noto-sans-georgian-cyrillic-ext.woff2': font_noto_sans_georgian_cyrillic_ext,
   'noto-sans-georgian-georgian.woff2': font_noto_sans_georgian_georgian,
-  'noto-sans-georgian-greek-ext.woff2': font_noto_sans_georgian_greek_ext,
   'noto-sans-georgian-math.woff2': font_noto_sans_georgian_math,
   'noto-sans-georgian-symbols.woff2': font_noto_sans_georgian_symbols,
-  'noto-sans-georgian-latin-ext.woff2': font_noto_sans_georgian_latin_ext,
-  'noto-sans-georgian-latin.woff2': font_noto_sans_georgian_latin,
   'noto-sans-armenian-armenian.woff2': font_noto_sans_armenian_armenian,
-  'noto-sans-armenian-latin-ext.woff2': font_noto_sans_armenian_latin_ext,
-  'noto-sans-armenian-latin.woff2': font_noto_sans_armenian_latin,
   'noto-sans-sc-0.woff2': font_noto_sans_sc_0,
   'noto-sans-sc-1.woff2': font_noto_sans_sc_1,
   'noto-sans-sc-2.woff2': font_noto_sans_sc_2,
@@ -789,8 +733,6 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-sc-72.woff2': font_noto_sans_sc_72,
   'noto-sans-sc-73.woff2': font_noto_sans_sc_73,
   'noto-sans-sc-74.woff2': font_noto_sans_sc_74,
-  'noto-sans-sc-75.woff2': font_noto_sans_sc_75,
-  'noto-sans-sc-76.woff2': font_noto_sans_sc_76,
   'noto-sans-sc-77.woff2': font_noto_sans_sc_77,
   'noto-sans-sc-78.woff2': font_noto_sans_sc_78,
   'noto-sans-sc-79.woff2': font_noto_sans_sc_79,
@@ -811,10 +753,6 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-sc-94.woff2': font_noto_sans_sc_94,
   'noto-sans-sc-95.woff2': font_noto_sans_sc_95,
   'noto-sans-sc-96.woff2': font_noto_sans_sc_96,
-  'noto-sans-sc-cyrillic.woff2': font_noto_sans_sc_cyrillic,
-  'noto-sans-sc-vietnamese.woff2': font_noto_sans_sc_vietnamese,
-  'noto-sans-sc-latin-ext.woff2': font_noto_sans_sc_latin_ext,
-  'noto-sans-sc-latin.woff2': font_noto_sans_sc_latin,
   'noto-sans-tc-0.woff2': font_noto_sans_tc_0,
   'noto-sans-tc-1.woff2': font_noto_sans_tc_1,
   'noto-sans-tc-2.woff2': font_noto_sans_tc_2,
@@ -897,8 +835,6 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-tc-79.woff2': font_noto_sans_tc_79,
   'noto-sans-tc-80.woff2': font_noto_sans_tc_80,
   'noto-sans-tc-81.woff2': font_noto_sans_tc_81,
-  'noto-sans-tc-82.woff2': font_noto_sans_tc_82,
-  'noto-sans-tc-83.woff2': font_noto_sans_tc_83,
   'noto-sans-tc-84.woff2': font_noto_sans_tc_84,
   'noto-sans-tc-85.woff2': font_noto_sans_tc_85,
   'noto-sans-tc-86.woff2': font_noto_sans_tc_86,
@@ -919,10 +855,6 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-tc-101.woff2': font_noto_sans_tc_101,
   'noto-sans-tc-102.woff2': font_noto_sans_tc_102,
   'noto-sans-tc-103.woff2': font_noto_sans_tc_103,
-  'noto-sans-tc-cyrillic.woff2': font_noto_sans_tc_cyrillic,
-  'noto-sans-tc-vietnamese.woff2': font_noto_sans_tc_vietnamese,
-  'noto-sans-tc-latin-ext.woff2': font_noto_sans_tc_latin_ext,
-  'noto-sans-tc-latin.woff2': font_noto_sans_tc_latin,
   'noto-sans-jp-0.woff2': font_noto_sans_jp_0,
   'noto-sans-jp-1.woff2': font_noto_sans_jp_1,
   'noto-sans-jp-2.woff2': font_noto_sans_jp_2,
@@ -1043,10 +975,6 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-jp-117.woff2': font_noto_sans_jp_117,
   'noto-sans-jp-118.woff2': font_noto_sans_jp_118,
   'noto-sans-jp-119.woff2': font_noto_sans_jp_119,
-  'noto-sans-jp-cyrillic.woff2': font_noto_sans_jp_cyrillic,
-  'noto-sans-jp-vietnamese.woff2': font_noto_sans_jp_vietnamese,
-  'noto-sans-jp-latin-ext.woff2': font_noto_sans_jp_latin_ext,
-  'noto-sans-jp-latin.woff2': font_noto_sans_jp_latin,
   'noto-sans-kr-0.woff2': font_noto_sans_kr_0,
   'noto-sans-kr-1.woff2': font_noto_sans_kr_1,
   'noto-sans-kr-2.woff2': font_noto_sans_kr_2,
@@ -1167,8 +1095,4 @@ export const FONT_FILES: Record<string, string> = {
   'noto-sans-kr-117.woff2': font_noto_sans_kr_117,
   'noto-sans-kr-118.woff2': font_noto_sans_kr_118,
   'noto-sans-kr-119.woff2': font_noto_sans_kr_119,
-  'noto-sans-kr-cyrillic.woff2': font_noto_sans_kr_cyrillic,
-  'noto-sans-kr-vietnamese.woff2': font_noto_sans_kr_vietnamese,
-  'noto-sans-kr-latin-ext.woff2': font_noto_sans_kr_latin_ext,
-  'noto-sans-kr-latin.woff2': font_noto_sans_kr_latin,
 };
