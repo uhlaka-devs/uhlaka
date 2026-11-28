@@ -80,11 +80,11 @@ function toggle(id: string, on: boolean): void {
 {/if}
 
 <style>
-  .audience { display: grid; gap: 0.3rem; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid var(--outline-variant); }
-  h3 { margin: 0; font-size: 0.85rem; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
+  .audience { display: grid; gap: var(--sp-1); margin-top: var(--sp-5); padding-top: var(--sp-3); border-top: 1px solid var(--outline-variant); }
+  h3 { margin: 0; font-size: var(--size-m); color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
   p { margin: 0; }
-  .check { display: flex; align-items: center; gap: 0.5rem; }
+  .check { display: flex; align-items: center; gap: var(--sp-2); }
   .check span { margin: 0; }
-  .levels { display: grid; gap: 0.2rem; padding-inline-start: 1.4rem; }
+  .levels { display: grid; gap: 0.2rem; padding-inline-start: var(--sp-6); }
   .good { color: var(--success); }
 </style>

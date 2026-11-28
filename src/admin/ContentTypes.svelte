@@ -229,31 +229,31 @@ async function remove(): Promise<void> {
 </section>
 
 <style>
-  header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-  h1 { margin: 0; font-size: 1.4rem; flex: 1; }
-  h2 { margin: 1.2rem 0 0.2rem; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-surface-variant); }
-  .intro { max-width: 44rem; margin-bottom: 1rem; }
+  header { display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-4); }
+  h1 { margin: 0; font-size: var(--size-2xl); flex: 1; }
+  h2 { margin: var(--sp-5) 0 0.2rem; font-size: var(--size-s); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-surface-variant); }
+  .intro { max-width: 44rem; margin-bottom: var(--sp-4); }
   table { width: 100%; border-collapse: collapse; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); overflow: hidden; }
-  th, td { padding: 0.55rem 0.8rem; text-align: start; border-bottom: 1px solid var(--outline-variant); }
-  th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--on-surface-variant); font-weight: 600; }
+  th, td { padding: var(--sp-2) var(--sp-3); text-align: start; border-bottom: 1px solid var(--outline-variant); }
+  th { font-size: var(--size-s); letter-spacing: 0.05em; text-transform: uppercase; color: var(--on-surface-variant); font-weight: 600; }
   tr:last-child td { border-bottom: 0; }
   td.quiet { color: var(--on-surface-variant); }
   td.end { text-align: end; white-space: nowrap; }
   td.end small { display: block; color: var(--on-surface-variant); }
   .open { border: 0 !important; padding: 0 !important; background: none !important; font-weight: 600 !important; color: var(--primary) !important; }
-  .type { max-width: 34rem; padding: 1.2rem; background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
-  .check { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+  .type { max-width: 34rem; padding: var(--sp-5); background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); }
+  .check { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
   .check span { margin: 0; }
   .check.off { opacity: 0.55; }
-  .row { display: grid; grid-template-columns: 1fr 11rem auto; gap: 0.4rem; margin-bottom: 0.4rem; }
-  .row .more { grid-column: 1 / -1; padding: 0 0 0.6rem 1rem; border-left: 2px solid var(--outline-variant); }
-  .row .more label { display: block; margin-bottom: 0.4rem; }
-  .row .more span { display: block; font-size: 13px; color: var(--on-surface-variant); margin-bottom: 0.2rem; }
+  .row { display: grid; grid-template-columns: 1fr 11rem auto; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+  .row .more { grid-column: 1 / -1; padding: 0 0 var(--sp-2) var(--sp-4); border-left: 2px solid var(--outline-variant); }
+  .row .more label { display: block; margin-bottom: var(--sp-2); }
+  .row .more span { display: block; font-size: var(--size-m); color: var(--on-surface-variant); margin-bottom: 0.2rem; }
   .row .more .check span { display: inline; margin: 0; }
   .row textarea, .row select { width: 100%; }
-  .language { padding-left: 1rem; border-left: 2px solid var(--outline-variant); }
-  .word { display: grid; grid-template-columns: 10rem 1fr; gap: 0.4rem; align-items: center; margin-bottom: 0.3rem; }
-  .word span { color: var(--on-surface-variant); font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
-  .actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 1.2rem; }
+  .language { padding-left: var(--sp-4); border-left: 2px solid var(--outline-variant); }
+  .word { display: grid; grid-template-columns: 10rem 1fr; gap: var(--sp-2); align-items: center; margin-bottom: var(--sp-1); }
+  .word span { color: var(--on-surface-variant); font-size: var(--size-m); overflow: hidden; text-overflow: ellipsis; }
+  .actions { display: flex; gap: var(--sp-2); align-items: center; margin-top: var(--sp-5); }
   .actions :global(.danger) { margin: 0 0 0 auto !important; }
 </style>

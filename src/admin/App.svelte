@@ -58,6 +58,7 @@ import {
 } from '../core/index.ts';
 import { api, signedIn, type Doc, type Kind, type PostInfo, type State, type TranslationInfo } from './api.ts';
 import Icon from './Icon.svelte';
+import { applyScheme, storedScheme } from './SchemeChoice.svelte';
 import ContentList from './ContentList.svelte';
 import Layouts from './Layouts.svelte';
 import { layoutName } from './layouts.ts';
@@ -99,6 +100,8 @@ import SitePanel from './SitePanel.svelte';
 import StylePanel from './StylePanel.svelte';
 import GroupPanel from './GroupPanel.svelte';
 import DesignPanel from './DesignPanel.svelte';
+// Light, dark or like the device, as this person chose on this device (ADR 0084 d4).
+applyScheme(storedScheme());
 import { DESIGN_PARTS, type DesignPart } from './themeEdit.ts';
 
 let site = $state.raw<State | null>(null);
@@ -1348,10 +1351,10 @@ onMount(() => {
 <style>
   /* Everything below is drawn with the admin's tokens (src/admin/tokens.css, ADR 0084): roles and steps, never values. */
   :global(html, body) { height: 100%; margin: 0; }
-  :global(body) { font: var(--body-m); color: var(--on-surface); background: var(--surface); -webkit-font-smoothing: antialiased; }
+  :global(body) { --under: var(--surface); font: var(--body-m); color: var(--on-surface); background: var(--surface); -webkit-font-smoothing: antialiased; }
   :global(*) { box-sizing: border-box; }
   :global(:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
-  .notice { margin: 4rem auto; max-width: 30rem; text-align: center; }
+  .notice { margin: var(--sp-16) auto; max-width: 30rem; text-align: center; }
   .admin { display: grid; height: 100vh; grid-template-columns: 13.5rem 1fr; }
   .admin.building { grid-template-columns: 1fr; }
   .rail[hidden] { display: none; }
@@ -1386,7 +1389,7 @@ onMount(() => {
   .sep { width: 1px; align-self: stretch; background: var(--outline-variant); }
   .status, .state { color: var(--on-surface-variant); font: var(--body-s); }
   .status[data-state='error'] { color: var(--error); }
-  .left, .right { overflow-y: auto; padding: var(--sp-4); background: var(--surface-lowest); }
+  .left, .right { --under: var(--surface-lowest); overflow-y: auto; padding: var(--sp-4); background: var(--surface-lowest); }
   .left { grid-area: left; border-right: 1px solid var(--outline-variant); }
   .right { grid-area: right; border-left: 1px solid var(--outline-variant); }
   .canvas { grid-area: canvas; padding: var(--sp-4); min-width: 0; background: var(--surface-container); }
@@ -1428,6 +1431,14 @@ onMount(() => {
   .tabs button[aria-selected='true']::after { transform: scaleX(1); }
   :global(.editor .field) { display: block; margin-bottom: var(--sp-4); }
   :global(.editor label > span, .editor legend) { display: block; margin-bottom: var(--sp-1); font: var(--label-m); color: var(--on-surface-variant); }
+  /*
+   * A field's label sits on its border, as in Material 3: it stays in the flow (a long one wraps, nothing is
+   * cut), and its last line crosses the border. Its ground is half what is around the field (--under), half the field.
+   */
+  :global(.editor label:has(> span:first-child + :is(input[type='text'], input[type='email'], input[type='password'], input[type='number'], input[type='url'], input[type='date'], textarea, select)) > span) { display: table; position: relative; z-index: 1; max-width: calc(100% - var(--sp-6)); margin: 0 0 calc(-1 * var(--sp-2)) var(--sp-2); padding: 0 var(--sp-1); background: linear-gradient(to bottom, var(--under) 50%, var(--surface-lowest) 50%); }
+  :global(.editor label:has(> span:first-child + :is(input, textarea, select)) :is(input, textarea, select)) { padding-top: var(--sp-3); }
+  :global(.editor label:focus-within > span:first-child) { color: var(--primary); }
+  :global(.editor label:has(> [aria-invalid='true']) > span:first-child) { color: var(--error); }
   /* Fields: outlined, the border doubles in the primary colour when you type. */
   :global(.editor input[type='text'], .editor input[type='email'], .editor input[type='password'], .editor input[type='number'], .editor input[type='url'], .editor input[type='date'], .editor textarea, .editor select) { width: 100%; min-height: var(--target); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--outline); border-radius: var(--shape-xs); background: var(--surface-lowest); color: var(--on-surface); font: var(--body-l); transition: border-color var(--dur-short-2) var(--ease-standard); }
   :global(.editor :is(input, textarea, select):hover:not(:disabled):not(:focus)) { border-color: var(--on-surface); }

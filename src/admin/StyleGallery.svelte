@@ -108,8 +108,8 @@ function choose(style: Theme): void {
   .card.own:hover { box-shadow: none; }
   /* The sample shows the style's own colours: --bg and --fg come from the style, not from the admin. */
   .sample { display: grid; gap: 2px; padding: var(--sp-2) var(--sp-3); border-radius: var(--shape-sm); background: var(--bg, var(--surface-container)); color: var(--fg, var(--on-surface)); border: 1px solid color-mix(in oklch, var(--on-surface) 6%, transparent); }
-  .aa { font-size: 1.6rem; line-height: 1; font-weight: 700; }
-  .line { font-size: 0.72rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aa { font-size: var(--size-2xl); line-height: 1; font-weight: 700; }
+  .line { font-size: var(--size-s); opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .dots { display: flex; gap: 3px; margin-top: 2px; }
   .dots i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid color-mix(in oklch, var(--on-surface) 15%, transparent); }
   .name { display: flex; flex-direction: column; padding: 0 var(--sp-1) 2px; font: var(--title-s); }

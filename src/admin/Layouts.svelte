@@ -145,24 +145,24 @@ const sectionTitle = (slug: string): string => sections.find((s) => s.slug === s
 {/snippet}
 
 <style>
-  header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
-  h1 { margin: 0; font-size: 1.4rem; flex: 1; }
+  header { display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-2); }
+  h1 { margin: 0; font-size: var(--size-2xl); flex: 1; }
   .intro { max-width: 46rem; }
-  .cards { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 0.8rem; }
-  .card { width: 100%; display: grid; gap: 0.35rem; text-align: start; padding: 0.7rem !important; background: var(--surface-lowest); }
+  .cards { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: var(--sp-3); }
+  .card { width: 100%; display: grid; gap: var(--sp-1); text-align: start; padding: var(--sp-3) !important; background: var(--surface-lowest); }
   .card small { color: var(--on-surface-variant); }
-  .layout { max-width: 52rem; display: grid; gap: 0.8rem; }
-  .split { display: grid; grid-template-columns: minmax(0, 26rem) 16rem; gap: 1.5rem; align-items: start; }
-  .choices { display: grid; gap: 0.7rem; }
-  .field { display: grid; gap: 0.25rem; }
-  .check { display: flex; gap: 0.5rem; align-items: center; }
-  .row { display: flex; gap: 0.5rem; }
+  .layout { max-width: 52rem; display: grid; gap: var(--sp-3); }
+  .split { display: grid; grid-template-columns: minmax(0, 26rem) 16rem; gap: var(--sp-6); align-items: start; }
+  .choices { display: grid; gap: var(--sp-3); }
+  .field { display: grid; gap: var(--sp-1); }
+  .check { display: flex; gap: var(--sp-2); align-items: center; }
+  .row { display: flex; gap: var(--sp-2); }
   .problem { color: var(--error); margin: 0; }
-  .sketch { display: grid; gap: 4px; padding: 6px; border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); background: var(--surface-low); min-height: 8rem; font-size: 11px; font-style: normal; }
-  .sketch i { font-style: normal; display: block; padding: 4px 6px; border-radius: var(--shape-xs); color: var(--on-surface-variant); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .sketch { display: grid; gap: var(--sp-1); padding: var(--sp-1); border: 1px solid var(--outline-variant); border-radius: var(--shape-sm); background: var(--surface-low); min-height: 8rem; font-size: var(--size-xs); font-style: normal; }
+  .sketch i { font-style: normal; display: block; padding: var(--sp-1) var(--sp-1); border-radius: var(--shape-xs); color: var(--on-surface-variant); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .bar { background: var(--surface-container); }
   .band { background: var(--secondary-container); }
-  .middle { display: flex; gap: 4px; min-height: 4rem; }
+  .middle { display: flex; gap: var(--sp-1); min-height: 4rem; }
   .content { flex: 1; background: var(--surface-lowest); border: 1px dashed var(--outline-variant); }
   .sketch[data-width='narrow'] .content { flex: 0.6; margin-inline: auto; }
   .aside { width: 32%; background: var(--secondary-container); }
