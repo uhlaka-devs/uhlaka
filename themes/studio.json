@@ -77,6 +77,17 @@
     "menu": {
       "current": "underline",
       "phone": "full"
+    },
+    "text": {
+      "heading": {
+        "spacing": "tight"
+      },
+      "menu": {
+        "spacing": "wide"
+      }
+    },
+    "field": {
+      "look": "underline"
     }
   },
   "light": {

@@ -169,6 +169,34 @@ const assert = (condition, message) => {
     assert((await headerHtml()) === before, 'the theme rearranges and recolours the header without changing its markup');
     if (shots) await page.screenshot({ path: join(shots, 'theme-header.png') });
 
+    // Text and buttons (ADR 0085 d5): names from closed lists, drawn by the style's stylesheet.
+    await page.locator('[data-design-part="text"]').click();
+    await page.locator('[data-text="heading.weight"]').selectOption('black');
+    await page.locator('[data-text="heading.case"]').check();
+    await page.locator('[data-button="outline"]').check({ force: true });
+    await page.locator('[data-text-more] > summary').click();
+    await page.locator('[data-button-hover]').selectOption('text');
+    await page.locator('[data-field-look]').selectOption('underline');
+    await page.locator('[data-text-phone]').selectOption('smaller');
+    await page.locator('[data-text="menu.spacing"]').selectOption('wide');
+    await page.waitForFunction(() => {
+      const doc = document.querySelector('iframe').contentDocument;
+      const h1 = getComputedStyle(doc.querySelector('h1'));
+      const button = doc.querySelector('.button:not(.quiet)');
+      return h1.fontWeight === '800' && h1.textTransform === 'uppercase' && (!button || getComputedStyle(button).backgroundColor === 'rgba(0, 0, 0, 0)');
+    });
+    assert(true, 'headings in black capitals and outlined buttons, from the Text and buttons panel');
+    if (shots) await page.screenshot({ path: join(shots, 'theme-text.png') });
+    await page.locator('[data-text="heading.weight"]').selectOption('normal');
+    await page.locator('[data-text="heading.case"]').uncheck();
+    await page.locator('[data-button="filled"]').check({ force: true });
+    await page.locator('[data-button-hover]').selectOption('');
+    await page.locator('[data-field-look]').selectOption('boxed');
+    await page.locator('[data-text-phone]').selectOption('same');
+    await page.locator('[data-text="menu.spacing"]').selectOption('normal');
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('iframe').contentDocument.querySelector('h1')).textTransform === 'none');
+    assert(true, 'and back as it was, each name of before kept as an absence');
+
     // A theme is a file: download it, and refuse a file that is not a theme.
     await page.locator('[data-design-part="style"]').click();
     await page.getByText('More settings', { exact: true }).click();
